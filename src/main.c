@@ -29,6 +29,25 @@ uint8_t memory[MEM_SIZE] = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 };
 
+/*
+ * The above memory corresponds to the assembly:
+ * ```
+ *   .section .text
+ *  .global _start
+ *
+ *  _start:
+ *      mov r0, pc
+ *      mov r1, #2
+ *      add r2, r1, r1
+ *      swi #0
+ *
+ * It is compiled with the following instructions:
+ *
+ * $ arm-none-eabi-as -mthumb program.s -o program.o
+ * $ arm-none-eabi-ls program.o
+ *
+ */
+
 
 // FUNCTION DEFINITIONS
 
