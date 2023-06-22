@@ -1,4 +1,4 @@
-#include "ARMTinyVM.h"
+﻿#include "ARMTinyVM.h"
 #include "instruction_set.h"
 #include <string.h>
 #include <stdio.h>
@@ -95,6 +95,31 @@ uint32_t VM_executeNInstructions(VM_instance* vm, uint32_t maxInstructions)
     }
 
     return i;
+}
+
+
+/**
+ * Prints out the current state of a virtual machine's Zephyrs
+ * @param vm
+ */
+void VM_print(VM_instance* vm)
+{
+    // 12 general purpose registers
+    for (uint8_t r = 0; r < 13; r++) {
+        printf("r%u = %u\n", r, vm->registers[r]);
+    }
+
+    // Explicitly print the special purpose registers
+    printf("sp = %u\n", vm_stack_pointer(vm));
+    printf("lr = %u\n", vm_link_register(vm));
+    printf("pc = %u\n", vm_program_counter(vm));
+
+    // CPSR register
+    printf("CPSR = { .N = %u, .Z = %u, .C = %u, .V = %u }\n",
+           vm_cpsr_n(vm),
+           vm_cpsr_z(vm),
+           vm_cpsr_c(vm),
+           vm_cpsr_v(vm));
 }
 
 

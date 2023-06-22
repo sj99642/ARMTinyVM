@@ -37,6 +37,10 @@ typedef struct VM_instance {
 #define vm_stack_pointer(vmptr)   ((vmptr)->registers[13])
 #define vm_link_register(vmptr)   ((vmptr)->registers[14])
 #define vm_program_counter(vmptr) ((vmptr)->registers[15])
+#define vm_cpsr_n(vmptr)  ((((vmptr)->cpsr) & 0x80000000) >> 31)
+#define vm_cpsr_z(vmptr)  ((((vmptr)->cpsr) & 0x40000000) >> 30)
+#define vm_cpsr_c(vmptr)  ((((vmptr)->cpsr) & 0x20000000) >> 29)
+#define vm_cpsr_v(vmptr)  ((((vmptr)->cpsr) & 0x10000000) >> 28)
 
 
 VM_instance VM_new(VM_interaction_instructions* instrs,
@@ -44,6 +48,7 @@ VM_instance VM_new(VM_interaction_instructions* instrs,
                    uint32_t initialProgramCounter);
 void VM_executeSingleInstruction(VM_instance* vm);
 uint32_t VM_executeNInstructions(VM_instance* vm, uint32_t maxInstructions);
+void VM_print(VM_instance* vm);
 
 
 #endif // ARMTINYVM_H

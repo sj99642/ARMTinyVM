@@ -61,6 +61,7 @@ int main()
     VM_instance vm = VM_new(&instrs, MEM_SIZE, 0);
     uint32_t instrs_executed = VM_executeNInstructions(&vm, 10);
     printf("Number of instructions executed: %u\n", instrs_executed);
+    VM_print(&vm);
     return 0;
 }
 
