@@ -1,10 +1,11 @@
 #include "ARMTinyVM.h"
+#include <stdio.h>
 
 // FUNCTION DECLARATIONS
 int main();
 uint8_t readByte(uint32_t addr);
 void writeByte(uint32_t addr, uint8_t value);
-void softwareInterrupt(uint8_t number);
+void softwareInterrupt(VM_instance* vm, uint8_t number);
 
 
 // Static variables
@@ -46,7 +47,8 @@ void writeByte(uint32_t addr, uint8_t value)
 }
 
 
-void softwareInterrupt(uint8_t number)
+void softwareInterrupt(VM_instance* vm, uint8_t number)
 {
-
+    printf("Software interrupt: %u", number);
+    vm->finished = true;
 }

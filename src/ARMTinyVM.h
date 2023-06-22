@@ -8,14 +8,17 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+// Predefining VM_instance for use in VM_interaction_instructions
+typedef struct VM_instance VM_instance;
+
 /**
- * Behaviour which has to be provided to the VM for it to know how to interact with its environment (reading and writing
- * memory, and dealine with software interrupts).
+ * Behaviour which has to be provided to the VM for it to know how to interact with its environment
+ * (reading and writing memory, and dealine with software interrupts).
  */
 typedef struct VM_interaction_instructions {
     uint8_t (*const readByte)(uint32_t addr);
     void (*const writeByte)(uint32_t addr, uint8_t value);
-    void (*const softwareInterrupt)(uint8_t number);
+    void (*const softwareInterrupt)(VM_instance* vm, uint8_t number);
 } VM_interaction_instructions;
 
 
@@ -23,14 +26,17 @@ typedef struct VM_interaction_instructions {
  * Holds the registers and other information necessary to represent the state of the VM.
  */
 typedef struct VM_instance {
-    uint32_t gen_registers[13];
-    uint32_t stackPointer;
-    uint32_t linkRegister;
-    uint32_t programCounter;
+    uint32_t registers[16];
     uint32_t cpsr;
     VM_interaction_instructions* interactionInstructions;
     bool finished;
 } VM_instance;
+
+// The following functions are used to access the special purpose registers, since they're
+// in the array
+#define vm_stack_pointer(vmptr)   ((vmptr)->registers[13])
+#define vm_link_register(vmptr)   ((vmptr)->registers[14])
+#define vm_program_counter(vmptr) ((vmptr)->registers[15])
 
 
 VM_instance VM_new(VM_interaction_instructions* instrs,
