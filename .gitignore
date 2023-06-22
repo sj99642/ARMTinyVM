@@ -50,3 +50,7 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# IntelliJ
+.idea/
+cmake-build-debug/
