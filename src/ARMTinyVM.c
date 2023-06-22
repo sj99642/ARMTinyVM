@@ -1,4 +1,4 @@
-﻿#include "ARMTinyVM.h"
+#include "ARMTinyVM.h"
 #include "instruction_set.h"
 #include <string.h>
 #include <stdio.h>
@@ -45,7 +45,7 @@ VM_instance VM_new(VM_interaction_instructions* instrs,
  * stack pointer.
  * @param vm
  */
-void VM_executeSingleInstructions(VM_instance* vm)
+void VM_executeSingleInstruction(VM_instance* vm)
 {
     // Cache the readByte function
     uint8_t (*const readByte)(uint32_t addr) = vm->interactionInstructions->readByte;
@@ -54,6 +54,11 @@ void VM_executeSingleInstructions(VM_instance* vm)
     // They're stored little-endian, so the lowest byte is the least significant bit
     uint16_t instruction = readByte(vm_program_counter(vm));
     instruction += readByte(vm_program_counter(vm)+1) << 8;
+
+    printf("0x%04x@0x%08x : ", instruction, vm_program_counter(vm));
+
+    // Now we have the instruction, we increment the program counter by 2 to go to the next instruction
+    vm_program_counter(vm) += 2;
 
     // Decode the instruction and act accordingly
     if (istl_software_interrupt(instruction)) { // Matches first 8 bits to 11011111
@@ -77,7 +82,19 @@ void VM_executeSingleInstructions(VM_instance* vm)
  */
 uint32_t VM_executeNInstructions(VM_instance* vm, uint32_t maxInstructions)
 {
-    return 0;
+    uint32_t i;
+    for (i = 0; i < maxInstructions; i++) {
+        // Has the program completed?
+        if (vm->finished) {
+            return i;
+        }
+
+        // It hasn't completed
+        // Run a single instruction
+        VM_executeSingleInstruction(vm);
+    }
+
+    return i;
 }
 
 
@@ -109,7 +126,7 @@ void tliAddSubtract(VM_instance* vm, uint16_t instruction)
             // ADD Rd, Rs, Rn
             // Rd := Rn + Rs
             // Safe because rd, rn and rs are no higher than 7
-            printf("ADD Rd, Rs, Rn");
+            printf("ADD r%u, r%u, r%u\n", rd, rs, rn);
             vm->registers[rd] = vm->registers[rn] + vm->registers[rs];
         } else {
 
@@ -139,7 +156,7 @@ void tliMovCmpAddSubImmediate(VM_instance* vm, uint16_t instruction)
     if (op == 0b00) {
         // MOV Rd, #Offset
         // Moves the 8-bit immediate value `Offset` into Rd
-        printf("MOV Rd, #Offset");
+        printf("MOV r%u, #%u\n", rd, offset);
         vm->registers[rd] = offset;
     } else if (op == 0b01) {
 
@@ -173,12 +190,12 @@ void tliHighRegOperations(VM_instance* vm, uint16_t instruction)
 
     } else if (op == 0b01) {
 
-    } else if (op == 0x10) {
+    } else if (op == 0b10) {
         if (h1_and_2 == 0x01) {
             // MOV Rd, Hs
             // Moves a value from high register Hs (8+Rs) into low register Rd
             // rd <= 7 and (8+rs) <= 15, so this is safe
-            printf("MOV Rd, Hs");
+            printf("MOV r%u, r%u\n", rd, 8+rs);
             vm->registers[rd] = vm->registers[8+rs];
         } else if (h1_and_2 == 0x10) {
 

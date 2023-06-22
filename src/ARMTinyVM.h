@@ -42,7 +42,7 @@ typedef struct VM_instance {
 VM_instance VM_new(VM_interaction_instructions* instrs,
                    uint32_t initialStackPointer,
                    uint32_t initialProgramCounter);
-void VM_executeSingleInstructions(VM_instance* vm);
+void VM_executeSingleInstruction(VM_instance* vm);
 uint32_t VM_executeNInstructions(VM_instance* vm, uint32_t maxInstructions);
 
 
