@@ -244,6 +244,9 @@ void tliSoftwareInterrupt(VM_instance* vm, uint16_t instruction)
     // Decode the instruction
     uint8_t value = instruction & 0x00FF;
 
+    // Move the address of the next instruction into the link register
+    vm_link_register(vm) = vm_program_counter(vm);
+
     // Trigger the interrupt
     vm->interactionInstructions->softwareInterrupt(vm, value);
 }
