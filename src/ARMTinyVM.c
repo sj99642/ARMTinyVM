@@ -212,7 +212,28 @@ void tliHighRegOperations(VM_instance* vm, uint16_t instruction)
     uint8_t rd =       (uint8_t)  (instruction & 0b0000000000000111);
 
     if (op == 0b00) {
-
+        if (h1_and_2 == 0b01) {
+            // ADD Rd, Hs
+            // Sum together the values in a low register Rd and a high register Rs (8+Rs),
+            // and store the result in low register Rd
+            printf("ADD r%u, H%u", rd, 8+rs);
+            vm->registers[rd] = vm->registers[rd] + vm->registers[8+rs];
+        } else if (h1_and_2 == 0x10) {
+            // ADD Hd, Rs
+            // Sum together the values in high register Hd (8+Rd) and low register Rs
+            // then store the result in Hd
+            printf("ADD H%u, R%u", 8+rd, rs);
+            vm->registers[8+rd] = vm->registers[rs];
+        } else if (h1_and_2 == 0b11) {
+            // ADD Hd, Hs
+            // Sum together the values in the high registers Hd (8+Rd) and Hs (8+Rs)
+            // then store the result in Hd
+            printf("ADD H%u, H%u", 8+rd, 8+rs);
+            vm->registers[8+rd] = vm->registers[8+rd] + vm->registers[8+rs];
+        } else {
+            printf("Invalid command %u", instruction);
+            vm->finished = 0;
+        }
     } else if (op == 0b01) {
 
     } else if (op == 0b10) {
@@ -226,6 +247,9 @@ void tliHighRegOperations(VM_instance* vm, uint16_t instruction)
 
         } else if (h1_and_2 == 0x11) {
 
+        } else {
+            printf("Invalid command %u", instruction);
+            vm->finished = 0;
         }
     } else {
 
