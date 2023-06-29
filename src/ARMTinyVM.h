@@ -37,10 +37,19 @@ typedef struct VM_instance {
 #define vm_stack_pointer(vmptr)   ((vmptr)->registers[13])
 #define vm_link_register(vmptr)   ((vmptr)->registers[14])
 #define vm_program_counter(vmptr) ((vmptr)->registers[15])
-#define vm_cpsr_n(vmptr)  ((((vmptr)->cpsr) & 0x80000000) >> 31)
-#define vm_cpsr_z(vmptr)  ((((vmptr)->cpsr) & 0x40000000) >> 30)
-#define vm_cpsr_c(vmptr)  ((((vmptr)->cpsr) & 0x20000000) >> 29)
-#define vm_cpsr_v(vmptr)  ((((vmptr)->cpsr) & 0x10000000) >> 28)
+#define vm_get_cpsr_n(vmptr)  ((((vmptr)->cpsr) & 0x80000000) >> 31)
+#define vm_get_cpsr_z(vmptr)  ((((vmptr)->cpsr) & 0x40000000) >> 30)
+#define vm_get_cpsr_c(vmptr)  ((((vmptr)->cpsr) & 0x20000000) >> 29)
+#define vm_get_cpsr_v(vmptr)  ((((vmptr)->cpsr) & 0x10000000) >> 28)
+#define vm_set_cpsr_n(vmptr)   (((vmptr)->cpsr) |= 0x80000000)
+#define vm_set_cpsr_z(vmptr)   (((vmptr)->cpsr) |= 0x40000000)
+#define vm_set_cpsr_c(vmptr)   (((vmptr)->cpsr) |= 0x20000000)
+#define vm_set_cpsr_v(vmptr)   (((vmptr)->cpsr) |= 0x10000000)
+#define vm_clr_cpsr_n(vmptr)   (((vmptr)->cpsr) &= 0x7FFFFFFF)
+#define vm_clr_cpsr_z(vmptr)   (((vmptr)->cpsr) &= 0xbFFFFFFF)
+#define vm_clr_cpsr_c(vmptr)   (((vmptr)->cpsr) &= 0xdFFFFFFF)
+#define vm_clr_cpsr_v(vmptr)   (((vmptr)->cpsr) &= 0xeFFFFFFF)
+
 
 
 VM_instance VM_new(VM_interaction_instructions* instrs,

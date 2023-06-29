@@ -116,14 +116,41 @@ void VM_print(VM_instance* vm)
 
     // CPSR register
     printf("CPSR = { .N = %u, .Z = %u, .C = %u, .V = %u }\n",
-           vm_cpsr_n(vm),
-           vm_cpsr_z(vm),
-           vm_cpsr_c(vm),
-           vm_cpsr_v(vm));
+           vm_get_cpsr_n(vm),
+           vm_get_cpsr_z(vm),
+           vm_get_cpsr_c(vm),
+           vm_get_cpsr_v(vm));
 }
 
 
 // PRIVATE FUNCTIONS
+
+
+/**
+ * Set comparison bits based on v1 - v2
+ * @param v1
+ * @param v2
+ */
+void cmp(VM_instance* vm, uint32_t v1, uint32_t v2)
+{
+    uint32_t r = v1 - v2;
+
+    // N = 1 if the most significant bit of (v1-v2) is 1, which means v2 > v1
+    if (r & 0x80000000) {
+        vm_set_cpsr_n(vm);
+    } else {
+        vm_clr_cpsr_n(vm);
+    }
+
+    // Z = 1 if v1 = v2
+    if (v1 == v2) {
+        vm_set_cpsr_z(vm);
+    } else {
+        vm_clr_cpsr_z(vm);
+    }
+
+    //
+}
 
 
 /**
@@ -184,7 +211,8 @@ void tliMovCmpAddSubImmediate(VM_instance* vm, uint16_t instruction)
         printf("MOV r%u, #%u\n", rd, offset);
         vm->registers[rd] = offset;
     } else if (op == 0b01) {
-
+        // CMP Rd, #Offset
+        // Compares the register with the 8-bit offset
     } else if (op == 0b10) {
 
     } else {
