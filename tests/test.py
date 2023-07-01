@@ -4,6 +4,10 @@ import os.path
 
 
 def main():
+    # Compile start.s and lib.s fresh, so any changes are used
+    subprocess.run(["arm-none-eabi-as", "-o", "start.o", "start.s"])
+    subprocess.run(["arm-none-eabi-as", "-mthumb", "-o", "lib.o", "lib.s"])
+
     # Load the tests file
     # This will be a dictionary mapping strings to integers
     with open("tests.json", "rt") as test_file:
@@ -20,7 +24,7 @@ def main():
 
         # We need to assemble the .s file and link it to the start.o file in this directory
         subprocess.run(["arm-none-eabi-as", "-mthumb", "-o", obj_filename_full, asm_filename_full])
-        subprocess.run(["arm-none-eabi-ld", obj_filename_full, "start.o", "-o", elf_filename_full])
+        subprocess.run(["arm-none-eabi-ld", obj_filename_full, "start.o", "lib.o", "-o", elf_filename_full])
 
         # Then we execute that using qemu and see the result
         return_code = subprocess.run(["qemu-arm", elf_filename_full]).returncode
