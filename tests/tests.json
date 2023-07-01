@@ -1,4 +1,5 @@
 {
+  "c.c": 73,
   "lib/is_status_n.s": 10,
   "instructions/exitcode.s": 42,
   "instructions/set01/00lsl/test1.s": 2

@@ -1,6 +1,8 @@
 .global _start
 
 _start:
-    ldr r0, =main
-    add r0, #1
+    // Jump to main function in Thumb mode (this code will be compiled in ARM mode)
+    // Manually put the exit function in LR in case main tries to jump back
+    ldr r0, =main+1
+    ldr lr, =_exit+1
     bx r0
