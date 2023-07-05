@@ -29,7 +29,7 @@ def main():
             subprocess.run(["arm-none-eabi-gcc", "-mthumb", "-Os", "-mcpu=arm7tdmi", "-nostdlib", "-c", "-o", obj_filename_full, test_filename_full])
         else:
             raise Exception(f"Unknown test file type: {test_filename_full}")
-        subprocess.run(["arm-none-eabi-ld", "-e", "_start", "start.o", "lib.o", obj_filename_full, "-o", elf_filename_full])
+        subprocess.run(["arm-none-eabi-ld", "start.o", "lib.o", obj_filename_full, "-o", elf_filename_full])
 
         # Then we execute that using qemu and see the result
         return_code = subprocess.run(["qemu-arm", elf_filename_full]).returncode
