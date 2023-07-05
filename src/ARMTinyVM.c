@@ -126,7 +126,9 @@ void VM_print(VM_instance* vm)
 }
 
 
-// PRIVATE FUNCTIONS
+/***********************************************************************************************************************
+ * COMPARISONS
+ **********************************************************************************************************************/
 
 
 /**
@@ -200,6 +202,94 @@ void compareSetC(VM_instance* vm, uint32_t a, uint32_t b)
          vm_clr_cpsr_z(vm);
      }
 }
+
+
+/***********************************************************************************************************************
+ * OPERATIONS
+ **********************************************************************************************************************/
+
+
+/**
+ * Move shifted register
+ * Documented as instruction 1 in the manual
+ * @param vm
+ * @param instruction
+ */
+ void tliMoveShiftedRegister(VM_instance* vm, uint16_t instruction)
+ {
+     // Decode the operation
+     // 0 <= op <= 3, but 3 is invalid
+     // 0 <= offset5 <= 31
+     // 0 <= rs <= 7
+     // 0 <= rd <= 7
+     uint8_t op =      (uint8_t) ((instruction & 0b0001100000000000) >> 11);
+     uint8_t offset5 = (uint8_t) ((instruction & 0b0000011111000000) >> 6);
+     uint8_t rs =      (uint8_t) ((instruction & 0b0000000000111000) >> 3);
+     uint8_t rd =      (uint8_t)  (instruction & 0b0000000000000111);
+
+     if (op == 0) {
+         // LSL Rd, Rs, #Offset5
+         // Rd := Rs << Offset5
+         // Safe because rs and rd are no higher than 7
+         printf("LSL R%u, R%u, #%u", rd, rs, offset5);
+         vm->registers[rd] = (vm->registers[rs]) << offset5;
+         compareSetNZ(vm, vm->registers[rd]);
+
+         // The carry flag is special in this case - have we shifted any ones off the left hand side?
+         // We can find out if that's the case by inspecting the left `offset5` bits
+         // And we can do that by starting with all ones and shifting to the left by `offset5` then ANDing that
+         // with Rs
+         if (offset5 != 0) {
+             // Carry is only changed if the offset was nonzero
+             uint32_t mask = 0xFFFFFFFF << offset5;
+             if ((vm->registers[rs]) & mask) {
+                 // We did shift off some ones
+                 vm_set_cpsr_c(vm);
+             } else {
+                 vm_clr_cpsr_c(vm);
+             }
+         }
+     } else if (op == 1) {
+         // LSR Rd, Rs, #Offset5
+         // Rd := Rs >>(logical) Offset5
+         // Safe because rd and rs and no higher than 7
+         printf("LSR R%u, R%u, #%u", rd, rs, offset5);
+         vm->registers[rd] = (vm->registers[rs]) >> offset5;
+         compareSetNZ(vm, vm->registers[rd]);
+
+         // The carry flag here is sensible, although it's not really a "carry"
+         // If we shift any ones off the right hand side, then set C; if not, clear it
+         // Carry is set even if shift was 0, although in that case it will always be false
+         uint32_t mask = 0xFFFFFFFF >> (32 - offset5);
+         if ((vm->registers[rs]) & mask) {
+             // We did shift off some ones
+             vm_set_cpsr_c(vm);
+         } else {
+             vm_clr_cpsr_c(vm);
+         }
+     } else if (op == 2) {
+         // ASR Rd, Rs, #Offset5
+         // Rd := Rs >>(arithmetic) Offset5
+         // Safe because rd and rs are no higher than 7
+         // In C, while technically this is implementation-defined, in general we do an arithmetic shift using signed int
+         printf("ASR R%u, R%u, #%u", rd, rs, offset5);
+         vm->registers[rd] = (uint32_t) (((int32_t) (vm->registers[rs])) >> offset5);
+         compareSetNZ(vm, vm->registers[rd]);
+
+         // The carry flag here is sensible, although it's not really a "carry"
+         // If we shift any ones off the right hand side, then set C; if not, clear it
+         // Carry is set even if shift was 0, although in that case it will always be false
+         uint32_t mask = 0xFFFFFFFF >> (32 - offset5);
+         if ((vm->registers[rs]) & mask) {
+             // We did shift off some ones
+             vm_set_cpsr_c(vm);
+         } else {
+             vm_clr_cpsr_c(vm);
+         }
+     } else {
+         // We should never get here
+     }
+ }
 
 
 /**
