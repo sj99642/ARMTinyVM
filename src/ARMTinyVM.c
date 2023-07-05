@@ -13,6 +13,9 @@ void tliHighRegOperations(VM_instance* vm, uint16_t instruction);
 void tliSoftwareInterrupt(VM_instance* vm, uint16_t instruction);
 
 
+#define i32_sign(n) ((n & 0x80000000) >> 31)
+
+
 // PUBLIC FUNCTIONS
 
 
@@ -127,29 +130,75 @@ void VM_print(VM_instance* vm)
 
 
 /**
- * Set comparison bits based on v1 - v2
- * @param v1
- * @param v2
+ * Sets the N and Z comparison bits based on the given value.
+ * N will be set if the most significant bit of `value` is 1
+ * Z will be set if `value == 0`
+ * @param value
  */
-void cmp(VM_instance* vm, uint32_t v1, uint32_t v2)
+void compareSetNZ(VM_instance* vm, uint32_t value)
 {
-    uint32_t r = v1 - v2;
-
-    // N = 1 if the most significant bit of (v1-v2) is 1, which means v2 > v1
-    if (r & 0x80000000) {
+    // Set N if the result looks like a negative number
+    if (value & 0x80000000) {
         vm_set_cpsr_n(vm);
     } else {
         vm_clr_cpsr_n(vm);
     }
 
-    // Z = 1 if v1 = v2
-    if (v1 == v2) {
+    // Set V if the value is 0
+    if (value == 0) {
         vm_set_cpsr_z(vm);
     } else {
         vm_clr_cpsr_z(vm);
     }
+}
 
-    //
+
+/**
+ * If (a + b) carries - that is, when interpreted as unsigned ints, a+b loops round past 0, the carry bit (C) will be
+ * set. Otherwise, the carry bit will be cleared.
+ * @param vm
+ * @param a
+ * @param b
+ */
+void compareSetC(VM_instance* vm, uint32_t a, uint32_t b)
+{
+    // We know an overflow happened if a+b is somehow smaller than either a or b
+    uint32_t sum = a+b;
+
+    if ((sum < a) || (sum < b)) {
+        vm_set_cpsr_c(vm);
+    } else {
+        vm_clr_cpsr_c(vm);
+    }
+}
+
+
+/**
+ * This function runs compareSetC, and also sets the overflow bit (V) appropriately. We know an overflow has happened if
+ * the two operands have the same sign as each other, but the result of an addition has a different sign.
+ */
+ void compareSetCV(VM_instance* vm, uint32_t a, uint32_t b)
+{
+     uint32_t sum = a + b;
+
+     // Set the carry bit appropriately
+     compareSetC(vm, a, b);
+
+     // Calculate the overflow bit
+     if (i32_sign(a) == i32_sign(b)) {
+         // a and b have the same sign
+         // if sum has a different sign than this, we've had an overflow
+         if (i32_sign(sum) == i32_sign(a)) {
+             // Same sign, so no overflow
+             vm_clr_cpsr_z(vm);
+         } else {
+             // Different sign, so overflow
+             vm_set_cpsr_z(vm);
+         }
+     } else {
+         // An overflow is impossible if the signs of the operands are different
+         vm_clr_cpsr_z(vm);
+     }
 }
 
 
