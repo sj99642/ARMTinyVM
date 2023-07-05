@@ -229,11 +229,37 @@ void tliAddSubtract(VM_instance* vm, uint16_t instruction)
             // Safe because rd, rn and rs are no higher than 7
             printf("ADD r%u, r%u, r%u\n", rd, rs, rn);
             vm->registers[rd] = vm->registers[rn] + vm->registers[rs];
+            compareSetNZ(vm, vm->registers[rd]);
+            compareSetCV(vm, vm->registers[rn], vm->registers[rs]);
         } else {
-
+            // ADD Rd, Rs, #Offset3
+            // Rd := Rs + Offset3
+            // Safe because rd, rs are no higher than 7
+            // rn is equivalent to Offset3 (same bits used in encoding)
+            printf("ADD r%u, r%u, #%u", rd, rs, rn);
+            vm->registers[rd] = vm->registers[rs] + rn;
+            compareSetNZ(vm, vm->registers[rd]);
+            compareSetCV(vm, vm->registers[rs], rn);
         }
     } else {
-
+        if (i == 0) {
+            // SUB Rd, Rs, Rn
+            // Rd := Rn - Rs
+            // Safe because rd, rn and rs are no higher than 7
+            printf("SUB r%u, r%u, r%u\n", rd, rs, rn);
+            vm->registers[rd] = vm->registers[rn] - vm->registers[rs];
+            compareSetNZ(vm, vm->registers[rd]);
+            compareSetCV(vm, vm->registers[rn], 0 - vm->registers[rs]);
+        } else {
+            // SUB Rd, Rs, #Offset3
+            // Rd := Rs - Offset3
+            // Safe because rd, rs are no higher than 7
+            // rn is equivalent to Offset3 (same bits used in encoding)
+            printf("SUB r%u, r%u, #%u", rd, rs, rn);
+            vm->registers[rd] = vm->registers[rs] - rn;
+            compareSetNZ(vm, vm->registers[rd]);
+            compareSetCV(vm, vm->registers[rs], 0 - rn);
+        }
     }
 }
 
