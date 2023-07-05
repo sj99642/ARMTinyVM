@@ -1,5 +1,6 @@
 .global main
 
+// We're checking that doing an ADD on 0x7FFFFFFF + 1 sets the N flag
 main:
     ldr r0, =0x7FFFFFFF
     mov r1, #1

@@ -3,5 +3,7 @@
   "lib/is_status_n.s": 10,
   "instructions/exitcode.s": 42,
   "instructions/set01/00lsl/test1.s": 2,
+  "instructions/set01/01lsr/carry_yes.s": 1,
+  "instructions/set01/01lsr/carry_no.s": 0,
   "instructions/set02/00add/test1.s": 1
 }
