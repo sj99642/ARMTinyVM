@@ -433,11 +433,29 @@ void tliMovCmpAddSubImmediate(VM_instance* vm, uint16_t instruction)
         // Moves the 8-bit immediate value `Offset` into Rd
         printf("MOV r%u, #%u\n", rd, offset);
         vm->registers[rd] = offset;
+        compareSetNZ(vm, offset);
     } else if (op == 0b01) {
         // CMP Rd, #Offset
         // Compares the register with the 8-bit offset
+        printf("CMP r%u, #%u", rd, offset);
+
+        // Set comparison registers based on Rd - Offset
+        compareSetNZ(vm, vm->registers[rd] - offset);
+        compareSetCV(vm, vm->registers[rd], 0 - offset);
     } else if (op == 0b10) {
-        // TODO
+        // ADD Rd, #Offset
+        // Adds the offset to the register
+        printf("ADD r%u, #%u", rd, offset);
+        compareSetCV(vm, vm->registers[rd], offset);
+        vm->registers[rd] += offset;
+        compareSetNZ(vm, vm->registers[rd]);
+    } else {
+        // SUB Rd, #Offset
+        // Subtracts the offset from the register
+        printf("SUB r%u, #%u", rd, offset);
+        compareSetCV(vm, vm->registers[rd], 0L - offset);
+        vm->registers[rd] -= offset;
+        compareSetNZ(vm, vm->registers[rd]);
     }
 }
 
