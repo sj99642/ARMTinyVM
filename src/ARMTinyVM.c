@@ -7,13 +7,28 @@
 // PRIVATE FUNCTION DECLARATIONS
 
 
+void tliMoveShiftedRegister(VM_instance* vm, uint16_t instruction);
 void tliAddSubtract(VM_instance* vm, uint16_t instruction);
 void tliMovCmpAddSubImmediate(VM_instance* vm, uint16_t instruction);
+void tliALUOperations(VM_instance* vm, uint16_t instruction);
 void tliHighRegOperations(VM_instance* vm, uint16_t instruction);
+void tliPCRelativeLoad(VM_instance* vm, uint16_t instruction);
+void tliLoadWithRegOffset(VM_instance* vm, uint16_t instruction);
+void tliLoadStoreSignExtendedByte(VM_instance* vm, uint16_t instruction);
+void tliLoadStoreWithImmediateOffset(VM_instance* vm, uint16_t instruction);
+void tliLoadStoreHalfWord(VM_instance* vm, uint16_t instruction);
+void tliSPRelativeLoad(VM_instance* vm, uint16_t instruction);
+void tliLoadAddress(VM_instance* vm, uint16_t instruction);
+void tliAddOffsetToSP(VM_instance* vm, uint16_t instruction);
+void tliPushPopRegisters(VM_instance* vm, uint16_t instruction);
+void tliMultipleLoadStore(VM_instance* vm, uint16_t instruction);
+void tliConditionalBranch(VM_instance* vm, uint16_t instruction);
 void tliSoftwareInterrupt(VM_instance* vm, uint16_t instruction);
+void tliUnconditionalBranch(VM_instance* vm, uint16_t instruction);
+void tliLongBranchWithLink(VM_instance* vm, uint16_t instruction);
 
 
-#define i32_sign(n) ((n & 0x80000000) >> 31)
+#define i32_sign(n) (((n) & 0x80000000) >> 31)
 
 
 // PUBLIC FUNCTIONS
@@ -64,15 +79,55 @@ void VM_executeSingleInstruction(VM_instance* vm)
     vm_program_counter(vm) += 2;
 
     // Decode the instruction and act accordingly
-    if (istl_software_interrupt(instruction)) { // Matches first 8 bits to 11011111
-        tliSoftwareInterrupt(vm, instruction);
-    } else if (istl_hi_reg_operations(instruction)) { // Matches first 6 bits to 010001
-        tliHighRegOperations(vm, instruction);
-    } else if (istl_add_subtract(instruction)) { // Matches first 5 bits to 00011
-        tliAddSubtract(vm, instruction);
-    } else if (istl_mov_cmp_add_sub_imm(instruction)) { // Matches first 3 bits to 001
-        tliMovCmpAddSubImmediate(vm, instruction);
+    uint8_t instrFirstByte = (instruction & 0xFF00) >> 8;
+    void (*func)(VM_instance*, uint16_t) = tliMoveShiftedRegister;
+    if (istl_move_shifted_reg(instrFirstByte)) {
+        func = tliMoveShiftedRegister;
+    } else if (istl_add_subtract(instrFirstByte)) {
+        func = tliAddSubtract;
+    } else if (istl_mov_cmp_add_sub_imm(instrFirstByte)) {
+        func = tliMovCmpAddSubImmediate;
+    } else if (istl_alu_operations(instrFirstByte)) {
+        func = tliALUOperations;
+    } else if (istl_hi_reg_operations(instrFirstByte)) {
+        func = tliHighRegOperations;
+    } else if (istl_pc_relative_load(instrFirstByte)) {
+        func = tliPCRelativeLoad;
+    } else if (istl_load_with_reg_offset(instrFirstByte)) {
+        func = tliLoadWithRegOffset;
+    } else if (istl_load_sgn_ext_byte(instrFirstByte)) {
+        func = tliLoadStoreSignExtendedByte;
+    } else if (istl_load_imm_offset(instrFirstByte)) {
+        func = tliLoadStoreWithImmediateOffset;
+    } else if (istl_load_halfword(instrFirstByte)) {
+        func = tliLoadStoreHalfWord;
+    } else if (istl_sp_relative_load(instrFirstByte)) {
+        func = tliSPRelativeLoad;
+    } else if (istl_load_address(instrFirstByte)) {
+        func = tliLoadAddress;
+    } else if (istl_add_offset_to_sp(instrFirstByte)) {
+        func = tliAddOffsetToSP;
+    } else if (istl_push_pop_registers(instrFirstByte)) {
+        func = tliPushPopRegisters;
+    } else if (istl_multiple_load_store(instrFirstByte)) {
+        func = tliMultipleLoadStore;
+    } else if (istl_conditional_branch(instrFirstByte)) {
+        func = tliConditionalBranch;
+    } else if (istl_software_interrupt(instrFirstByte)) {
+        func = tliSoftwareInterrupt;
+    } else if (istl_unconditional_branch(instrFirstByte)) {
+        func = tliUnconditionalBranch;
+    } else if (istl_long_branch_w_link(instrFirstByte)) {
+        func = tliLongBranchWithLink;
+    } else {
+        // No matching operation
+        printf("UNKNOWN INSTRUCTION %x", instruction);
+        vm->finished = true;
+        return;
     }
+
+    // Call the chosen function
+    func(vm, instruction);
 }
 
 
@@ -212,89 +267,91 @@ void compareSetC(VM_instance* vm, uint32_t a, uint32_t b)
 /**
  * Move shifted register
  * Documented as instruction 1 in the manual
+ * Covers instructions with first byte 000XXXXX, except 00011XXX
  * @param vm
  * @param instruction
  */
- void tliMoveShiftedRegister(VM_instance* vm, uint16_t instruction)
- {
-     // Decode the operation
-     // 0 <= op <= 3, but 3 is invalid
-     // 0 <= offset5 <= 31
-     // 0 <= rs <= 7
-     // 0 <= rd <= 7
-     uint8_t op =      (uint8_t) ((instruction & 0b0001100000000000) >> 11);
-     uint8_t offset5 = (uint8_t) ((instruction & 0b0000011111000000) >> 6);
-     uint8_t rs =      (uint8_t) ((instruction & 0b0000000000111000) >> 3);
-     uint8_t rd =      (uint8_t)  (instruction & 0b0000000000000111);
+void tliMoveShiftedRegister(VM_instance* vm, uint16_t instruction)
+{
+    // Decode the operation
+    // 0 <= op <= 3, but 3 is invalid
+    // 0 <= offset5 <= 31
+    // 0 <= rs <= 7
+    // 0 <= rd <= 7
+    uint8_t op =      (uint8_t) ((instruction & 0b0001100000000000) >> 11);
+    uint8_t offset5 = (uint8_t) ((instruction & 0b0000011111000000) >> 6);
+    uint8_t rs =      (uint8_t) ((instruction & 0b0000000000111000) >> 3);
+    uint8_t rd =      (uint8_t)  (instruction & 0b0000000000000111);
 
-     if (op == 0) {
-         // LSL Rd, Rs, #Offset5
-         // Rd := Rs << Offset5
-         // Safe because rs and rd are no higher than 7
-         printf("LSL R%u, R%u, #%u", rd, rs, offset5);
-         vm->registers[rd] = (vm->registers[rs]) << offset5;
-         compareSetNZ(vm, vm->registers[rd]);
+    if (op == 0) {
+        // LSL Rd, Rs, #Offset5
+        // Rd := Rs << Offset5
+        // Safe because rs and rd are no higher than 7
+        printf("LSL R%u, R%u, #%u", rd, rs, offset5);
+        vm->registers[rd] = (vm->registers[rs]) << offset5;
+        compareSetNZ(vm, vm->registers[rd]);
 
-         // The carry flag is special in this case - have we shifted any ones off the left hand side?
-         // We can find out if that's the case by inspecting the left `offset5` bits
-         // And we can do that by starting with all ones and shifting to the left by `offset5` then ANDing that
-         // with Rs
-         if (offset5 != 0) {
-             // Carry is only changed if the offset was nonzero
-             uint32_t mask = 0xFFFFFFFF << offset5;
-             if ((vm->registers[rs]) & mask) {
-                 // We did shift off some ones
-                 vm_set_cpsr_c(vm);
-             } else {
-                 vm_clr_cpsr_c(vm);
-             }
-         }
-     } else if (op == 1) {
-         // LSR Rd, Rs, #Offset5
-         // Rd := Rs >>(logical) Offset5
-         // Safe because rd and rs and no higher than 7
-         printf("LSR R%u, R%u, #%u", rd, rs, offset5);
-         vm->registers[rd] = (vm->registers[rs]) >> offset5;
-         compareSetNZ(vm, vm->registers[rd]);
+        // The carry flag is special in this case - have we shifted any ones off the left hand side?
+        // We can find out if that's the case by inspecting the left `offset5` bits
+        // And we can do that by starting with all ones and shifting to the left by `offset5` then ANDing that
+        // with Rs
+        if (offset5 != 0) {
+            // Carry is only changed if the offset was nonzero
+            uint32_t mask = 0xFFFFFFFF << offset5;
+            if ((vm->registers[rs]) & mask) {
+                // We did shift off some ones
+                vm_set_cpsr_c(vm);
+            } else {
+                vm_clr_cpsr_c(vm);
+            }
+        }
+    } else if (op == 1) {
+        // LSR Rd, Rs, #Offset5
+        // Rd := Rs >>(logical) Offset5
+        // Safe because rd and rs and no higher than 7
+        printf("LSR R%u, R%u, #%u", rd, rs, offset5);
+        vm->registers[rd] = (vm->registers[rs]) >> offset5;
+        compareSetNZ(vm, vm->registers[rd]);
 
-         // The carry flag here is sensible, although it's not really a "carry"
-         // If we shift any ones off the right hand side, then set C; if not, clear it
-         // Carry is set even if shift was 0, although in that case it will always be false
-         uint32_t mask = 0xFFFFFFFF >> (32 - offset5);
-         if ((vm->registers[rs]) & mask) {
-             // We did shift off some ones
-             vm_set_cpsr_c(vm);
-         } else {
-             vm_clr_cpsr_c(vm);
-         }
-     } else if (op == 2) {
-         // ASR Rd, Rs, #Offset5
-         // Rd := Rs >>(arithmetic) Offset5
-         // Safe because rd and rs are no higher than 7
-         // In C, while technically this is implementation-defined, in general we do an arithmetic shift using signed int
-         printf("ASR R%u, R%u, #%u", rd, rs, offset5);
-         vm->registers[rd] = (uint32_t) (((int32_t) (vm->registers[rs])) >> offset5);
-         compareSetNZ(vm, vm->registers[rd]);
+        // The carry flag here is sensible, although it's not really a "carry"
+        // If we shift any ones off the right hand side, then set C; if not, clear it
+        // Carry is set even if shift was 0, although in that case it will always be false
+        uint32_t mask = 0xFFFFFFFF >> (32 - offset5);
+        if ((vm->registers[rs]) & mask) {
+            // We did shift off some ones
+            vm_set_cpsr_c(vm);
+        } else {
+            vm_clr_cpsr_c(vm);
+        }
+    } else if (op == 2) {
+        // ASR Rd, Rs, #Offset5
+        // Rd := Rs >>(arithmetic) Offset5
+        // Safe because rd and rs are no higher than 7
+        // In C, while technically this is implementation-defined, in general we do an arithmetic shift using signed int
+        printf("ASR R%u, R%u, #%u", rd, rs, offset5);
+        vm->registers[rd] = (uint32_t) (((int32_t) (vm->registers[rs])) >> offset5);
+        compareSetNZ(vm, vm->registers[rd]);
 
-         // The carry flag here is sensible, although it's not really a "carry"
-         // If we shift any ones off the right hand side, then set C; if not, clear it
-         // Carry is set even if shift was 0, although in that case it will always be false
-         uint32_t mask = 0xFFFFFFFF >> (32 - offset5);
-         if ((vm->registers[rs]) & mask) {
-             // We did shift off some ones
-             vm_set_cpsr_c(vm);
-         } else {
-             vm_clr_cpsr_c(vm);
-         }
-     } else {
-         // We should never get here
-     }
- }
+        // The carry flag here is sensible, although it's not really a "carry"
+        // If we shift any ones off the right hand side, then set C; if not, clear it
+        // Carry is set even if shift was 0, although in that case it will always be false
+        uint32_t mask = 0xFFFFFFFF >> (32 - offset5);
+        if ((vm->registers[rs]) & mask) {
+            // We did shift off some ones
+            vm_set_cpsr_c(vm);
+        } else {
+            vm_clr_cpsr_c(vm);
+        }
+    } else {
+        // We should never get here
+    }
+}
 
 
 /**
  * Add/subtract
  * Documented as instruction 2 in the manual
+ * Covers instructions with first byte 00011XXX
  * @param vm
  * @param instruction
  */
@@ -357,6 +414,7 @@ void tliAddSubtract(VM_instance* vm, uint16_t instruction)
 /**
  * Move/compare/add/subtract immediate.
  * Documented as instruction 3 in manual.
+ * Covers instructions with first byte 001XXXXX
  * @param vm
  * @param instruction
  */
@@ -379,16 +437,28 @@ void tliMovCmpAddSubImmediate(VM_instance* vm, uint16_t instruction)
         // CMP Rd, #Offset
         // Compares the register with the 8-bit offset
     } else if (op == 0b10) {
-
-    } else {
-
+        // TODO
     }
 }
 
 
 /**
- * High register operations, encompassing instructions beginning with 010001.
- * Documented as instruction 5 in the manual.
+ * ALU operations
+ * Documented as instruction 4 in the manual
+ * Covers instructions with first byte 010000XX
+ * @param vm
+ * @param instruction
+ */
+void tliALUOperations(VM_instance* vm, uint16_t instruction)
+{
+    // TODO
+}
+
+
+/**
+ * High register operations/branch exchange
+ * Documented as instruction 5 in the manual
+ * Coers instructions with first byte 010001XX
  * @param vm
  * @param instruction
  */
@@ -428,7 +498,7 @@ void tliHighRegOperations(VM_instance* vm, uint16_t instruction)
             vm->finished = 0;
         }
     } else if (op == 0b01) {
-
+        // TODO
     } else if (op == 0b10) {
         if (h1_and_2 == 0x01) {
             // MOV Rd, Hs
@@ -437,22 +507,166 @@ void tliHighRegOperations(VM_instance* vm, uint16_t instruction)
             printf("MOV r%u, r%u\n", rd, 8+rs);
             vm->registers[rd] = vm->registers[8+rs];
         } else if (h1_and_2 == 0x10) {
-
+            // TODO
         } else if (h1_and_2 == 0x11) {
-
+            // TODO
         } else {
             printf("Invalid command %u", instruction);
             vm->finished = 0;
         }
     } else {
-
+        // TODO
     }
+}
+
+
+/**
+ * PC-relative load
+ * Documented as instruction 6 in the manual
+ * Covers instructions with first byte 01001XXX
+ * @param vm
+ * @param instruction
+ */
+void tliPCRelativeLoad(VM_instance* vm, uint16_t instruction)
+{
+    // TODO
+}
+
+
+/**
+ * Load/store with register offset
+ * Documented as instruction 7 in the manual
+ * Covers instructions with first byte 0101XX0X
+ * @param vm
+ * @param instruction
+ */
+void tliLoadWithRegOffset(VM_instance* vm, uint16_t instruction)
+{
+
+}
+
+
+/**
+ * Load/store sign-extended byte/halfword
+ * Documented as instruction 8 in the manual
+ * Covers instructions with first byte 0101XX1X
+ * @param vm
+ * @param instruction
+ */
+void tliLoadStoreSignExtendedByte(VM_instance* vm, uint16_t instruction)
+{
+
+}
+
+
+/**
+ * Load/store with immediate offset
+ * Documented as instruction 9 in the manual
+ * Covers instructions with first byte 011XXXXX
+ * @param vm
+ * @param instruction
+ */
+void tliLoadStoreWithImmediateOffset(VM_instance* vm, uint16_t instruction)
+{
+
+}
+
+
+/**
+ * Load/store halfword
+ * Documented as instruction 10 in the manual
+ * Covers instructions with first byte 1000XXXX
+ * @param vm
+ * @param instruction
+ */
+void tliLoadStoreHalfWord(VM_instance* vm, uint16_t instruction)
+{
+
+}
+
+
+/**
+ * SP-relative load/store
+ * Documented as instruction 11 in the manual
+ * Covers instructions with first byte 1001XXXX
+ * @param vm
+ * @param instruction
+ */
+void tliSPRelativeLoad(VM_instance* vm, uint16_t instruction)
+{
+
+}
+
+
+/**
+ * Load address
+ * Documented as instruction 12 in the manual
+ * Covers instructions with first byte 1010XXXX
+ * @param vm
+ * @param instruction
+ */
+void tliLoadAddress(VM_instance* vm, uint16_t instruction)
+{
+
+}
+
+
+/**
+ * Add offset to stack pointer
+ * Documented as instruction 13 in the manual
+ * Covers instructions with first byte 10110000
+ * @param vm
+ * @param instruction
+ */
+void tliAddOffsetToSP(VM_instance* vm, uint16_t instruction)
+{
+
+}
+
+
+/**
+ * Push/pop registers
+ * Documented as instruction 14 in the manual
+ * Covers instructions with first byte 1011X10X
+ * @param vm
+ * @param instruction
+ */
+void tliPushPopRegisters(VM_instance* vm, uint16_t instruction)
+{
+
+}
+
+
+/**
+ * Multiple load/store
+ * Documented as instruction 15 in the manual
+ * Covers instructions with first byte 1100XXXX
+ * @param vm
+ * @param instruction
+ */
+void tliMultipleLoadStore(VM_instance* vm, uint16_t instruction)
+{
+
+}
+
+
+/**
+ * Conditional branch
+ * Documented as instruction 16 in the manual
+ * Covers instrutions with first byte 1101XXXX, except 11011111
+ * @param vm
+ * @param instruction
+ */
+void tliConditionalBranch(VM_instance* vm, uint16_t instruction)
+{
+
 }
 
 
 /**
  * Software interrupt
  * Documented as instruction 17 in manual
+ * Covers instructions with first byte 11011111
  * @param vm
  * @param instruction
  */
@@ -467,3 +681,31 @@ void tliSoftwareInterrupt(VM_instance* vm, uint16_t instruction)
     // Trigger the interrupt
     vm->interactionInstructions->softwareInterrupt(vm, value);
 }
+
+
+/**
+ * Unconditional brach
+ * Documented as instruction 18 in manual
+ * Covers instructions with first byte 11100XXX
+ * @param vm
+ * @param instruction
+ */
+void tliUnconditionalBranch(VM_instance* vm, uint16_t instruction)
+{
+
+}
+
+
+/**
+ * Long branch with link
+ * Documented as instruction 19 in manual
+ * Covers instructions with first byte 1111XXXX
+ * @param vm
+ * @param instruction
+ */
+void tliLongBranchWithLink(VM_instance* vm, uint16_t instruction)
+{
+
+}
+
+
