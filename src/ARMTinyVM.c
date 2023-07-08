@@ -469,7 +469,65 @@ void tliMovCmpAddSubImmediate(VM_instance* vm, uint16_t instruction)
  */
 void tliALUOperations(VM_instance* vm, uint16_t instruction)
 {
-    // TODO
+    // Decode the operation
+    uint8_t op = (instruction & 0b0000001111000000) >> 6;
+    uint8_t rs = (instruction & 0b0000000000111000) >> 3;
+    uint8_t rd = (instruction & 0b0000000000000111);
+
+    if (op == 0b0000) {
+        // AND Rd, Rs
+        printf("AND r%u, r%u", rd, rs);
+        vm->registers[rd] = vm->registers[rd] & vm->registers[rs];
+        compareSetNZ(vm, vm->registers[rd]);
+    } else if (op == 0b0001) {
+        // EOR Rd, Rs
+        printf("EOR r%u, r%u", rd, rs);
+        vm->registers[rd] = vm->registers[rd] ^ vm->registers[rs];
+        compareSetNZ(vm, vm->registers[rd]);
+    } else if (op == 0b0010) {
+        // LSL Rd, Rs
+        printf("LSL r%u, r%u", rd, rs);
+        if ((vm->registers[rs] & 0xFF) != 0) {
+            // Carry is only changed if the offset was nonzero
+            uint32_t mask = 0xFFFFFFFF << vm->registers[rs];
+            if ((vm->registers[rd]) & mask) {
+                // We did shift off some ones
+                vm_set_cpsr_c(vm);
+            } else {
+                vm_clr_cpsr_c(vm);
+            }
+        }
+        vm->registers[rd] = vm->registers[rd] << vm->registers[rs];
+        compareSetNZ(vm, vm->registers[rd]);
+    } else if (op == 0b0011) {
+        // LSR Rd, Rs
+        printf("LSR r%u, r%u", rd, rs);
+        uint32_t mask = 0xFFFFFFFF >> (32 - vm->registers[rs]);
+        if ((vm->registers[rd]) & mask) {
+            // We did shift off some ones
+            vm_set_cpsr_c(vm);
+        } else {
+            vm_clr_cpsr_c(vm);
+        }
+        vm->registers[rd] = vm->registers[rd] >> vm->registers[rs];
+        compareSetNZ(vm, vm->registers[rd]);
+    } else if (op == 0b0100) {
+        // ASR Rd, Rs
+        printf("ASR r%u, r%u", rd, rs);
+        uint32_t mask = 0xFFFFFFFF >> (32 - vm->registers[rs]);
+        if ((vm->registers[rs] & 0xFF) != 0) {
+            if ((vm->registers[rd]) & mask) {
+                // We did shift off some ones
+                vm_set_cpsr_c(vm);
+            } else {
+                vm_clr_cpsr_c(vm);
+            }
+        }
+        vm->registers[rd] = (uint32_t) (((int32_t) (vm->registers[rd])) >> vm->registers[rs]);
+        compareSetNZ(vm, vm->registers[rd]);
+    } else if (op == 0b0101) {
+        
+    }
 }
 
 
