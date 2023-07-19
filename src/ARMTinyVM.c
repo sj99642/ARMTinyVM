@@ -614,18 +614,24 @@ void tliALUOperations(VM_instance* vm, uint16_t instruction)
         // Compare based on the result of rd - rs
         compareSetNZ(vm, vm->registers[rd] - vm->registers[rs]);
         compareSetCV(vm, vm->registers[rd], 0 - vm->registers[rs]);
-    } else if (op == 0b1100) {
+    } else if (op == 0b1011) {
         // CMN Rd, Rs
         printf("CMN r%u, r%u", rd, rs);
 
         // Compare based on the result of rd + rs
         compareSetNZ(vm, vm->registers[rd] + vm->registers[rs]);
         compareSetCV(vm, vm->registers[rd], vm->registers[rs]);
-    } else if (op == 0b1101) {
+    } else if (op == 0b1100) {
         // ORR Rd, Rs
         printf("ORR r%u, r%u", rd, rs);
 
         vm->registers[rd] = (vm->registers[rd]) | (vm->registers[rs]);
+        compareSetNZ(vm, vm->registers[rd]);
+    } else if (op == 0b1101) {
+        // MUL Rd, Rs
+        printf("MUL r%u, r%u", rd, rs);
+
+        vm->registers[rd] = vm->registers[rd] * vm->registers[rs];
         compareSetNZ(vm, vm->registers[rd]);
     } else if (op == 0b1110) {
         // BIC Rd, Rs
@@ -686,7 +692,7 @@ void tliHighRegOperations(VM_instance* vm, uint16_t instruction)
             vm->finished = 0;
         }
     } else if (op == 0b01) {
-        // TODO
+
     } else if (op == 0b10) {
         if (h1_and_2 == 0x01) {
             // MOV Rd, Hs
