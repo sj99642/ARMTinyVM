@@ -526,7 +526,119 @@ void tliALUOperations(VM_instance* vm, uint16_t instruction)
         vm->registers[rd] = (uint32_t) (((int32_t) (vm->registers[rd])) >> vm->registers[rs]);
         compareSetNZ(vm, vm->registers[rd]);
     } else if (op == 0b0101) {
-        
+        // ADC Rd, Rs
+        printf("ADC r%u, r%u", rd, rs);
+
+        uint8_t carryAtStart = vm_get_cpsr_c(vm);
+
+        // Calculating the carry and overflow in 2 stages
+        compareSetCV(vm, vm->registers[rd], vm->registers[rs]);
+        uint8_t carry1 = vm_get_cpsr_c(vm);
+        uint8_t overflow1 = vm_get_cpsr_v(vm);
+        compareSetCV(vm, vm->registers[rd] + vm->registers[rs], 1);
+        uint8_t carry2 = vm_get_cpsr_c(vm);
+        uint8_t overflow2 = vm_get_cpsr_v(vm);
+
+        if (carry1 || carry2) {
+            vm_set_cpsr_c(vm);
+        } else {
+            vm_clr_cpsr_c(vm);
+        }
+        if (overflow1 || overflow2) {
+            vm_set_cpsr_v(vm);
+        } else {
+            vm_clr_cpsr_v(vm);
+        }
+
+        vm->registers[rd] = vm->registers[rd] + vm->registers[rs] + carryAtStart;
+        compareSetNZ(vm, vm->registers[rd]);
+    } else if (op == 0b0110) {
+        // SBC Rd, Rs
+        printf("SBC r%u, r%u", rd, rs);
+
+        uint8_t carryAtStart = vm_get_cpsr_c(vm);
+
+        // Calculating the carry and overflow in 2 stages
+        compareSetCV(vm, vm->registers[rd], 0UL - vm->registers[rs]);
+        uint8_t carry1 = vm_get_cpsr_c(vm);
+        uint8_t overflow1 = vm_get_cpsr_v(vm);
+        compareSetCV(vm, vm->registers[rd] - vm->registers[rs], !carryAtStart);
+        uint8_t carry2 = vm_get_cpsr_c(vm);
+        uint8_t overflow2 = vm_get_cpsr_v(vm);
+
+        if (carry1 || carry2) {
+            vm_set_cpsr_c(vm);
+        } else {
+            vm_clr_cpsr_c(vm);
+        }
+        if (overflow1 || overflow2) {
+            vm_set_cpsr_v(vm);
+        } else {
+            vm_clr_cpsr_v(vm);
+        }
+
+        vm->registers[rd] = vm->registers[rd] - vm->registers[rs] + !carryAtStart;
+        compareSetNZ(vm, vm->registers[rd]);
+    } else if (op == 0b0111) {
+        // ROR Rd, Rs
+        printf("ROR r%u, r%u", rd, rs);
+
+        vm->registers[rd] = (vm->registers[rd] >> vm->registers[rs]) | (vm->registers[rd] << (32 - vm->registers[rs]));
+        compareSetNZ(vm, vm->registers[rd]);
+        if ((vm->registers[rs] & 0xFF) != 0) {
+            // Carry flag only affected if lower 8 bits of Rs is non-zero
+            if (~(0xFFFFFFFF << (vm->registers[rs])) & (vm->registers[rd])) {
+                // Carry should be set if the lowest Rs bits of Rd aren't all zero
+                vm_set_cpsr_c(vm);
+            } else {
+                vm_clr_cpsr_c(vm);
+            }
+        }
+    } else if (op == 0b1000) {
+        // TST Rd, Rs
+        printf("TST r%u, r%u", rd, rs);
+
+        // Just set condition bits without changing rd
+        compareSetNZ((vm->registers[rd]) & (vm->registers[rs]));
+    } else if (op == 0b1001) {
+        // NEG Rd, Rs
+        printf("NEG r%u, r%u", rd, rs);
+
+        compareSetNZ(vm, 0 - vm->registers[rs]);
+        compareSetCV(vm, 0, -vm->registers[rs]);
+        vm->registers[rd] = 0 - vm->registers[rs];
+    } else if (op == 0b1010) {
+        // CMP Rd, Rs
+        printf("CMP r%u, r%u", rd, rs);
+
+        // Compare based on the result of rd - rs
+        compareSetNZ(vm, vm->registers[rd] - vm->registers[rs]);
+        compareSetCV(vm, vm->registers[rd], 0 - vm->registers[rs]);
+    } else if (op == 0b1100) {
+        // CMN Rd, Rs
+        printf("CMN r%u, r%u", rd, rs);
+
+        // Compare based on the result of rd + rs
+        compareSetNZ(vm, vm->registers[rd] + vm->registers[rs]);
+        compareSetCV(vm, vm->registers[rd], vm->registers[rs]);
+    } else if (op == 0b1101) {
+        // ORR Rd, Rs
+        printf("ORR r%u, r%u", rd, rs);
+
+        vm->registers[rd] = (vm->registers[rd]) | (vm->registers[rs]);
+        compareSetNZ(vm, vm->registers[rd]);
+    } else if (op == 0b1110) {
+        // BIC Rd, Rs
+        printf("BIC r%u, r%u", rd, rs);
+
+        vm->registers[rd] = (vm->registers[rd]) & (~(vm->registers[rs]));
+        compareSetNZ(vm, vm->registers[rd]);
+    } else if (op == 0b1111) {
+        // MVN Rd, Rs
+        printf("MVN r%u, r%u", rd, rs);
+
+        vm->registers[rd] = ~(vm->registers[rs]);
+        compareSetNZ(vm, vm->registers[rd]);
     }
 }
 
