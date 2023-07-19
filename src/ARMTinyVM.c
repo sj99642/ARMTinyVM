@@ -674,25 +674,51 @@ void tliHighRegOperations(VM_instance* vm, uint16_t instruction)
             // Sum together the values in a low register Rd and a high register Rs (8+Rs),
             // and store the result in low register Rd
             printf("ADD r%u, H%u", rd, 8+rs);
+            compareSetNZ(vm, vm->registers[rd] + vm->registers[8+rs]);
+            compareSetCV(vm, vm->registers[rd], vm->registers[8+rs]);
             vm->registers[rd] = vm->registers[rd] + vm->registers[8+rs];
         } else if (h1_and_2 == 0x10) {
             // ADD Hd, Rs
             // Sum together the values in high register Hd (8+Rd) and low register Rs
             // then store the result in Hd
             printf("ADD H%u, R%u", 8+rd, rs);
+            compareSetNZ(vm, vm->registers[8+rd] + vm->registers[rs]);
+            compareSetCV(vm, vm->registers[8+rd], vm->registers[rs]);
             vm->registers[8+rd] = vm->registers[rs];
         } else if (h1_and_2 == 0b11) {
             // ADD Hd, Hs
             // Sum together the values in the high registers Hd (8+Rd) and Hs (8+Rs)
             // then store the result in Hd
             printf("ADD H%u, H%u", 8+rd, 8+rs);
+            compareSetNZ(vm, vm->registers[8+rd] + vm->registers[8+rs]);
+            compareSetCV(vm, vm->registers[8+rd], vm->registers[8+rs]);
             vm->registers[8+rd] = vm->registers[8+rd] + vm->registers[8+rs];
         } else {
-            printf("Invalid command %u", instruction);
-            vm->finished = 0;
+            printf("Invalid command %x", instruction);
+            vm->finished = true;
         }
     } else if (op == 0b01) {
+        if (h1_and_2 == 0b01) {
+            // CMP Rd, Hs
+            printf("CMP r%u, h%u", rd, 8+rs);
 
+            compareSetNZ(vm, vm->registers[rd] - vm->registers[8+rs]);
+            compareSetCV(vm, vm->registers[rd], 0 - vm->registers[8+rs]);
+        } else if (h1_and_2 == 0b10) {
+            // CMP Hd, Rs
+            printf("CMP h%u, r%u", 8+rd, rs);
+
+            compareSetNZ(vm, vm->registers[8+rd] - vm->registers[rs]);
+            compareSetCV(vm, vm->registers[8+rd], 0 - vm->registers[rs]);
+        } else if (h1_and_2 == 0b11) {
+            // CMP Hd, Hs
+            printf("CMP h%u, h%u", 8+rd, 8+rs);
+            compareSetNZ(vm, vm->registers[8+rd] - vm->registers[8+rs]);
+            compareSetCV(vm, vm->registers[8+rd], vm->registers[8+rs]);
+        } else {
+            printf("Invalid command %x", instruction);
+            vm->finished = true;
+        }
     } else if (op == 0b10) {
         if (h1_and_2 == 0x01) {
             // MOV Rd, Hs
@@ -701,15 +727,30 @@ void tliHighRegOperations(VM_instance* vm, uint16_t instruction)
             printf("MOV r%u, r%u\n", rd, 8+rs);
             vm->registers[rd] = vm->registers[8+rs];
         } else if (h1_and_2 == 0x10) {
-            // TODO
+            // MOV Hd, Rs
+            printf("MOV h%u, r%u", 8+rd, rs);
+            vm->registers[8+rd] = vm->registers[rs];
         } else if (h1_and_2 == 0x11) {
-            // TODO
+            // MOV Hd, Hs
+            printf("MOV h%u, h%u", 8+rd, 8+rs);
+            vm->registers[8+rd] = vm->registers[8+rs];
         } else {
-            printf("Invalid command %u", instruction);
-            vm->finished = 0;
+            printf("Invalid command %x", instruction);
+            vm->finished = true;
         }
     } else {
-        // TODO
+        if (h1_and_2 == 0b00) {
+            // BX Rs
+            printf("BX r%u", rs);
+            vm_program_counter(vm) = rs & 0xFFFFFFFE;
+        } else if (h1_and_2 == 0b01) {
+            // BX Hs
+            printf("BX h%u", 8+rs);
+            vm_program_counter(vm) = rs & 0xFFFFFFFE;
+        } else {
+            printf("Invalid command %x", instruction);
+            vm->finished = true;
+        }
     }
 }
 
