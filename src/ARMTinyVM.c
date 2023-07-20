@@ -1093,7 +1093,51 @@ void tliAddOffsetToSP(VM_instance* vm, uint16_t instruction)
  */
 void tliPushPopRegisters(VM_instance* vm, uint16_t instruction)
 {
-    // TODO
+    uint8_t load_or_store = (instruction & 0b0000100000000000) >> 10;
+    uint8_t pc_lr =      (instruction & 0b0000000100000000) >> 8;
+    uint8_t rlist =         (instruction & 0b0000000011111111);
+
+    // Calculate which registers are included in the register list
+    uint8_t numRegistersInvolved = 0;
+    bool use_registers[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    for (uint8_t i = 0; i < 8; i++) {
+        if (rlist & (1 << (7-i))) {
+            use_registers[i] = 1;
+            ++numRegistersInvolved;
+        }
+    }
+
+    if ((load_or_store == 0) && (pc_lr == 1)) {
+        // If this is PUSH {rlist, LR} then use LR
+        use_registers[14] = 1;
+        ++numRegistersInvolved;
+    } else if ((load_or_store == 1) && (pc_lr == 1)) {
+        // If this is POP {rlist, PC} then use PC
+        use_registers[15] = 1;
+        ++numRegistersInvolved;
+    }
+
+    // Now actually do it
+    // Pushing goes from highest register to lowest, popping goes from lowest to highest
+    if (load_or_store == 0) {
+        // Push
+        printf("push {...*%u}", numRegistersInvolved);
+        for (uint8_t i = 15; i >= 0; i--) {
+            if (use_registers[i]) {
+                vm_stack_pointer(vm) -= 4;
+                store(vm, vm_stack_pointer(vm), vm->registers[i], 4);
+            }
+        }
+    } else {
+        // Pop
+        printf("pop {...*%u}", numRegistersInvolved);
+        for (uint8_t i = 0; i < 16; i++) {
+            if (use_registers[i]) {
+                vm->registers[i] = load(vm, vm_stack_pointer(vm), 4);
+                vm_stack_pointer(vm) += 4;
+            }
+        }
+    }
 }
 
 
