@@ -977,7 +977,24 @@ void tliLoadStoreWithImmediateOffset(VM_instance* vm, uint16_t instruction)
  */
 void tliLoadStoreHalfWord(VM_instance* vm, uint16_t instruction)
 {
-    // TODO
+    uint8_t load_or_store = (instruction & 0b0000100000000000) >> 11;
+    uint8_t offset5 =       (instruction & 0b0000011111000000) >> 6;
+    uint8_t rb =            (instruction & 0b0000000000111000) >> 3;
+    uint8_t rd =            (instruction & 0b0000000000000111);
+
+    uint32_t addr = vm->registers[rb] + (offset5 << 1);
+
+    if (load_or_store == 0) {
+        // STRH Rd, [Rb, #lmm]
+        // Stores the least significant 16 bits of Rd into memory address Rb+lmm
+        printf("STRH r%u, [r%u, #%u]", rd, rb, (offset5 << 1));
+        store(vm, addr, vm->registers[rd], 2);
+    } else {
+        // LDRH Rd, [Rb, #lmm]
+        // Loads the half-word from address Rb+lmm and stores it in register Rd
+        printf("LDRH r%u, [r%u, #%u]", rd, rb, (offset5 << 1));
+        vm->registers[rd] = load(vm, addr, 2);
+    }
 }
 
 
