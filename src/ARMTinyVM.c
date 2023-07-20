@@ -909,12 +909,14 @@ void tliLoadStoreSignExtendedByte(VM_instance* vm, uint16_t instruction)
         if (h == 0) {
             // LDSB Rd, [Rb, Ro]
             // Load byte from Rb+Ro, sign-extend it to word size, and put it in Rd
+            printf("LDSB r%u, [r%u, r%u]", rd, rb, ro);
             uint32_t value = load(vm, addr, 1);
             value = (value & 0x000000FF) | ((value & 0x80) ? 0xFFFFFF00 : 0);
             vm->registers[rd] = value;
         } else {
             // LDSH Rd, [Rb, Ro]
             // Load half-word from Rb+Ro, sign-extend it to word size, and put it in Rd
+            printf("LDSH r%u, [r%u, r%u]", rd, rb, ro);
             uint32_t value = load(vm, addr, 2);
             value = (value & 0x0000FFFF) | ((value & 0x8000) ? 0xFFFF0000 : 0);
             vm->registers[rd] = value;
@@ -1203,7 +1205,87 @@ void tliMultipleLoadStore(VM_instance* vm, uint16_t instruction)
  */
 void tliConditionalBranch(VM_instance* vm, uint16_t instruction)
 {
-    // TODO
+    uint8_t cond =    (instruction & 0b0000111100000000) >> 8;
+    int8_t soffset8 = (int8_t) (instruction & 0b0000000011111111);
+
+    uint32_t targetAddress = vm_program_counter(vm) + soffset8;
+
+    bool condition;
+    char* printFormat;
+    if (cond == 0b0000) {
+        // BEQ label
+        // Branch if Z set (equal)
+        printFormat = "BEQ %u";
+        condition = vm_get_cpsr_z(vm);
+    } else if (cond == 0b0001) {
+        // BNE label
+        // Branch if Z clear (not equal)
+        printFormat = "BNE %u";
+        condition = !vm_get_cpsr_z(vm);
+    } else if (cond == 0b0010) {
+        // BCS label
+        // Branch if C set (unsigned higher or same)
+        printFormat = "BCS %u";
+        condition = vm_get_cpsr_c(vm);
+    } else if (cond == 0b0011) {
+        // BCC label
+        // Branch if C clear (unsigned lower)
+        printFormat = "BCC %u";
+        condition = !vm_get_cpsr_c(vm);
+    } else if (cond == 0b0100) {
+        // BMI label
+        // Branch if N set (negative)
+        printFormat = "BMI %u";
+        condition = vm_get_cpsr_n(vm);
+    } else if (cond == 0b0101) {
+        // BPL label
+        // Branch if N clear (positive or zero)
+        printFormat = "BPL %u";
+        condition = !vm_get_cpsr_n(vm);
+    } else if (cond == 0b0110) {
+        // BVS label
+        // Branch if V set (overflow)
+        printFormat = "BVS %u";
+        condition = vm_get_cpsr_v(vm);
+    } else if (cond == 0b0111) {
+        // BVC label
+        // Branch if V clear (no overflow)
+        printFormat = "BVC %u";
+        condition = !vm_get_cpsr_v(vm);
+    } else if (cond == 0b1000) {
+        // BHI label
+        // Branch if C set and Z clear (unsigned higher)
+        printFormat = "BHI $u";
+        condition = vm_get_cpsr_c(vm) && !vm_get_cpsr_z(vm);
+    } else if (cond == 0b1001) {
+        // BLS label
+        // Branch if C clear or Z set (unsigned lower or same)
+        printFormat = "BLS %u";
+        condition = !vm_get_cpsr_c(vm) || vm_get_cpsr_z(vm);
+    } else if (cond == 0b1010) {
+        // BGE label
+        // Branch if N set and V set, or N clear and V clear (greater or equal)
+        printFormat = "BGE %u";
+        condition = (vm_get_cpsr_n(vm) && vm_get_cpsr_v(vm)) || (!vm_get_cpsr_n(vm) || !vm_get_cpsr_v(vm));
+    } else if (cond == 0b1011) {
+        // BLT label
+        // Branch if N set and V clear, or N clear and V set (less than)
+        printFormat = "BLT %u";
+        condition = (vm_get_cpsr_n(vm) && !vm_get_cpsr_v(vm)) || (!vm_get_cpsr_n(vm) && vm_get_cpsr_v(vm));
+    } else if (cond == 0b1100) {
+        // BGT label
+        // Branch if Z clear, and either N set and V set or N clear and V clear (greater than)
+        printFormat = "BGT %u";
+        condition = !vm_get_cpsr_z(vm) && ((vm_get_cpsr_n(vm) && vm_get_cpsr_v(vm)) || (!vm_get_cpsr_n(vm) && !vm_get_cpsr_v(vm)));
+    } else if (cond == 0b1101) {
+        // BLE label
+        // Branch if Z set, or N set and V clear, or N clear and V set (less than or equal)
+        printFormat = "BLE %u";
+        condition = vm_get_cpsr_z(vm) || (vm_get_cpsr_n(vm) && !vm_get_cpsr_v(vm)) || (!vm_get_cpsr_n(vm) && vm_get_cpsr_v(vm));
+    } else {
+        printf("Invalid command %x", instruction);
+        vm->finished = true;
+    }
 }
 
 
