@@ -1007,7 +1007,23 @@ void tliLoadStoreHalfWord(VM_instance* vm, uint16_t instruction)
  */
 void tliSPRelativeLoad(VM_instance* vm, uint16_t instruction)
 {
-    // TODO
+    uint8_t load_or_store = (instruction & 0b0000100000000000) >> 11;
+    uint8_t rd =            (instruction & 0b0000011100000000) >> 8;
+    uint8_t word8 =         (instruction & 0b0000000011111111);
+
+    uint32_t addr = vm_stack_pointer(vm) + ((uint32_t) word8 << 2);
+
+    if (load_or_store == 0) {
+        // STR Rd, [SP, #lmm]
+        // Store the contents of register Rd into address SP+lmm
+        printf("STR r%u, [SP, #%u]", rd, ((uint16_t) word8) << 2);
+        store(vm, addr, vm->registers[rd], 4);
+    } else {
+        // LDR Rd, [SP, #lmm]
+        // Load the contents of address SP+lmm into register Rd
+        printf("LDR r%u, [SP, #%u]", rd, ((uint16_t) word8) << 2);
+        vm->registers[rd] = load(vm, addr, 4);
+    }
 }
 
 
