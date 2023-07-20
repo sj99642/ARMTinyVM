@@ -764,7 +764,22 @@ void tliHighRegOperations(VM_instance* vm, uint16_t instruction)
  */
 void tliPCRelativeLoad(VM_instance* vm, uint16_t instruction)
 {
-    // TODO
+    // Find the destination register and the (shifted) offset
+    uint8_t rd =   (instruction & 0b0000011100000000) >> 8;
+    uint8_t word8 = instruction & 0b0000000011111111;
+
+    // Calculate the offset by multiplying word8 by 4
+    uint16_t offset = word8 << 2;
+
+    // Calculate the memory location by adding the offset to the PC
+    uint32_t dest = vm_program_counter(vm) + offset;
+
+    // Load a word into the destination register (big endian)
+    uint32_t loadedWord = vm->interactionInstructions->readByte(dest);
+    loadedWord += (vm->interactionInstructions->readByte(dest+1)) << 8;
+    loadedWord += (vm->interactionInstructions->readByte(dest+2)) << 16;
+    loadedWord += (vm->interactionInstructions->readByte(dest+3)) << 24;
+    vm->registers[rd] = loadedWord;
 }
 
 
@@ -777,7 +792,7 @@ void tliPCRelativeLoad(VM_instance* vm, uint16_t instruction)
  */
 void tliLoadWithRegOffset(VM_instance* vm, uint16_t instruction)
 {
-
+    // TODO
 }
 
 
@@ -790,7 +805,7 @@ void tliLoadWithRegOffset(VM_instance* vm, uint16_t instruction)
  */
 void tliLoadStoreSignExtendedByte(VM_instance* vm, uint16_t instruction)
 {
-
+    // TODO
 }
 
 
@@ -803,7 +818,7 @@ void tliLoadStoreSignExtendedByte(VM_instance* vm, uint16_t instruction)
  */
 void tliLoadStoreWithImmediateOffset(VM_instance* vm, uint16_t instruction)
 {
-
+    // TODO
 }
 
 
@@ -816,7 +831,7 @@ void tliLoadStoreWithImmediateOffset(VM_instance* vm, uint16_t instruction)
  */
 void tliLoadStoreHalfWord(VM_instance* vm, uint16_t instruction)
 {
-
+    // TODO
 }
 
 
@@ -829,7 +844,7 @@ void tliLoadStoreHalfWord(VM_instance* vm, uint16_t instruction)
  */
 void tliSPRelativeLoad(VM_instance* vm, uint16_t instruction)
 {
-
+    // TODO
 }
 
 
@@ -842,7 +857,7 @@ void tliSPRelativeLoad(VM_instance* vm, uint16_t instruction)
  */
 void tliLoadAddress(VM_instance* vm, uint16_t instruction)
 {
-
+    // TODO
 }
 
 
@@ -855,7 +870,7 @@ void tliLoadAddress(VM_instance* vm, uint16_t instruction)
  */
 void tliAddOffsetToSP(VM_instance* vm, uint16_t instruction)
 {
-
+    // TODO
 }
 
 
@@ -868,7 +883,7 @@ void tliAddOffsetToSP(VM_instance* vm, uint16_t instruction)
  */
 void tliPushPopRegisters(VM_instance* vm, uint16_t instruction)
 {
-
+    // TODO
 }
 
 
@@ -881,7 +896,7 @@ void tliPushPopRegisters(VM_instance* vm, uint16_t instruction)
  */
 void tliMultipleLoadStore(VM_instance* vm, uint16_t instruction)
 {
-
+    // TODO
 }
 
 
@@ -894,7 +909,7 @@ void tliMultipleLoadStore(VM_instance* vm, uint16_t instruction)
  */
 void tliConditionalBranch(VM_instance* vm, uint16_t instruction)
 {
-
+    // TODO
 }
 
 
@@ -927,7 +942,7 @@ void tliSoftwareInterrupt(VM_instance* vm, uint16_t instruction)
  */
 void tliUnconditionalBranch(VM_instance* vm, uint16_t instruction)
 {
-
+    // TODO
 }
 
 
@@ -940,7 +955,7 @@ void tliUnconditionalBranch(VM_instance* vm, uint16_t instruction)
  */
 void tliLongBranchWithLink(VM_instance* vm, uint16_t instruction)
 {
-
+    // TODO
 }
 
 
