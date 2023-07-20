@@ -1065,7 +1065,22 @@ void tliLoadAddress(VM_instance* vm, uint16_t instruction)
  */
 void tliAddOffsetToSP(VM_instance* vm, uint16_t instruction)
 {
-    // TODO
+    uint8_t sign =   (instruction & 0b0000000010000000) >> 7;
+    uint8_t sword7 = (instruction & 0b0000000001111111);
+
+    uint16_t lmm = ((uint16_t) sword7) << 2;
+
+    if (sign == 0) {
+        // ADD SP, #lmm
+        // Increase the stack pointer by lmm
+        printf("ADD SP, #%u", lmm);
+        vm_stack_pointer(vm) = vm_stack_pointer(vm) + lmm;
+    } else {
+        // ADD SP, #-lmm
+        // Decrease the stack pointer by lmm
+        printf("ADD SP, #-%u", lmm);
+        vm_stack_pointer(vm) = vm_stack_pointer(vm) - lmm;
+    }
 }
 
 
