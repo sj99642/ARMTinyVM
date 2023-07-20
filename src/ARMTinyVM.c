@@ -26,6 +26,8 @@ void tliConditionalBranch(VM_instance* vm, uint16_t instruction);
 void tliSoftwareInterrupt(VM_instance* vm, uint16_t instruction);
 void tliUnconditionalBranch(VM_instance* vm, uint16_t instruction);
 void tliLongBranchWithLink(VM_instance* vm, uint16_t instruction);
+uint32_t load(VM_instance* vm, uint32_t addr, uint8_t bytes);
+void store(VM_instance* vm, uint32_t addr, uint32_t value, uint8_t bytes);
 
 
 #define i32_sign(n) (((n) & 0x80000000) >> 31)
@@ -256,6 +258,51 @@ void compareSetC(VM_instance* vm, uint32_t a, uint32_t b)
          // An overflow is impossible if the signs of the operands are different
          vm_clr_cpsr_z(vm);
      }
+}
+
+
+/***********************************************************************************************************************
+ * LOADING AND STORING PRIMITIVES
+ **********************************************************************************************************************/
+
+
+uint32_t load(VM_instance* vm, uint32_t addr, uint8_t bytes)
+{
+    if (bytes == 1) {
+        // Single byte
+        return vm->interactionInstructions->readByte(addr);
+    } else if (bytes == 2) {
+        // Half word
+        uint32_t value = vm->interactionInstructions->readByte(addr);
+        value += vm->interactionInstructions->readByte(addr+1) << 8;
+        return value;
+    } else {
+        // Full word
+        uint32_t value = vm->interactionInstructions->readByte(addr);
+        value += vm->interactionInstructions->readByte(addr+1) << 8;
+        value += vm->interactionInstructions->readByte(addr+2) << 16;
+        value += vm->interactionInstructions->readByte(addr+3) << 24;
+        return value;
+    }
+}
+
+
+void store(VM_instance* vm, uint32_t addr, uint32_t value, uint8_t bytes)
+{
+    if (bytes == 1) {
+        // Single byte
+        vm->interactionInstructions->writeByte(addr, (uint8_t) (value & 0x000000FF));
+    } else if (bytes == 2) {
+        // Half word
+        vm->interactionInstructions->writeByte(addr,   (uint8_t) (value & 0x000000FF));
+        vm->interactionInstructions->writeByte(addr+1, (uint8_t) (value & 0x0000FF00) >> 8);
+    } else {
+        // Full word
+        vm->interactionInstructions->writeByte(addr,   (uint8_t) (value & 0x000000FF));
+        vm->interactionInstructions->writeByte(addr+1, (uint8_t) (value & 0x0000FF00) >> 8);
+        vm->interactionInstructions->writeByte(addr+2, (uint8_t) (value & 0x00FF0000) >> 16);
+        vm->interactionInstructions->writeByte(addr+3, (uint8_t) (value & 0xFF000000) >> 24);
+    }
 }
 
 
@@ -771,15 +818,13 @@ void tliPCRelativeLoad(VM_instance* vm, uint16_t instruction)
     // Calculate the offset by multiplying word8 by 4
     uint16_t offset = word8 << 2;
 
+    printf("LDR r%u, [PC, #%u]", rd, offset);
+
     // Calculate the memory location by adding the offset to the PC
-    uint32_t dest = vm_program_counter(vm) + offset;
+    uint32_t addr = (vm_program_counter(vm) & 0xFFFFFFFC) + offset;
 
     // Load a word into the destination register (big endian)
-    uint32_t loadedWord = vm->interactionInstructions->readByte(dest);
-    loadedWord += (vm->interactionInstructions->readByte(dest+1)) << 8;
-    loadedWord += (vm->interactionInstructions->readByte(dest+2)) << 16;
-    loadedWord += (vm->interactionInstructions->readByte(dest+3)) << 24;
-    vm->registers[rd] = loadedWord;
+    vm->registers[rd] = load(vm, addr, 4);
 }
 
 
@@ -792,7 +837,39 @@ void tliPCRelativeLoad(VM_instance* vm, uint16_t instruction)
  */
 void tliLoadWithRegOffset(VM_instance* vm, uint16_t instruction)
 {
-    // TODO
+    uint8_t load_or_store = (instruction & 0b0000100000000000) >> 11;
+    uint8_t byte_or_word =  (instruction & 0b0000010000000000) >> 10;
+    uint8_t ro =            (instruction & 0b0000000111000000) >> 6;
+    uint8_t rb =            (instruction & 0b0000000000111000) >> 3;
+    uint8_t rd =            (instruction & 0b0000000000000111);
+
+    // The address for all instructions is Rb + Ro
+    uint32_t addr = vm->registers[rb] + vm->registers[ro];
+
+    if (load_or_store == 0) {
+        if (byte_or_word == 0) {
+            // STR Rd, [Rb, Ro]
+            // Store a word from Rd into the address
+            printf("STR r%u, [r%u, r%u]", rd, rb, ro);
+            store(vm, addr, vm->registers[rd], 4);
+        } else {
+            // STRB Rd, [Rb, Ro]
+            printf("STRB r%u, [r%u, r%u]", rd, rb, ro);
+            store(vm, addr, vm->registers[rd] & 0xFF, 1);
+        }
+    } else {
+        if (byte_or_word == 0) {
+            // LDR Rd, [Rb, Ro]
+            // Load a word from Rb + Ro into Rd
+            printf("LDR r%u, [r%u, r%u]", rd, rb, ro);
+            vm->registers[rd] = load(vm, addr, 4);
+        } else {
+            // LDRB Rd, [Rb, Ro]
+            // Load a byte from Rb + Ro into Rd
+            printf("LDRB r%u, [r%u, r%u]", rd, rb, ro);
+            vm->registers[rd] = load(vm, addr, 1);
+        }
+    }
 }
 
 
