@@ -932,7 +932,39 @@ void tliLoadStoreSignExtendedByte(VM_instance* vm, uint16_t instruction)
  */
 void tliLoadStoreWithImmediateOffset(VM_instance* vm, uint16_t instruction)
 {
-    // TODO
+    uint8_t byte_or_word =  (instruction & 0b0001000000000000) >> 12;
+    uint8_t load_or_store = (instruction & 0b0000100000000000) >> 11;
+    uint8_t offset5 =       (instruction & 0b0000011111000000) >> 6;
+    uint8_t rb =            (instruction & 0b0000000000111000) >> 3;
+    uint8_t rd =            (instruction & 0b0000000000000111);
+
+    if (byte_or_word == 0) {
+        uint32_t addr = vm->registers[rb] + (offset5 << 2);
+        if (load_or_store == 0) {
+            // STR Rd, [Rb, #lmm]
+            // Store the contents of Rd into the word starting at memory address Rb+lmm
+            printf("STR r%u, [r%u, #%u]", rd, rb, (offset5 << 2));
+            store(vm, addr, vm->registers[rd], 4);
+        } else {
+            // LDR Rd, [Rb, #lmm]
+            // Load the word at Rb+lmm into register Rd
+            printf("LDR r%u, [r%u, #%u]", rd, rb, (offset5 << 2));
+            vm->registers[rd] = load(vm, addr, 4);
+        }
+    } else {
+        uint32_t addr = vm->registers[rb] + offset5;
+        if (load_or_store == 0) {
+            // STRB Rd, [Rb, #lmm]
+            // Store the least significant byte of Rd in memory address Rb+lmm
+            printf("STRB r%u, [r%u, #%u]", rd, rb, offset5);
+            store(vm, addr, vm->registers[rd], 1);
+        } else {
+            // LDRB Rd, [Rb, #lmm]
+            // Load the byte at Rb+lmm into register Rd
+            printf("LDRB r%u, [r%u, #%u]", rd, rb, offset5);
+            vm->registers[rd] = load(vm, addr, 1);
+        }
+    }
 }
 
 
