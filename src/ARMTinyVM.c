@@ -1118,11 +1118,11 @@ void tliPushPopRegisters(VM_instance* vm, uint16_t instruction)
     }
 
     // Now actually do it
-    // Pushing goes from highest register to lowest, popping goes from lowest to highest
+    // Pushing goes from the highest register to the lowest, popping goes from lowest to highest
     if (load_or_store == 0) {
         // Push
         printf("push {...*%u}", numRegistersInvolved);
-        for (uint8_t i = 15; i >= 0; i--) {
+        for (int8_t i = 15; i >= 0; i--) {
             if (use_registers[i]) {
                 vm_stack_pointer(vm) -= 4;
                 store(vm, vm_stack_pointer(vm), vm->registers[i], 4);
@@ -1131,7 +1131,7 @@ void tliPushPopRegisters(VM_instance* vm, uint16_t instruction)
     } else {
         // Pop
         printf("pop {...*%u}", numRegistersInvolved);
-        for (uint8_t i = 0; i < 16; i++) {
+        for (int8_t i = 0; i < 16; i++) {
             if (use_registers[i]) {
                 vm->registers[i] = load(vm, vm_stack_pointer(vm), 4);
                 vm_stack_pointer(vm) += 4;
@@ -1150,7 +1150,47 @@ void tliPushPopRegisters(VM_instance* vm, uint16_t instruction)
  */
 void tliMultipleLoadStore(VM_instance* vm, uint16_t instruction)
 {
-    // TODO
+    uint8_t load_or_store = (instruction & 0b0000100000000000) >> 11;
+    uint8_t rb =            (instruction & 0b0000011100000000) >> 8;
+    uint8_t rlist =         (instruction & 0b0000000011111111);
+
+    uint32_t baseAddress = vm->registers[rb];
+
+    // Calculate which registers are included in the register list
+    uint8_t numRegistersInvolved = 0;
+    bool use_registers[16] = {0, 0, 0, 0, 0, 0, 0, 0};
+    for (uint8_t i = 0; i < 8; i++) {
+        if (rlist & (1 << (7-i))) {
+            use_registers[i] = 1;
+            ++numRegistersInvolved;
+        }
+    }
+
+    // Perform the operation
+    if (load_or_store == 0) {
+        // STMIA Rb!, {rlist}
+        // Store the registers in rlist starting at base address rb
+        printf("STMIA r%u!, {...*%u}", rb, numRegistersInvolved);
+        for (int8_t i = 0; i < 8; i++) {
+            if (use_registers[i]) {
+                store(vm, baseAddress, vm->registers[i], 4);
+                baseAddress += 4;
+            }
+        }
+    } else {
+        // LDMIA Rb!, {rlist}
+        // Load the registers in rlist starting at base address rb
+        printf("LDMIA r%u!, {...*%u}", rb, numRegistersInvolved);
+        for (uint8_t i = 0; i < 8; i++) {
+            if (use_registers[i]) {
+                vm->registers[i] = load(vm, baseAddress, 4);
+                baseAddress += 4;
+            }
+        }
+    }
+
+    // Save the address back
+    vm->registers[rb] = baseAddress;
 }
 
 
