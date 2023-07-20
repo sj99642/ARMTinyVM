@@ -1036,7 +1036,23 @@ void tliSPRelativeLoad(VM_instance* vm, uint16_t instruction)
  */
 void tliLoadAddress(VM_instance* vm, uint16_t instruction)
 {
-    // TODO
+    uint8_t sp =    (instruction & 0b0000100000000000) >> 11;
+    uint8_t rd =    (instruction & 0b0000011100000000) >> 8;
+    uint8_t word8 = (instruction & 0b0000000011111111);
+
+    uint16_t lmm = ((uint16_t) word8) << 2;
+
+    if (sp == 0) {
+        // ADD Rd, PC, #lmm
+        // Add lmm to PC and store the resulting address in Rd
+        printf("ADD r%u, PC, #%u", rd, lmm);
+        vm->registers[rd] = vm_program_counter(vm) + lmm;
+    } else {
+        // ADD Rd, SP, #lmm
+        // Add lmm to SP and store the resulting address in Rd
+        printf("ADD r%u, SP, #%u", rd, lmm);
+        vm->registers[rd] = vm_stack_pointer(vm) + lmm;
+    }
 }
 
 
