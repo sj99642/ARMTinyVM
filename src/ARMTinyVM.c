@@ -31,6 +31,8 @@ void store(VM_instance* vm, uint32_t addr, uint32_t value, uint8_t bytes);
 
 
 #define i32_sign(n) (((n) & 0x80000000) >> 31)
+#define i16_sign(n) (((n) & 0x8000) >> 15)
+#define i8_sign(n)  (((n) & 0x80) >> 7)
 
 
 // PUBLIC FUNCTIONS
@@ -646,7 +648,7 @@ void tliALUOperations(VM_instance* vm, uint16_t instruction)
         printf("TST r%u, r%u", rd, rs);
 
         // Just set condition bits without changing rd
-        compareSetNZ((vm->registers[rd]) & (vm->registers[rs]));
+        compareSetNZ(vm, (vm->registers[rd]) & (vm->registers[rs]));
     } else if (op == 0b1001) {
         // NEG Rd, Rs
         printf("NEG r%u, r%u", rd, rs);
@@ -882,7 +884,42 @@ void tliLoadWithRegOffset(VM_instance* vm, uint16_t instruction)
  */
 void tliLoadStoreSignExtendedByte(VM_instance* vm, uint16_t instruction)
 {
-    // TODO
+    uint8_t h =       (instruction & 0b0000100000000000) >> 11;
+    uint8_t sgn_ext = (instruction & 0b0000010000000000) >> 10;
+    uint8_t ro =      (instruction & 0b0000000111000000) >> 6;
+    uint8_t rb =      (instruction & 0b0000000000111000) >> 3;
+    uint8_t rd =      (instruction & 0b0000000000000111);
+
+    // The address for all instructions is Rb + Ro
+    uint32_t addr = vm->registers[rb] + vm->registers[ro];
+
+    if (sgn_ext == 0) {
+        if (h == 0) {
+            // STRH Rd, [Rb, Ro]
+            // Store half-word from Rd into memory address Rb+Ro
+            printf("STRH r%u, [r%u, r%u]", rd, rb, ro);
+            store(vm, addr, vm->registers[rd] & 0x0000FFFF, 2);
+        } else {
+            // LDRH Rd, [Rb, Ro]
+            // Load half-word from Rb+Ro into register Rd
+            printf("LDRH r%u, [r%u, r%u]", rd, rb, ro);
+            vm->registers[rd] = load(vm, addr, 2);
+        }
+    } else {
+        if (h == 0) {
+            // LDSB Rd, [Rb, Ro]
+            // Load byte from Rb+Ro, sign-extend it to word size, and put it in Rd
+            uint32_t value = load(vm, addr, 1);
+            value = (value & 0x000000FF) | ((value & 0x80) ? 0xFFFFFF00 : 0);
+            vm->registers[rd] = value;
+        } else {
+            // LDSH Rd, [Rb, Ro]
+            // Load half-word from Rb+Ro, sign-extend it to word size, and put it in Rd
+            uint32_t value = load(vm, addr, 2);
+            value = (value & 0x0000FFFF) | ((value & 0x8000) ? 0xFFFF0000 : 0);
+            vm->registers[rd] = value;
+        }
+    }
 }
 
 
