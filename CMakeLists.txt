@@ -6,4 +6,4 @@ set(CMAKE_C_STANDARD 11)
 include_directories(src)
 
 add_executable(ARMTinyVM
-        src/ARMTinyVM.h src/ARMTinyVM.c src/main.c src/instruction_set.h)
+        src/ARMTinyVM.h src/ARMTinyVM.c src/main.c src/instruction_set.h src/elf.h)

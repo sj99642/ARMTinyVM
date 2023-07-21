@@ -29,16 +29,22 @@ def main():
             subprocess.run(["arm-none-eabi-gcc", "-mthumb", "-Os", "-mcpu=arm7tdmi", "-nostdlib", "-c", "-o", obj_filename_full, test_filename_full])
         else:
             raise Exception(f"Unknown test file type: {test_filename_full}")
-        subprocess.run(["arm-none-eabi-ld", "start.o", "lib.o", obj_filename_full, "-o", elf_filename_full])
+
+        # Link for QEMU (with ARM-to-Thumb start code)
+        subprocess.run(["arm-none-eabi-ld", "start.o", "lib.o", obj_filename_full, "-o", elf_filename_full.replace(".elf", ".qemu.elf")])
+        subprocess.run(["arm-none-eabi-ld", "lib.o", obj_filename_full, "-o", elf_filename_full.replace(".elf", ".sim.elf"), "-e", "main"])
 
         # Then we execute that using qemu and see the result
-        return_code = subprocess.run(["qemu-arm", elf_filename_full]).returncode
+        return_code_direct_simulation = subprocess.run(["qemu-arm", elf_filename_full.replace(".elf", ".qemu.elf")]).returncode
+
+        # Run it also with the Windows-compiled ARMTinyVM
+        return_code_vm = subprocess.run(["../cmake-build-debug/ARMTinyVM.exe", elf_filename_full.replace(".elf", ".sim.elf")]).returncode
 
         # Does the result match what we wanted?
-        if return_code == expected_result:
-            print(f"TEST SUCCESS: {test_filename_full} -> {return_code}")
+        if return_code_direct_simulation == expected_result:
+            print(f"TEST SUCCESS: {test_filename_full} -> {return_code_direct_simulation}")
         else:
-            print(f"TEST FAILED: {test_filename_full} -> {return_code}, supposed to be {expected_result}")
+            print(f"TEST FAILED: {test_filename_full} -> {return_code_direct_simulation}, supposed to be {expected_result}")
 
 
 if __name__ == "__main__":
