@@ -1340,7 +1340,24 @@ void tliUnconditionalBranch(VM_instance* vm, uint16_t instruction)
  */
 void tliLongBranchWithLink(VM_instance* vm, uint16_t instruction)
 {
-    // TODO
+    // This instruction actually always comes in pairs
+    // The offset of the first half is stored in the LR for use by the second
+    uint8_t high_or_low = (instruction & 0b0000100000000000) >> 11;
+    uint16_t offset =     (instruction & 0b0000011111111111);
+
+    if (high_or_low == 0) {
+        // The first instruction; shift left by 12 bits, add it to the current PC, and store the result in LR
+        vm_link_register(vm) = vm_program_counter(vm) + (offset << 12);
+    } else {
+        // The second instruction; put together the first half of the offset and the offset given in this instruction
+        uint32_t targetAddress = vm_link_register(vm) + (offset << 1);
+
+        // We put this new calculated address into PC and the address of the next instruction along in LR
+        // Set the lowest bit of the link register because while irrelevant for us it will cause a switch to Thumb
+        // mode if coming back from and ARM function.
+        vm_link_register(vm) = vm_program_counter(vm) | 1;
+        vm_program_counter(vm) = targetAddress;
+    }
 }
 
 
