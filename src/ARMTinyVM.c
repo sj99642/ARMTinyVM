@@ -1310,7 +1310,7 @@ void tliSoftwareInterrupt(VM_instance* vm, uint16_t instruction)
 
 
 /**
- * Unconditional brach
+ * Unconditional branch
  * Documented as instruction 18 in manual
  * Covers instructions with first byte 11100XXX
  * @param vm
@@ -1318,7 +1318,16 @@ void tliSoftwareInterrupt(VM_instance* vm, uint16_t instruction)
  */
 void tliUnconditionalBranch(VM_instance* vm, uint16_t instruction)
 {
-    // TODO
+    uint16_t offset11 = instruction & 0b0000011111111111;
+
+    // Calculate how to jump; we shift offset11 by 1, leading to a 12-bit number, then sign-extend it to 32 bits
+    uint32_t relJump = offset11 << 1;
+    relJump = (relJump & 0x00000FFF) | ((relJump & 0x0800) ? 0xFFFFF000 : 0);
+    printf("B %d", relJump);
+    uint32_t addr = vm_program_counter(vm) + relJump;
+
+    // Jump to the new address
+    vm_program_counter(vm) = addr;
 }
 
 
