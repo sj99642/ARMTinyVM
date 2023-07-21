@@ -54,3 +54,6 @@ dkms.conf
 # IntelliJ
 .idea/
 cmake-build-debug/
+
+# CMake
+build/
