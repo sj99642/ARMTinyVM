@@ -421,17 +421,17 @@ typedef struct {
  */
 
 typedef struct {
-    Elf32_Word	e_name;	/* Section name (index into the
-					   section header string table). */
-    Elf32_Word	e_type;	/* Section type. */
-    Elf32_Word	e_flags;	/* Section flags. */
-    Elf32_Addr	e_vaddr;	/* Address in memory image. */
-    Elf32_Off	e_off;	/* Offset in file. */
-    Elf32_Word	e_size;	/* Size in bytes. */
-    Elf32_Word	e_link;	/* Index of a related section. */
-    Elf32_Word	e_info;	/* Depends on section type. */
-    Elf32_Word	e_addralign;	/* Alignment in bytes. */
-    Elf32_Word	e_entsize;	/* Size of each entry in section. */
+    Elf32_Word	sh_name;	/* Section name (index into the
+				sh	   section header string table). */
+    Elf32_Word	sh_type;	/* Section type. */
+    Elf32_Word	sh_flags;	/* Section flags. */
+    Elf32_Addr	sh_addr;	/* Address in memory image. */
+    Elf32_Off	sh_offset;	/* Offset in file. */
+    Elf32_Word	sh_size;	/* Size in bytes. */
+    Elf32_Word	sh_link;	/* Index of a related section. */
+    Elf32_Word	sh_info;	/* Depends on section type. */
+    Elf32_Word	sh_addralign;	/* Alignment in bytes. */
+    Elf32_Word	sh_entsize;	/* Size of each entry in section. */
 } Elf32_Shdr;
 
 /*
@@ -439,14 +439,14 @@ typedef struct {
  */
 
 typedef struct {
-    Elf32_Word	e_type;		/* Entry type. */
-    Elf32_Off	e_off;	/* File offset of contents. */
-    Elf32_Addr	e_vaddr;	/* Virtual address in memory image. */
-    Elf32_Addr	e_paddr;	/* Physical address (not used). */
-    Elf32_Word	e_filesz;	/* Size of contents in file. */
-    Elf32_Word	e_memsz;	/* Size of contents in memory. */
-    Elf32_Word	e_flags;	/* Access permission flags. */
-    Elf32_Word	e_align;	/* Alignment in memory and file. */
+    Elf32_Word	p_type;		/* Entry type. */
+    Elf32_Off	p_offset;	/* File offset of contents. */
+    Elf32_Addr	p_vaddr;	/* Virtual address in memory image. */
+    Elf32_Addr	p_paddr;	/* Physical address (not used). */
+    Elf32_Word	p_filesz;	/* Size of contents in file. */
+    Elf32_Word	p_memsz;	/* Size of contents in memory. */
+    Elf32_Word	p_flags;	/* Access permission flags. */
+    Elf32_Word	p_align;	/* Alignment in memory and file. */
 } Elf32_Phdr;
 
 /*
