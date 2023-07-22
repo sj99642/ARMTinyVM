@@ -339,8 +339,6 @@ void tliMoveShiftedRegister(VM_instance* vm, uint16_t instruction)
         // Rd := Rs << Offset5
         // Safe because rs and rd are no higher than 7
         printf("LSL R%u, R%u, #%u\n", rd, rs, offset5);
-        vm->registers[rd] = (vm->registers[rs]) << offset5;
-        compareSetNZ(vm, vm->registers[rd]);
 
         // The carry flag is special in this case - have we shifted any ones off the left hand side?
         // We can find out if that's the case by inspecting the left `offset5` bits
@@ -356,13 +354,14 @@ void tliMoveShiftedRegister(VM_instance* vm, uint16_t instruction)
                 vm_clr_cpsr_c(vm);
             }
         }
+
+        vm->registers[rd] = (vm->registers[rs]) << offset5;
+        compareSetNZ(vm, vm->registers[rd]);
     } else if (op == 1) {
         // LSR Rd, Rs, #Offset5
         // Rd := Rs >>(logical) Offset5
         // Safe because rd and rs and no higher than 7
         printf("LSR R%u, R%u, #%u\n", rd, rs, offset5);
-        vm->registers[rd] = (vm->registers[rs]) >> offset5;
-        compareSetNZ(vm, vm->registers[rd]);
 
         // The carry flag here is sensible, although it's not really a "carry"
         // If we shift any ones off the right hand side, then set C; if not, clear it
@@ -374,14 +373,17 @@ void tliMoveShiftedRegister(VM_instance* vm, uint16_t instruction)
         } else {
             vm_clr_cpsr_c(vm);
         }
+        printf("vm->registers[r%u] == %u\n", rs, vm->registers[rs]);
+        printf("Carry: %d\n", vm_get_cpsr_c(vm));
+
+        vm->registers[rd] = (vm->registers[rs]) >> offset5;
+        compareSetNZ(vm, vm->registers[rd]);
     } else if (op == 2) {
         // ASR Rd, Rs, #Offset5
         // Rd := Rs >>(arithmetic) Offset5
         // Safe because rd and rs are no higher than 7
         // In C, while technically this is implementation-defined, in general we do an arithmetic shift using signed int
         printf("ASR R%u, R%u, #%u\n", rd, rs, offset5);
-        vm->registers[rd] = (uint32_t) (((int32_t) (vm->registers[rs])) >> offset5);
-        compareSetNZ(vm, vm->registers[rd]);
 
         // The carry flag here is sensible, although it's not really a "carry"
         // If we shift any ones off the right hand side, then set C; if not, clear it
@@ -393,8 +395,13 @@ void tliMoveShiftedRegister(VM_instance* vm, uint16_t instruction)
         } else {
             vm_clr_cpsr_c(vm);
         }
+
+        vm->registers[rd] = (uint32_t) (((int32_t) (vm->registers[rs])) >> offset5);
+        compareSetNZ(vm, vm->registers[rd]);
     } else {
         // We should never get here
+        printf("Invalid instruction 0x%x", instruction);
+        vm->finished = true;
     }
 }
 
@@ -428,18 +435,18 @@ void tliAddSubtract(VM_instance* vm, uint16_t instruction)
             // Rd := Rn + Rs
             // Safe because rd, rn and rs are no higher than 7
             printf("ADD r%u, r%u, r%u\n", rd, rs, rn);
+            compareSetCV(vm, vm->registers[rn], vm->registers[rs]);
             vm->registers[rd] = vm->registers[rn] + vm->registers[rs];
             compareSetNZ(vm, vm->registers[rd]);
-            compareSetCV(vm, vm->registers[rn], vm->registers[rs]);
         } else {
             // ADD Rd, Rs, #Offset3
             // Rd := Rs + Offset3
             // Safe because rd, rs are no higher than 7
             // rn is equivalent to Offset3 (same bits used in encoding)
             printf("ADD r%u, r%u, #%u\n", rd, rs, rn);
+            compareSetCV(vm, vm->registers[rs], rn);
             vm->registers[rd] = vm->registers[rs] + rn;
             compareSetNZ(vm, vm->registers[rd]);
-            compareSetCV(vm, vm->registers[rs], rn);
         }
     } else {
         if (i == 0) {
@@ -447,18 +454,18 @@ void tliAddSubtract(VM_instance* vm, uint16_t instruction)
             // Rd := Rn - Rs
             // Safe because rd, rn and rs are no higher than 7
             printf("SUB r%u, r%u, r%u\n", rd, rs, rn);
+            compareSetCV(vm, vm->registers[rn], 0 - vm->registers[rs]);
             vm->registers[rd] = vm->registers[rn] - vm->registers[rs];
             compareSetNZ(vm, vm->registers[rd]);
-            compareSetCV(vm, vm->registers[rn], 0 - vm->registers[rs]);
         } else {
             // SUB Rd, Rs, #Offset3
             // Rd := Rs - Offset3
             // Safe because rd, rs are no higher than 7
             // rn is equivalent to Offset3 (same bits used in encoding)
             printf("SUB r%u, r%u, #%u\n", rd, rs, rn);
+            compareSetCV(vm, vm->registers[rs], 0 - rn);
             vm->registers[rd] = vm->registers[rs] - rn;
             compareSetNZ(vm, vm->registers[rd]);
-            compareSetCV(vm, vm->registers[rs], 0 - rn);
         }
     }
 }
@@ -640,8 +647,6 @@ void tliALUOperations(VM_instance* vm, uint16_t instruction)
         // ROR Rd, Rs
         printf("ROR r%u, r%u\n", rd, rs);
 
-        vm->registers[rd] = (vm->registers[rd] >> vm->registers[rs]) | (vm->registers[rd] << (32 - vm->registers[rs]));
-        compareSetNZ(vm, vm->registers[rd]);
         if ((vm->registers[rs] & 0xFF) != 0) {
             // Carry flag only affected if lower 8 bits of Rs is non-zero
             if (~(0xFFFFFFFF << (vm->registers[rs])) & (vm->registers[rd])) {
@@ -651,6 +656,9 @@ void tliALUOperations(VM_instance* vm, uint16_t instruction)
                 vm_clr_cpsr_c(vm);
             }
         }
+
+        vm->registers[rd] = (vm->registers[rd] >> vm->registers[rs]) | (vm->registers[rd] << (32 - vm->registers[rs]));
+        compareSetNZ(vm, vm->registers[rd]);
     } else if (op == 0b1000) {
         // TST Rd, Rs
         printf("TST r%u, r%u\n", rd, rs);
@@ -743,7 +751,7 @@ void tliHighRegOperations(VM_instance* vm, uint16_t instruction)
             printf("ADD H%u, R%u\n", 8+rd, rs);
             compareSetNZ(vm, vm->registers[8+rd] + vm->registers[rs]);
             compareSetCV(vm, vm->registers[8+rd], vm->registers[rs]);
-            vm->registers[8+rd] = vm->registers[rs];
+            vm->registers[8+rd] = vm->registers[8+rd] + vm->registers[rs];
         } else if (h1_and_2 == 0b11) {
             // ADD Hd, Hs
             // Sum together the values in the high registers Hd (8+Rd) and Hs (8+Rs)
@@ -1269,6 +1277,7 @@ void tliConditionalBranch(VM_instance* vm, uint16_t instruction)
         // Branch if C set (unsigned higher or same)
         printFormat = "BCS %u\n";
         condition = vm_get_cpsr_c(vm);
+        printf("Carry: %d\n", vm_get_cpsr_c(vm));
     } else if (cond == 0b0011) {
         // BCC label
         // Branch if C clear (unsigned lower)
