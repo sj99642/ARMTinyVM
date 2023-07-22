@@ -322,6 +322,8 @@ void store(VM_instance* vm, uint32_t addr, uint32_t value, uint8_t bytes)
  */
 void tliMoveShiftedRegister(VM_instance* vm, uint16_t instruction)
 {
+    printf("I01 : ");
+
     // Decode the operation
     // 0 <= op <= 3, but 3 is invalid
     // 0 <= offset5 <= 31
@@ -406,6 +408,8 @@ void tliMoveShiftedRegister(VM_instance* vm, uint16_t instruction)
  */
 void tliAddSubtract(VM_instance* vm, uint16_t instruction)
 {
+    printf("I02 : ");
+
     // Decode the operation
     // 0 <= i <= 1
     // 0 <= op <= 1
@@ -469,6 +473,8 @@ void tliAddSubtract(VM_instance* vm, uint16_t instruction)
  */
 void tliMovCmpAddSubImmediate(VM_instance* vm, uint16_t instruction)
 {
+    printf("I03 : ");
+
     // Decode the operation
     // 0 <= op <= 3
     // 0 <= rd <= 7
@@ -518,6 +524,8 @@ void tliMovCmpAddSubImmediate(VM_instance* vm, uint16_t instruction)
  */
 void tliALUOperations(VM_instance* vm, uint16_t instruction)
 {
+    printf("I04 : ");
+
     // Decode the operation
     uint8_t op = (instruction & 0b0000001111000000) >> 6;
     uint8_t rs = (instruction & 0b0000000000111000) >> 3;
@@ -707,6 +715,8 @@ void tliALUOperations(VM_instance* vm, uint16_t instruction)
  */
 void tliHighRegOperations(VM_instance* vm, uint16_t instruction)
 {
+    printf("I05 : ");
+
     // Decode the pieces of the operation
     // 0 <= op <= 3
     // 0 <= h1_and_2 <= 3
@@ -813,6 +823,8 @@ void tliHighRegOperations(VM_instance* vm, uint16_t instruction)
  */
 void tliPCRelativeLoad(VM_instance* vm, uint16_t instruction)
 {
+    printf("I06 : ");
+
     // Find the destination register and the (shifted) offset
     uint8_t rd =   (instruction & 0b0000011100000000) >> 8;
     uint8_t word8 = instruction & 0b0000000011111111;
@@ -839,6 +851,8 @@ void tliPCRelativeLoad(VM_instance* vm, uint16_t instruction)
  */
 void tliLoadWithRegOffset(VM_instance* vm, uint16_t instruction)
 {
+    printf("I07 : ");
+
     uint8_t load_or_store = (instruction & 0b0000100000000000) >> 11;
     uint8_t byte_or_word =  (instruction & 0b0000010000000000) >> 10;
     uint8_t ro =            (instruction & 0b0000000111000000) >> 6;
@@ -884,6 +898,8 @@ void tliLoadWithRegOffset(VM_instance* vm, uint16_t instruction)
  */
 void tliLoadStoreSignExtendedByte(VM_instance* vm, uint16_t instruction)
 {
+    printf("I08 : ");
+
     uint8_t h =       (instruction & 0b0000100000000000) >> 11;
     uint8_t sgn_ext = (instruction & 0b0000010000000000) >> 10;
     uint8_t ro =      (instruction & 0b0000000111000000) >> 6;
@@ -934,6 +950,8 @@ void tliLoadStoreSignExtendedByte(VM_instance* vm, uint16_t instruction)
  */
 void tliLoadStoreWithImmediateOffset(VM_instance* vm, uint16_t instruction)
 {
+    printf("I09 : ");
+
     uint8_t byte_or_word =  (instruction & 0b0001000000000000) >> 12;
     uint8_t load_or_store = (instruction & 0b0000100000000000) >> 11;
     uint8_t offset5 =       (instruction & 0b0000011111000000) >> 6;
@@ -979,6 +997,8 @@ void tliLoadStoreWithImmediateOffset(VM_instance* vm, uint16_t instruction)
  */
 void tliLoadStoreHalfWord(VM_instance* vm, uint16_t instruction)
 {
+    printf("I10 : ");
+
     uint8_t load_or_store = (instruction & 0b0000100000000000) >> 11;
     uint8_t offset5 =       (instruction & 0b0000011111000000) >> 6;
     uint8_t rb =            (instruction & 0b0000000000111000) >> 3;
@@ -1009,6 +1029,8 @@ void tliLoadStoreHalfWord(VM_instance* vm, uint16_t instruction)
  */
 void tliSPRelativeLoad(VM_instance* vm, uint16_t instruction)
 {
+    printf("I11 : ");
+
     uint8_t load_or_store = (instruction & 0b0000100000000000) >> 11;
     uint8_t rd =            (instruction & 0b0000011100000000) >> 8;
     uint8_t word8 =         (instruction & 0b0000000011111111);
@@ -1038,6 +1060,8 @@ void tliSPRelativeLoad(VM_instance* vm, uint16_t instruction)
  */
 void tliLoadAddress(VM_instance* vm, uint16_t instruction)
 {
+    printf("I12 : ");
+
     uint8_t sp =    (instruction & 0b0000100000000000) >> 11;
     uint8_t rd =    (instruction & 0b0000011100000000) >> 8;
     uint8_t word8 = (instruction & 0b0000000011111111);
@@ -1067,6 +1091,8 @@ void tliLoadAddress(VM_instance* vm, uint16_t instruction)
  */
 void tliAddOffsetToSP(VM_instance* vm, uint16_t instruction)
 {
+    printf("I13 : ");
+
     uint8_t sign =   (instruction & 0b0000000010000000) >> 7;
     uint8_t sword7 = (instruction & 0b0000000001111111);
 
@@ -1095,6 +1121,8 @@ void tliAddOffsetToSP(VM_instance* vm, uint16_t instruction)
  */
 void tliPushPopRegisters(VM_instance* vm, uint16_t instruction)
 {
+    printf("I14 : ");
+
     uint8_t load_or_store = (instruction & 0b0000100000000000) >> 10;
     uint8_t pc_lr =      (instruction & 0b0000000100000000) >> 8;
     uint8_t rlist =         (instruction & 0b0000000011111111);
@@ -1152,6 +1180,8 @@ void tliPushPopRegisters(VM_instance* vm, uint16_t instruction)
  */
 void tliMultipleLoadStore(VM_instance* vm, uint16_t instruction)
 {
+    printf("I15 : ");
+
     uint8_t load_or_store = (instruction & 0b0000100000000000) >> 11;
     uint8_t rb =            (instruction & 0b0000011100000000) >> 8;
     uint8_t rlist =         (instruction & 0b0000000011111111);
@@ -1205,6 +1235,8 @@ void tliMultipleLoadStore(VM_instance* vm, uint16_t instruction)
  */
 void tliConditionalBranch(VM_instance* vm, uint16_t instruction)
 {
+    printf("I16 : ");
+
     uint8_t cond =    (instruction & 0b0000111100000000) >> 8;
     int8_t soffset8 = (int8_t) (instruction & 0b0000000011111111);
 
@@ -1299,6 +1331,8 @@ void tliConditionalBranch(VM_instance* vm, uint16_t instruction)
  */
 void tliSoftwareInterrupt(VM_instance* vm, uint16_t instruction)
 {
+    printf("I17 : ");
+
     // Decode the instruction
     uint8_t value = instruction & 0x00FF;
     printf("SWI #%u\n", value);
@@ -1320,13 +1354,20 @@ void tliSoftwareInterrupt(VM_instance* vm, uint16_t instruction)
  */
 void tliUnconditionalBranch(VM_instance* vm, uint16_t instruction)
 {
+    printf("I18 : ");
+
     uint16_t offset11 = instruction & 0b0000011111111111;
 
     // Calculate how to jump; we shift offset11 by 1, leading to a 12-bit number, then sign-extend it to 32 bits
     uint32_t relJump = offset11 << 1;
     relJump = (relJump & 0x00000FFF) | ((relJump & 0x0800) ? 0xFFFFF000 : 0);
+
+    // In a real ARM processor, at this point the PC would be 4 bytes ahead of the current instruction, whereas in this
+    // implemention is only 2 ahead due to lack of prefetch. The assembler will be operating on that assumption when
+    // calculating the offset for this instruction. We have to make the adjustment manually below.
+
     printf("B %d\n", relJump);
-    uint32_t addr = vm_program_counter(vm) + relJump;
+    uint32_t addr = vm_program_counter(vm) + 2 + relJump;
 
     // Jump to the new address
     vm_program_counter(vm) = addr;
@@ -1342,6 +1383,8 @@ void tliUnconditionalBranch(VM_instance* vm, uint16_t instruction)
  */
 void tliLongBranchWithLink(VM_instance* vm, uint16_t instruction)
 {
+    printf("I19 : ");
+
     // This instruction actually always comes in pairs
     // The offset of the first half is stored in the LR for use by the second
     uint8_t high_or_low = (instruction & 0b0000100000000000) >> 11;

@@ -19,7 +19,7 @@
 #define istl_push_pop_registers(instr)    (((instr) & 0b11110110) == 0b10110100)
 #define istl_multiple_load_store(instr)   (((instr) & 0b11110000) == 0b11000000)
 #define istl_conditional_branch(instr)   ((((instr) & 0b11110000) == 0b11010000) && \
-                                          (((instr) & 0b00001111) == 0b00001111))
+                                          (((instr) & 0b00001111) != 0b00001111))
 #define istl_software_interrupt(instr)    (((instr) & 0b11111111) == 0b11011111)
 #define istl_unconditional_branch(instr)  (((instr) & 0b11111000) == 0b11100000)
 #define istl_long_branch_w_link(instr)    (((instr) & 0b11110000) == 0b11110000)
