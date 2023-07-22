@@ -30,7 +30,7 @@ def main():
         else:
             raise Exception(f"Unknown test file type: {test_filename_full}")
 
-        # Link for QEMU (with ARM-to-Thumb start code)
+        # Link for QEMU (with ARM-to-Thumb start code) and for the VM (starting with the main function)
         subprocess.run(["arm-none-eabi-ld", "start.o", "lib.o", obj_filename_full, "-o", elf_filename_full.replace(".elf", ".qemu.elf")])
         subprocess.run(["arm-none-eabi-ld", "lib.o", obj_filename_full, "-o", elf_filename_full.replace(".elf", ".sim.elf"), "-e", "main"])
 

@@ -51,8 +51,66 @@ int main(int argc, char* argv[])
     Elf32_Ehdr* header = (Elf32_Ehdr*) &(elfContent[0]);
     printf("Read file successfully\n");
     printf("ELF Identifier: %s\n", header->e_ident);
+    printf("ELF Type: 0x%x\n", header->e_type);
     printf("Architecture: %u\n", header->e_machine);
+    printf("ELF Version: %u\n", header->e_version);
     printf("Entry point: %u\n", header->e_entry);
+    printf("Offset in ELF of program header table: %u\n", header->e_phoff);
+    printf("Offset in ELF of section header table: %u\n", header->e_shoff);
+    printf("Flags: 0x%x\n", header->e_flags);
+    printf("Size of this header: %u\n", header->e_ehsize);
+    printf("Size of a program header table entry: %u\n", header->e_phentsize);
+    printf("Number of program headers: %u\n", header->e_phnum);
+    printf("Size of a section header table entry: %u\n", header->e_shentsize);
+    printf("Number of section headers: %u\n", header->e_shnum);
+    printf("Index of section header table which contains section names: %u\n\n", header->e_shstrndx);
+
+
+    // The program headers, containing the loading information, begin at offset e_phoff. There are e_phnum entries,
+    // each of size e_phentsize.
+    Elf32_Half programNum = 0;
+    Elf32_Phdr* programHeader;
+    do {
+        // Find the current header based on the header num, the starting offset, and the size of each one
+        programHeader = (Elf32_Phdr*) &(elfContent[header->e_phoff + (programNum * header->e_phentsize)]);
+
+        // Print out its information
+        printf("Program header %u\n", programNum);
+        printf("Segment type: %u\n", programHeader->p_type);
+        printf("Offset of segment in ELF file: %u\n", programHeader->p_offset);
+        printf("Virtual address of segment in memory: 0x%x\n", programHeader->p_vaddr);
+        printf("Physical address of segment in memory: 0x%x\n", programHeader->p_paddr);
+        printf("Size of segment in ELF file: %u\n", programHeader->p_filesz);
+        printf("Size of segment in memory: %u\n", programHeader->p_memsz);
+        printf("Flags: 0x%x\n", programHeader->p_flags);
+        printf("Alignment: %u\n\n", programHeader->p_align);
+
+        // Move on to the next header
+        ++programNum;
+    } while (programNum < header->e_phnum);
+
+    // Now go through the section headers in a similar manner
+    Elf32_Half sectionNum = 0;
+    Elf32_Shdr* sectionHeader;
+    do {
+        // Find the section header based on the offset of the first one, the size of each one and the number so far
+        sectionHeader = (Elf32_Shdr*) &(elfContent[header->e_shoff + (sectionNum * header->e_shentsize)]);
+
+        // Print its information
+        printf("Section header %u\n", sectionNum);
+        printf("Name is at .shstrtab offset: %u\n", sectionHeader->sh_name);
+        printf("Type: 0x%x\n", sectionHeader->sh_type);
+        printf("Flags: 0x%x\n", sectionHeader->sh_flags);
+        printf("Virtual address (if loaded): 0x%x\n", sectionHeader->sh_addr);
+        printf("Offset of section in ELF: 0x%x\n", sectionHeader->sh_offset);
+        printf("Size of section in ELF: %u\n", sectionHeader->sh_size);
+        printf("Section index link (meanings differ): %u\n", sectionHeader->sh_link);
+        printf("Extra info (meanings differ): %u\n", sectionHeader->sh_info);
+        printf("Alignment: %u\n", sectionHeader->sh_addralign);
+        printf("Entry size (if applicable): %u\n\n", sectionHeader->sh_entsize);
+
+        ++sectionNum;
+    } while (sectionNum < header->e_shnum);
 
     fclose(file);
     return 0;
