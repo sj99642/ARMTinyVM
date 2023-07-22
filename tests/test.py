@@ -2,6 +2,9 @@ import json
 import subprocess
 import os.path
 import sys
+from glob import glob
+import re
+from typing import Optional
 
 
 def main():
@@ -10,10 +13,18 @@ def main():
     subprocess.run(["arm-none-eabi-as", "-mthumb", "-o", "start_thumb.o", "start.s"])
     subprocess.run(["arm-none-eabi-as", "-mthumb", "-o", "lib.o", "lib.s"])
 
-    # Load the tests file
-    # This will be a dictionary mapping strings to integers
-    with open("tests.json", "rt") as test_file:
-        tests = json.load(test_file)
+    # Find a list of tests, mapping filename to expected return code
+    # The first line of the .s or .c file should contain a comment with the expected return value
+    tests = {}
+    for filename in glob("./instructions/**/*.[cs]", recursive=True):
+        expected_return = get_test_expected_result(filename)
+        if expected_return:
+            tests[filename] = expected_return
+    for filename in glob("./lib/**/*.[cs]", recursive=True):
+        expected_return = get_test_expected_result(filename)
+        if expected_return:
+            tests[filename] = expected_return
+    print(tests)
 
     # Each key is the relative address of an assembly or C file
     # Each value is the intended exit value when that program is executed
@@ -58,6 +69,25 @@ def main():
             print(f"TEST SUCCESS (WSL): {test_filename_full} -> {return_code_vm_wsl}", file=sys.stderr)
         else:
             print(f"TEST FAILED (WSL): {test_filename_full} -> {return_code_vm_wsl}, supposed to be {expected_result}", file=sys.stderr)
+
+
+def get_test_expected_result(filename: str) -> Optional[int]:
+    """
+    Takes the name of a .s or .c test file, and returns the expected result. This requires the first line of the file
+    to be a comment containing an integer which is the return value.
+    :param filename:
+    :return:
+    """
+    if os.stat(filename).st_size == 0:
+        print(f"Empty test file {filename}", file=sys.stderr)
+        return None
+    with open(filename, "rt") as file:
+        first_line = file.readline()
+        number = re.search(r"\d+", first_line)
+        if number is None:
+            print(f"No expected result found in {filename}", file=sys.stderr)
+            return None
+        return int(number.group(0))
 
 
 if __name__ == "__main__":

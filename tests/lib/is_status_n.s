@@ -1,3 +1,4 @@
+// 10
 .global main
 
 // Expected final result is 0b1010

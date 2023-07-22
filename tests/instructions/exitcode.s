@@ -1,3 +1,4 @@
+// 42
 .global main
 
 main:

@@ -1,0 +1,83 @@
+01/00 - LSL Rd, Rs, Offset5 - Answer1 - N - Z - CAffected - CNotAffected
+01/01 - LSR Rd, Rs, Offset5 - Answer1 - N - Z - CAffected - CNotAffected
+01/10 - ASR Rd, Rs, Offset5 - Answer1 - N - Z - CAffected - CNotAffected
+02/0/0 - ADD Rd, Rs, Rn - Answer - AnswerOverflow - N - Z - C - V
+02/0/1 - ADD Rd, Rs, Offset3 - Answer - AnswerOverflow - N - Z - C - V
+02/1/0 - SUB Rd, Rs, Rn - Answer - AnswerOverflow - N - Z - C - V
+02/1/1 - SUB Rd, Rs, Offset3 - Answer - AnswerOverflow - N - Z - C - V
+03/00 - MOV Rd, Offset8 - Answer - N - Z - C - V
+03/01 - CMP Rd, Offset8 - N - Z - C - V
+03/10 - ADD Rd, Offset8 - Answer - AnswerOverflow - N - Z - C - V
+03/11 - SUB Rd, Offset8 - Answer - AnswerOverflow - N - Z - C - V
+04/0000 - AND Rd, Rs - Answer - N - Z
+04/0001 - EOR Rd, Rs - Answer - N - Z
+04/0010 - LSL Rd, Rs - Answer1 - N - Z - CAffected - CNotAffected
+04/0011 - LSR Rd, Rs - Answer1 - N - Z - CAffected - CNotAffected
+04/0100 - ASR Rd, Rs - Answer1 - N - Z - CAffected - CNotAffected
+04/0101 - ADC Rd, Rs - Answer - AnswerOverflow - N - Z - C - V
+04/0110 - SBC Rd, Rs - Answer - AnswerOverflow - N - Z - C - V
+04/0111 - ROR Rd, Rs - Answer1 - N - Z - CAffected - CNotAffected
+04/1000 - TST Rd, Rs - Answer - N - Z
+04/1001 - NEG Rd, Rs - Answer - N - Z - C - V
+04/1010 - CMP Rd, Rs - N - Z - C - V
+04/1011 - CMN Rd, Rs - N - Z - C - V
+04/1100 - ORR Rd, Rs - Answer - N - Z
+04/1101 - MUL Rd, Rs - Answer - N - Z
+04/1110 - BIC Rd, Rs - Answer - N - Z
+04/1111 - MVN Rd, Rs - Answer - N - Z
+05/00/0/1 - ADD Rd, Hs - Answer - NUnaffected - ZUnaffected - CUnaffected - VUnaffected
+05/00/1/0 - ADD Hd, Rs - Answer - NUnaffected - ZUnaffected - CUnaffected - VUnaffected
+05/00/1/1 - ADD Hd, Hs - Answer - NUnaffected - ZUnaffected - CUnaffected - VUnaffected
+05/01/0/1 - CMP Rd, Hs - N - Z - C - V
+05/01/1/0 - CMP Hd, Rs - N - Z - C - V
+05/01/1/1 - CMP Hd, Hs - N - Z - C - V
+05/10/0/1 - MOV Rd, Hs - Answer - NUnaffected - ZUnaffected - CUnaffected - VUnaffected
+05/10/1/0 - MOV Hd, Rs - Answer - NUnaffected - ZUnaffected - CUnaffected - VUnaffected
+05/10/1/1 - MOV Hd, Hs - Answer - NUnaffected - ZUnaffected - CUnaffected - VUnaffected
+05/11/0/0 - BX Rs - Jump
+05/11/0/1 - BX Hs - Jump
+06 - LDR Rd, [PC, lmm] - Answer
+07/0/0 - STR Rd, [Rb, Ro] - Answer
+07/0/1 - STRB Rd, [Rb, Ro] - Answer
+07/1/0 - LDR Rd, [Rb, Ro] - Answer
+07/1/1 - LDRB Rd, [Rb, Ro] - Answer
+08/0/0 - STRH Rd, [Rb, Ro] - Answer
+08/0/1 - LDRH Rd, [Rb, Ro] - Answer
+08/1/0 - LDSB Rd, [Rb, Ro] - Answer
+08/1/1 - LDSH Rd, [Rb, Ro] - Answer
+09/0/0 - STR Rd, [Rb, lmm] - Answer
+09/1/0 - LDR Rd, [Rb, lmm] - Answer
+09/0/1 - STRB Rd, [Rb, lmm] - Answer
+09/1/1 - LDRB Rd, [Rb, lmm] - Answer
+10/0 - STRH Rd, [Rb, lmm] - Answer
+10/1 - LDRH Rd, [Rb, lmm] - Answer
+11/0 - STR Rd, [SP, lmm] - Answer
+11/1 - LDR Rd, [SP, lmm] - Answer
+12/0 - ADD Rd, PC, lmm - Answer - NUnaffected - ZUnaffected - CUnaffected - VUnaffected
+12/1 - ADD Rd, SP, lmm - Answer - NUnaffected - ZUnaffected - CUnaffected - VUnaffected
+13/0 - ADD SP, lmm - Answer - NUnaffected - ZUnaffected - CUnaffected - VUnaffected
+13/1 - ADD SP, #-lmm - Answer - NUnaffected - ZUnaffected - CUnaffected - VUnaffected
+14/0/0 - PUSH rlist - Answer
+14/0/1 - PUSH rlist, LR - Answer
+14/1/0 - POP rlist - Answer
+14/1/1 - POP rlist, PC - Answer
+15/0 - STMIA Rb!, rlist - Answer
+15/1 - LDMIA Rb!, rlist - Answer
+16/0000 - BEQ label - Jump - NoJump
+16/0001 - BNE label - Jump - NoJump
+16/0010 - BCS label - Jump - NoJump
+16/0011 - BCC label - Jump - NoJump
+16/0100 - BMI label - Jump - NoJump
+16/0101 - BPL label - Jump - NoJump
+16/0110 - BVS label - Jump - NoJump
+16/0111 - BVC label - Jump - NoJump
+16/1000 - BHI label - Jump - NoJump
+16/1001 - BLS label - Jump - NoJump
+16/1010 - BGE label - Jump - NoJump
+16/1011 - BLE label - Jump - NoJump
+16/1100 - BGT label - Jump - NoJump
+16/1101 - BLE label - Jump - NoJump
+17 - SWI value8 - Call
+18 - B label - Jump
+19/0 - BL label (part A) - Jump
+19/1 - BL label (part B) - Jump
