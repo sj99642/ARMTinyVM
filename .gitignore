@@ -54,6 +54,7 @@ dkms.conf
 # IntelliJ
 .idea/
 cmake-build-debug/
+cmake-build-debug-for-wsl/
 
 # CMake
 build/

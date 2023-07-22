@@ -1,15 +1,13 @@
 #include "ARMTinyVM.h"
-#include "elf.h"
 #include <stdio.h>
 #include <string.h>
 #include <malloc.h>
 #include <errno.h>
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32) || defined(WIN64) || defined(_WIN64) || defined(__WIN64)
-// On Windows, so using the local mmap because the system doesn't provide one
-#include "mman.h"
+#include "win_elf.h"
 #else
-#include <sys/mann.h>
+#include <elf.h>
 #endif
 
 #define ELF_MAX_SIZE (1024*1024*1024)
@@ -38,23 +36,24 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    // We've found a valid file
-    // Now make a memory map so we can read the file as an array rather than as a stream
-    char* elfContent = mmap(NULL, ELF_MAX_SIZE/1024, PROT_READ, MAP_SHARED, fileno(file), 0);
-    if (elfContent == MAP_FAILED) {
-        printf("Unable to map file into memory: error %u\n", errno);
-        return errno;
-    }
+    // Find the size of the file by going to the end, seeing where we are, and going back to the beginning
+    fseek(file, 0L, SEEK_END);
+    long elfSize = ftell(file);
+    rewind(file);
+
+    // Allocate memory big enough for the full file
+    char* elfContent = malloc(elfSize);
+
+    // Read the whole file into that buffer
+    fread(elfContent, elfSize, 1, file);
 
     // We can now address elfContent however we want
     Elf32_Ehdr* header = (Elf32_Ehdr*) &(elfContent[0]);
     printf("Read file successfully\n");
-    printf("ELF Identifier: %s\n", header->ident);
-    printf("Architecture: %u\n", header->machine);
-    printf("Entry point: %u\n", header->entry);
+    printf("ELF Identifier: %s\n", header->e_ident);
+    printf("Architecture: %u\n", header->e_machine);
+    printf("Entry point: %u\n", header->e_entry);
 
-
-    munmap(elfContent, ELF_MAX_SIZE);
     fclose(file);
     return 0;
 
