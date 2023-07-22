@@ -5,9 +5,15 @@ import sys
 from glob import glob
 import re
 from typing import Optional
+from argparse import ArgumentParser
 
 
 def main():
+    parser = ArgumentParser()
+    parser.add_argument("directories", nargs="*", default=["./instructions", "./lib"],
+                        help="Directories to run tests from. Leaving empty defaults to ./instructions and ./lib")
+    args = parser.parse_args()
+
     # Compile start.s and lib.s fresh, so any changes are used
     subprocess.run(["arm-none-eabi-as", "-o", "start_arm.o", "start.s"])
     subprocess.run(["arm-none-eabi-as", "-mthumb", "-o", "start_thumb.o", "start.s"])
@@ -16,14 +22,11 @@ def main():
     # Find a list of tests, mapping filename to expected return code
     # The first line of the .s or .c file should contain a comment with the expected return value
     tests = {}
-    for filename in glob("./instructions/**/*.[cs]", recursive=True):
-        expected_return = get_test_expected_result(filename)
-        if expected_return:
-            tests[filename] = expected_return
-    for filename in glob("./lib/**/*.[cs]", recursive=True):
-        expected_return = get_test_expected_result(filename)
-        if expected_return:
-            tests[filename] = expected_return
+    for dirname in args.directories:
+        for filename in glob(os.path.join(dirname, "**/*.[c,s]"), recursive=True):
+            expected_return = get_test_expected_result(filename)
+            if expected_return:
+                tests[filename] = expected_return
     print(tests)
 
     # Each key is the relative address of an assembly or C file
