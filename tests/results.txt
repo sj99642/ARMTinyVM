@@ -1,0 +1,3005 @@
+Read file successfully
+ELF Identifier: ELF
+ELF Type: 0x2
+Architecture: 40
+ELF Version: 1
+Entry point: 32769
+Offset in ELF of program header table: 52
+Offset in ELF of section header table: 33736
+Flags: 0x5000200
+Size of this header: 52
+Size of a program header table entry: 32
+Number of program headers: 2
+Size of a section header table entry: 40
+Number of section headers: 10
+Index of section header table which contains section names: 9
+
+============ Program header 0 ============
+Segment type: 1
+Offset of segment in ELF file: 0
+Virtual address of segment in memory: 0x0
+Physical address of segment in memory: 0x0
+Size of segment in ELF file: 32808
+Size of segment in memory: 32808
+Flags: 0x5
+Alignment: 65536
+
+============ Program header 1 ============
+Segment type: 1
+Offset of segment in ELF file: 32808
+Virtual address of segment in memory: 0x18028
+Physical address of segment in memory: 0x18028
+Size of segment in ELF file: 4
+Size of segment in memory: 8
+Flags: 0x6
+Alignment: 65536
+
+============ Section header 0 ============
+Name is at .shstrtab offset: 0
+Section name: 
+Type: 0x0
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x0
+Size of section in ELF: 0
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 0
+Entry size (if applicable): 0
+Not to be loaded
+
+============ Section header 1 ============
+Name is at .shstrtab offset: 27
+Section name: .text
+Type: 0x1
+Flags: 0x6
+Virtual address (if loaded): 0x8000
+Offset of section in ELF: 0x8000
+Size of section in ELF: 40
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 4
+Entry size (if applicable): 0
+Allocated and loaded virtual memory segment starting at 0x8000, with size 40
+
+============ Section header 2 ============
+Name is at .shstrtab offset: 33
+Section name: .data
+Type: 0x1
+Flags: 0x3
+Virtual address (if loaded): 0x18028
+Offset of section in ELF: 0x8028
+Size of section in ELF: 4
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 4
+Entry size (if applicable): 0
+Allocated and loaded virtual memory segment starting at 0x18028, with size 4
+
+============ Section header 3 ============
+Name is at .shstrtab offset: 39
+Section name: .bss
+Type: 0x8
+Flags: 0x3
+Virtual address (if loaded): 0x1802c
+Offset of section in ELF: 0x802c
+Size of section in ELF: 4
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 4
+Entry size (if applicable): 0
+Allocated and loaded virtual memory segment starting at 0x1802c, with size 4
+
+============ Section header 4 ============
+Name is at .shstrtab offset: 44
+Section name: .comment
+Type: 0x1
+Flags: 0x30
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x802c
+Size of section in ELF: 89
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 1
+Entry size (if applicable): 1
+Not to be loaded
+
+============ Section header 5 ============
+Name is at .shstrtab offset: 53
+Section name: .ARM.attributes
+Type: 0x70000003
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x8085
+Size of section in ELF: 43
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 1
+Entry size (if applicable): 0
+Not to be loaded
+
+============ Section header 6 ============
+Name is at .shstrtab offset: 69
+Section name: .noinit
+Type: 0x1
+Flags: 0x1
+Virtual address (if loaded): 0x18030
+Offset of section in ELF: 0x80b0
+Size of section in ELF: 0
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 1
+Entry size (if applicable): 0
+Not to be loaded
+
+============ Section header 7 ============
+Name is at .shstrtab offset: 1
+Section name: .symtab
+Type: 0x2
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x80b0
+Size of section in ELF: 528
+Section index link (meanings differ): 8
+Extra info (meanings differ): 16
+Alignment: 4
+Entry size (if applicable): 16
+Not to be loaded
+
+============ Section header 8 ============
+Name is at .shstrtab offset: 9
+Section name: .strtab
+Type: 0x3
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x82c0
+Size of section in ELF: 187
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 1
+Entry size (if applicable): 0
+Not to be loaded
+
+============ Section header 9 ============
+Name is at .shstrtab offset: 17
+Section name: .shstrtab
+Type: 0x3
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x837b
+Size of section in ELF: 77
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 1
+Entry size (if applicable): 0
+Not to be loaded
+
+0x4b01@0x00008000 : I06 : LDR r3, [PC, #4]
+0x6818@0x00008002 : I09 : LDR r0, [r3, #0]
+0x4770@0x00008004 : I05 : BX h14
+0xffff@0x00000006 : I19 : BL(1) 2047
+0xffff@0x00000ffe : I19 : BL(1) 2047
+0xffff@0x00001007 : I19 : BL(1) 2047
+0xffff@0x00001fff : I19 : BL(1) 2047
+0xffff@0x00002007 : I19 : BL(1) 2047
+0xffff@0x00002fff : I19 : BL(1) 2047
+0xffff@0x00003007 : I19 : BL(1) 2047
+0xffff@0x00003fff : I19 : BL(1) 2047
+0xffff@0x00004007 : I19 : BL(1) 2047
+0xffff@0x00004fff : I19 : BL(1) 2047
+0xffff@0x00005007 : I19 : BL(1) 2047
+0xffff@0x00005fff : I19 : BL(1) 2047
+0xffff@0x00006007 : I19 : BL(1) 2047
+0xffff@0x00006fff : I19 : BL(1) 2047
+0xffff@0x00007007 : I19 : BL(1) 2047
+0x01ff@0x00007fff : I01 : LSL R7, R7, #7
+0x184b@0x00008001 : I02 : ADD r3, r1, r1
+0x7068@0x00008003 : I09 : STRB r0, [r5, #1]
+0xc047@0x00008005 : I15 : STMIA r0!, {...*4}
+0x2846@0x00008007 : I03 : CMP r0, #70
+0x0180@0x00008009 : I01 : LSL R0, R0, #6
+0x0100@0x0000800b : I01 : LSL R0, R0, #4
+0x0027@0x0000800d : I01 : LSL R7, R4, #0
+0x01df@0x0000800f : I01 : LSL R7, R3, #7
+0x0020@0x00008011 : I01 : LSL R0, R4, #0
+0x00e0@0x00008013 : I01 : LSL R0, R4, #3
+0x7020@0x00008015 : I09 : STRB r0, [r4, #0]
+0xfa47@0x00008017 : I19 : BL(1) 583
+0xffff@0x00007497 : I19 : BL(1) 2047
+0xffff@0x00009017 : I19 : BL(1) 2047
+0xffff@0x00008497 : I19 : BL(1) 2047
+0xffff@0x0000a017 : I19 : BL(1) 2047
+0xffff@0x00009497 : I19 : BL(1) 2047
+0xffff@0x0000b017 : I19 : BL(1) 2047
+0xffff@0x0000a497 : I19 : BL(1) 2047
+0xffff@0x0000c017 : I19 : BL(1) 2047
+0xffff@0x0000b497 : I19 : BL(1) 2047
+0xffff@0x0000d017 : I19 : BL(1) 2047
+0xffff@0x0000c497 : I19 : BL(1) 2047
+0xffff@0x0000e017 : I19 : BL(1) 2047
+0xffff@0x0000d497 : I19 : BL(1) 2047
+0xffff@0x0000f017 : I19 : BL(1) 2047
+0xffff@0x0000e497 : I19 : BL(1) 2047
+0xffff@0x00010017 : I19 : BL(1) 2047
+0xffff@0x0000f497 : I19 : BL(1) 2047
+0xffff@0x00011017 : I19 : BL(1) 2047
+0xffff@0x00010497 : I19 : BL(1) 2047
+0xffff@0x00012017 : I19 : BL(1) 2047
+0xffff@0x00011497 : I19 : BL(1) 2047
+0xffff@0x00013017 : I19 : BL(1) 2047
+0xffff@0x00012497 : I19 : BL(1) 2047
+0xffff@0x00014017 : I19 : BL(1) 2047
+0xffff@0x00013497 : I19 : BL(1) 2047
+0xffff@0x00015017 : I19 : BL(1) 2047
+0xffff@0x00014497 : I19 : BL(1) 2047
+0xffff@0x00016017 : I19 : BL(1) 2047
+0xffff@0x00015497 : I19 : BL(1) 2047
+0xffff@0x00017017 : I19 : BL(1) 2047
+0xffff@0x00016497 : I19 : BL(1) 2047
+0xffff@0x00018017 : I19 : BL(1) 2047
+0xffff@0x00017497 : I19 : BL(1) 2047
+0xffff@0x00019017 : I19 : BL(1) 2047
+0xffff@0x00018497 : I19 : BL(1) 2047
+0xffff@0x0001a017 : I19 : BL(1) 2047
+0xffff@0x00019497 : I19 : BL(1) 2047
+0xffff@0x0001b017 : I19 : BL(1) 2047
+0xffff@0x0001a497 : I19 : BL(1) 2047
+0xffff@0x0001c017 : I19 : BL(1) 2047
+0xffff@0x0001b497 : I19 : BL(1) 2047
+0xffff@0x0001d017 : I19 : BL(1) 2047
+0xffff@0x0001c497 : I19 : BL(1) 2047
+0xffff@0x0001e017 : I19 : BL(1) 2047
+0xffff@0x0001d497 : I19 : BL(1) 2047
+0xffff@0x0001f017 : I19 : BL(1) 2047
+0xffff@0x0001e497 : I19 : BL(1) 2047
+0xffff@0x00020017 : I19 : BL(1) 2047
+0xffff@0x0001f497 : I19 : BL(1) 2047
+0xffff@0x00021017 : I19 : BL(1) 2047
+0xffff@0x00020497 : I19 : BL(1) 2047
+0xffff@0x00022017 : I19 : BL(1) 2047
+0xffff@0x00021497 : I19 : BL(1) 2047
+0xffff@0x00023017 : I19 : BL(1) 2047
+0xffff@0x00022497 : I19 : BL(1) 2047
+0xffff@0x00024017 : I19 : BL(1) 2047
+0xffff@0x00023497 : I19 : BL(1) 2047
+0xffff@0x00025017 : I19 : BL(1) 2047
+0xffff@0x00024497 : I19 : BL(1) 2047
+0xffff@0x00026017 : I19 : BL(1) 2047
+0xffff@0x00025497 : I19 : BL(1) 2047
+0xffff@0x00027017 : I19 : BL(1) 2047
+0xffff@0x00026497 : I19 : BL(1) 2047
+0xffff@0x00028017 : I19 : BL(1) 2047
+0xffff@0x00027497 : I19 : BL(1) 2047
+0xffff@0x00029017 : I19 : BL(1) 2047
+0xffff@0x00028497 : I19 : BL(1) 2047
+0xffff@0x0002a017 : I19 : BL(1) 2047
+0xffff@0x00029497 : I19 : BL(1) 2047
+
+
+
+
+Executed 100 instructions
+r0 = 0
+r1 = 0
+r2 = 0
+r3 = 0
+r4 = 0
+r5 = 0
+r6 = 0
+r7 = 0
+r8 = 0
+r9 = 0
+r10 = 0
+r11 = 0
+r12 = 0
+sp = 4294967292
+lr = 169113
+pc = 176151
+CPSR = { .N = 0, .Z = 1, .C = 0, .V = 0 }
+Read file successfully
+ELF Identifier: ELF
+ELF Type: 0x2
+Architecture: 40
+ELF Version: 1
+Entry point: 32769
+Offset in ELF of program header table: 52
+Offset in ELF of section header table: 33736
+Flags: 0x5000200
+Size of this header: 52
+Size of a program header table entry: 32
+Number of program headers: 2
+Size of a section header table entry: 40
+Number of section headers: 10
+Index of section header table which contains section names: 9
+
+============ Program header 0 ============
+Segment type: 1
+Offset of segment in ELF file: 0
+Virtual address of segment in memory: 0x0
+Physical address of segment in memory: 0x0
+Size of segment in ELF file: 32808
+Size of segment in memory: 32808
+Flags: 0x5
+Alignment: 65536
+
+============ Program header 1 ============
+Segment type: 1
+Offset of segment in ELF file: 32808
+Virtual address of segment in memory: 0x18028
+Physical address of segment in memory: 0x18028
+Size of segment in ELF file: 4
+Size of segment in memory: 8
+Flags: 0x6
+Alignment: 65536
+
+============ Section header 0 ============
+Name is at .shstrtab offset: 0
+Section name: 
+Type: 0x0
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x0
+Size of section in ELF: 0
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 0
+Entry size (if applicable): 0
+Not to be loaded
+
+============ Section header 1 ============
+Name is at .shstrtab offset: 27
+Section name: .text
+Type: 0x1
+Flags: 0x6
+Virtual address (if loaded): 0x8000
+Offset of section in ELF: 0x8000
+Size of section in ELF: 40
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 4
+Entry size (if applicable): 0
+Allocated and loaded virtual memory segment starting at 0x8000, with size 40
+
+============ Section header 2 ============
+Name is at .shstrtab offset: 33
+Section name: .data
+Type: 0x1
+Flags: 0x3
+Virtual address (if loaded): 0x18028
+Offset of section in ELF: 0x8028
+Size of section in ELF: 4
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 4
+Entry size (if applicable): 0
+Allocated and loaded virtual memory segment starting at 0x18028, with size 4
+
+============ Section header 3 ============
+Name is at .shstrtab offset: 39
+Section name: .bss
+Type: 0x8
+Flags: 0x3
+Virtual address (if loaded): 0x1802c
+Offset of section in ELF: 0x802c
+Size of section in ELF: 4
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 4
+Entry size (if applicable): 0
+Allocated and loaded virtual memory segment starting at 0x1802c, with size 4
+
+============ Section header 4 ============
+Name is at .shstrtab offset: 44
+Section name: .comment
+Type: 0x1
+Flags: 0x30
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x802c
+Size of section in ELF: 89
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 1
+Entry size (if applicable): 1
+Not to be loaded
+
+============ Section header 5 ============
+Name is at .shstrtab offset: 53
+Section name: .ARM.attributes
+Type: 0x70000003
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x8085
+Size of section in ELF: 43
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 1
+Entry size (if applicable): 0
+Not to be loaded
+
+============ Section header 6 ============
+Name is at .shstrtab offset: 69
+Section name: .noinit
+Type: 0x1
+Flags: 0x1
+Virtual address (if loaded): 0x18030
+Offset of section in ELF: 0x80b0
+Size of section in ELF: 0
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 1
+Entry size (if applicable): 0
+Not to be loaded
+
+============ Section header 7 ============
+Name is at .shstrtab offset: 1
+Section name: .symtab
+Type: 0x2
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x80b0
+Size of section in ELF: 528
+Section index link (meanings differ): 8
+Extra info (meanings differ): 16
+Alignment: 4
+Entry size (if applicable): 16
+Not to be loaded
+
+============ Section header 8 ============
+Name is at .shstrtab offset: 9
+Section name: .strtab
+Type: 0x3
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x82c0
+Size of section in ELF: 187
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 1
+Entry size (if applicable): 0
+Not to be loaded
+
+============ Section header 9 ============
+Name is at .shstrtab offset: 17
+Section name: .shstrtab
+Type: 0x3
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x837b
+Size of section in ELF: 77
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 1
+Entry size (if applicable): 0
+Not to be loaded
+
+0x4b01@0x00008000 : I06 : LDR r3, [PC, #4]
+0x6818@0x00008002 : I09 : LDR r0, [r3, #0]
+0x4770@0x00008004 : I05 : BX h14
+0xffff@0x00000006 : I19 : BL(1) 2047
+0xffff@0x00000ffe : I19 : BL(1) 2047
+0xffff@0x00001007 : I19 : BL(1) 2047
+0xffff@0x00001fff : I19 : BL(1) 2047
+0xffff@0x00002007 : I19 : BL(1) 2047
+0xffff@0x00002fff : I19 : BL(1) 2047
+0xffff@0x00003007 : I19 : BL(1) 2047
+0xffff@0x00003fff : I19 : BL(1) 2047
+0xffff@0x00004007 : I19 : BL(1) 2047
+0xffff@0x00004fff : I19 : BL(1) 2047
+0xffff@0x00005007 : I19 : BL(1) 2047
+0xffff@0x00005fff : I19 : BL(1) 2047
+0xffff@0x00006007 : I19 : BL(1) 2047
+0xffff@0x00006fff : I19 : BL(1) 2047
+0xffff@0x00007007 : I19 : BL(1) 2047
+0x01ff@0x00007fff : I01 : LSL R7, R7, #7
+0x184b@0x00008001 : I02 : ADD r3, r1, r1
+0x7068@0x00008003 : I09 : STRB r0, [r5, #1]
+0xc047@0x00008005 : I15 : STMIA r0!, {...*4}
+0x2846@0x00008007 : I03 : CMP r0, #70
+0x0180@0x00008009 : I01 : LSL R0, R0, #6
+0x0100@0x0000800b : I01 : LSL R0, R0, #4
+0x0027@0x0000800d : I01 : LSL R7, R4, #0
+0x01df@0x0000800f : I01 : LSL R7, R3, #7
+0x0020@0x00008011 : I01 : LSL R0, R4, #0
+0x00e0@0x00008013 : I01 : LSL R0, R4, #3
+0x7020@0x00008015 : I09 : STRB r0, [r4, #0]
+0xfa47@0x00008017 : I19 : BL(1) 583
+0xffff@0x00007497 : I19 : BL(1) 2047
+0xffff@0x00009017 : I19 : BL(1) 2047
+0xffff@0x00008497 : I19 : BL(1) 2047
+0xffff@0x0000a017 : I19 : BL(1) 2047
+0xffff@0x00009497 : I19 : BL(1) 2047
+0xffff@0x0000b017 : I19 : BL(1) 2047
+0xffff@0x0000a497 : I19 : BL(1) 2047
+0xffff@0x0000c017 : I19 : BL(1) 2047
+0xffff@0x0000b497 : I19 : BL(1) 2047
+0xffff@0x0000d017 : I19 : BL(1) 2047
+0xffff@0x0000c497 : I19 : BL(1) 2047
+0xffff@0x0000e017 : I19 : BL(1) 2047
+0xffff@0x0000d497 : I19 : BL(1) 2047
+0xffff@0x0000f017 : I19 : BL(1) 2047
+0xffff@0x0000e497 : I19 : BL(1) 2047
+0xffff@0x00010017 : I19 : BL(1) 2047
+0xffff@0x0000f497 : I19 : BL(1) 2047
+0xffff@0x00011017 : I19 : BL(1) 2047
+0xffff@0x00010497 : I19 : BL(1) 2047
+0xffff@0x00012017 : I19 : BL(1) 2047
+0xffff@0x00011497 : I19 : BL(1) 2047
+0xffff@0x00013017 : I19 : BL(1) 2047
+0xffff@0x00012497 : I19 : BL(1) 2047
+0xffff@0x00014017 : I19 : BL(1) 2047
+0xffff@0x00013497 : I19 : BL(1) 2047
+0xffff@0x00015017 : I19 : BL(1) 2047
+0xffff@0x00014497 : I19 : BL(1) 2047
+0xffff@0x00016017 : I19 : BL(1) 2047
+0xffff@0x00015497 : I19 : BL(1) 2047
+0xffff@0x00017017 : I19 : BL(1) 2047
+0xffff@0x00016497 : I19 : BL(1) 2047
+0xffff@0x00018017 : I19 : BL(1) 2047
+0xffff@0x00017497 : I19 : BL(1) 2047
+0xffff@0x00019017 : I19 : BL(1) 2047
+0xffff@0x00018497 : I19 : BL(1) 2047
+0xffff@0x0001a017 : I19 : BL(1) 2047
+0xffff@0x00019497 : I19 : BL(1) 2047
+0xffff@0x0001b017 : I19 : BL(1) 2047
+0xffff@0x0001a497 : I19 : BL(1) 2047
+0xffff@0x0001c017 : I19 : BL(1) 2047
+0xffff@0x0001b497 : I19 : BL(1) 2047
+0xffff@0x0001d017 : I19 : BL(1) 2047
+0xffff@0x0001c497 : I19 : BL(1) 2047
+0xffff@0x0001e017 : I19 : BL(1) 2047
+0xffff@0x0001d497 : I19 : BL(1) 2047
+0xffff@0x0001f017 : I19 : BL(1) 2047
+0xffff@0x0001e497 : I19 : BL(1) 2047
+0xffff@0x00020017 : I19 : BL(1) 2047
+0xffff@0x0001f497 : I19 : BL(1) 2047
+0xffff@0x00021017 : I19 : BL(1) 2047
+0xffff@0x00020497 : I19 : BL(1) 2047
+0xffff@0x00022017 : I19 : BL(1) 2047
+0xffff@0x00021497 : I19 : BL(1) 2047
+0xffff@0x00023017 : I19 : BL(1) 2047
+0xffff@0x00022497 : I19 : BL(1) 2047
+0xffff@0x00024017 : I19 : BL(1) 2047
+0xffff@0x00023497 : I19 : BL(1) 2047
+0xffff@0x00025017 : I19 : BL(1) 2047
+0xffff@0x00024497 : I19 : BL(1) 2047
+0xffff@0x00026017 : I19 : BL(1) 2047
+0xffff@0x00025497 : I19 : BL(1) 2047
+0xffff@0x00027017 : I19 : BL(1) 2047
+0xffff@0x00026497 : I19 : BL(1) 2047
+0xffff@0x00028017 : I19 : BL(1) 2047
+0xffff@0x00027497 : I19 : BL(1) 2047
+0xffff@0x00029017 : I19 : BL(1) 2047
+0xffff@0x00028497 : I19 : BL(1) 2047
+0xffff@0x0002a017 : I19 : BL(1) 2047
+0xffff@0x00029497 : I19 : BL(1) 2047
+
+
+
+
+Executed 100 instructions
+r0 = 0
+r1 = 0
+r2 = 0
+r3 = 0
+r4 = 0
+r5 = 0
+r6 = 0
+r7 = 0
+r8 = 0
+r9 = 0
+r10 = 0
+r11 = 0
+r12 = 0
+sp = 4294967292
+lr = 169113
+pc = 176151
+CPSR = { .N = 0, .Z = 1, .C = 0, .V = 0 }
+Read file successfully
+ELF Identifier: ELF
+ELF Type: 0x2
+Architecture: 40
+ELF Version: 1
+Entry point: 32796
+Offset in ELF of program header table: 52
+Offset in ELF of section header table: 33732
+Flags: 0x5000200
+Size of this header: 52
+Size of a program header table entry: 32
+Number of program headers: 1
+Size of a section header table entry: 40
+Number of section headers: 7
+Index of section header table which contains section names: 6
+
+============ Program header 0 ============
+Segment type: 1
+Offset of segment in ELF file: 0
+Virtual address of segment in memory: 0x0
+Physical address of segment in memory: 0x0
+Size of segment in ELF file: 32912
+Size of segment in memory: 32912
+Flags: 0x5
+Alignment: 65536
+
+============ Section header 0 ============
+Name is at .shstrtab offset: 0
+Section name: 
+Type: 0x0
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x0
+Size of section in ELF: 0
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 0
+Entry size (if applicable): 0
+Not to be loaded
+
+============ Section header 1 ============
+Name is at .shstrtab offset: 27
+Section name: .text
+Type: 0x1
+Flags: 0x6
+Virtual address (if loaded): 0x8000
+Offset of section in ELF: 0x8000
+Size of section in ELF: 144
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 4
+Entry size (if applicable): 0
+Allocated and loaded virtual memory segment starting at 0x8000, with size 144
+
+============ Section header 2 ============
+Name is at .shstrtab offset: 33
+Section name: .ARM.attributes
+Type: 0x70000003
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x8090
+Size of section in ELF: 31
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 1
+Entry size (if applicable): 0
+Not to be loaded
+
+============ Section header 3 ============
+Name is at .shstrtab offset: 49
+Section name: .noinit
+Type: 0x1
+Flags: 0x1
+Virtual address (if loaded): 0x18090
+Offset of section in ELF: 0x80af
+Size of section in ELF: 0
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 1
+Entry size (if applicable): 0
+Not to be loaded
+
+============ Section header 4 ============
+Name is at .shstrtab offset: 1
+Section name: .symtab
+Type: 0x2
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x80b0
+Size of section in ELF: 512
+Section index link (meanings differ): 5
+Extra info (meanings differ): 17
+Alignment: 4
+Entry size (if applicable): 16
+Not to be loaded
+
+============ Section header 5 ============
+Name is at .shstrtab offset: 9
+Section name: .strtab
+Type: 0x3
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x82b0
+Size of section in ELF: 217
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 1
+Entry size (if applicable): 0
+Not to be loaded
+
+============ Section header 6 ============
+Name is at .shstrtab offset: 17
+Section name: .shstrtab
+Type: 0x3
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x8389
+Size of section in ELF: 57
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 1
+Entry size (if applicable): 0
+Not to be loaded
+
+0x2000@0x0000801c : I03 : MOV r0, #0
+0xf000@0x0000801e : I19 : BL(0) 0
+0xf80a@0x00008020 : I19 : BL(1) 10
+0xe7e4@0x00008034 : I18 : B -56
+0x2701@0x00008000 : I03 : MOV r7, #1
+0xdf00@0x00008002 : I17 : SWI #0
+Software interrupt: 0
+
+
+
+
+Executed 6 instructions
+r0 = 0
+r1 = 0
+r2 = 0
+r3 = 0
+r4 = 0
+r5 = 0
+r6 = 0
+r7 = 1
+r8 = 0
+r9 = 0
+r10 = 0
+r11 = 0
+r12 = 0
+sp = 4294967292
+lr = 32772
+pc = 32772
+CPSR = { .N = 0, .Z = 0, .C = 0, .V = 0 }
+Read file successfully
+ELF Identifier: ELF
+ELF Type: 0x2
+Architecture: 40
+ELF Version: 1
+Entry point: 32796
+Offset in ELF of program header table: 52
+Offset in ELF of section header table: 33732
+Flags: 0x5000200
+Size of this header: 52
+Size of a program header table entry: 32
+Number of program headers: 1
+Size of a section header table entry: 40
+Number of section headers: 7
+Index of section header table which contains section names: 6
+
+============ Program header 0 ============
+Segment type: 1
+Offset of segment in ELF file: 0
+Virtual address of segment in memory: 0x0
+Physical address of segment in memory: 0x0
+Size of segment in ELF file: 32912
+Size of segment in memory: 32912
+Flags: 0x5
+Alignment: 65536
+
+============ Section header 0 ============
+Name is at .shstrtab offset: 0
+Section name: 
+Type: 0x0
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x0
+Size of section in ELF: 0
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 0
+Entry size (if applicable): 0
+Not to be loaded
+
+============ Section header 1 ============
+Name is at .shstrtab offset: 27
+Section name: .text
+Type: 0x1
+Flags: 0x6
+Virtual address (if loaded): 0x8000
+Offset of section in ELF: 0x8000
+Size of section in ELF: 144
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 4
+Entry size (if applicable): 0
+Allocated and loaded virtual memory segment starting at 0x8000, with size 144
+
+============ Section header 2 ============
+Name is at .shstrtab offset: 33
+Section name: .ARM.attributes
+Type: 0x70000003
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x8090
+Size of section in ELF: 31
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 1
+Entry size (if applicable): 0
+Not to be loaded
+
+============ Section header 3 ============
+Name is at .shstrtab offset: 49
+Section name: .noinit
+Type: 0x1
+Flags: 0x1
+Virtual address (if loaded): 0x18090
+Offset of section in ELF: 0x80af
+Size of section in ELF: 0
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 1
+Entry size (if applicable): 0
+Not to be loaded
+
+============ Section header 4 ============
+Name is at .shstrtab offset: 1
+Section name: .symtab
+Type: 0x2
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x80b0
+Size of section in ELF: 512
+Section index link (meanings differ): 5
+Extra info (meanings differ): 17
+Alignment: 4
+Entry size (if applicable): 16
+Not to be loaded
+
+============ Section header 5 ============
+Name is at .shstrtab offset: 9
+Section name: .strtab
+Type: 0x3
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x82b0
+Size of section in ELF: 217
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 1
+Entry size (if applicable): 0
+Not to be loaded
+
+============ Section header 6 ============
+Name is at .shstrtab offset: 17
+Section name: .shstrtab
+Type: 0x3
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x8389
+Size of section in ELF: 57
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 1
+Entry size (if applicable): 0
+Not to be loaded
+
+0x2000@0x0000801c : I03 : MOV r0, #0
+0xf000@0x0000801e : I19 : BL(0) 0
+0xf80a@0x00008020 : I19 : BL(1) 10
+0xe7e4@0x00008034 : I18 : B -56
+0x2701@0x00008000 : I03 : MOV r7, #1
+0xdf00@0x00008002 : I17 : SWI #0
+Software interrupt: 0
+
+
+
+
+Executed 6 instructions
+r0 = 0
+r1 = 0
+r2 = 0
+r3 = 0
+r4 = 0
+r5 = 0
+r6 = 0
+r7 = 1
+r8 = 0
+r9 = 0
+r10 = 0
+r11 = 0
+r12 = 0
+sp = 4294967292
+lr = 32772
+pc = 32772
+CPSR = { .N = 0, .Z = 0, .C = 0, .V = 0 }
+Read file successfully
+ELF Identifier: ELF
+ELF Type: 0x2
+Architecture: 40
+ELF Version: 1
+Entry point: 32796
+Offset in ELF of program header table: 52
+Offset in ELF of section header table: 33500
+Flags: 0x5000200
+Size of this header: 52
+Size of a program header table entry: 32
+Number of program headers: 1
+Size of a section header table entry: 40
+Number of section headers: 7
+Index of section header table which contains section names: 6
+
+============ Program header 0 ============
+Segment type: 1
+Offset of segment in ELF file: 0
+Virtual address of segment in memory: 0x0
+Physical address of segment in memory: 0x0
+Size of segment in ELF file: 32800
+Size of segment in memory: 32800
+Flags: 0x5
+Alignment: 65536
+
+============ Section header 0 ============
+Name is at .shstrtab offset: 0
+Section name: 
+Type: 0x0
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x0
+Size of section in ELF: 0
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 0
+Entry size (if applicable): 0
+Not to be loaded
+
+============ Section header 1 ============
+Name is at .shstrtab offset: 27
+Section name: .text
+Type: 0x1
+Flags: 0x6
+Virtual address (if loaded): 0x8000
+Offset of section in ELF: 0x8000
+Size of section in ELF: 32
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 4
+Entry size (if applicable): 0
+Allocated and loaded virtual memory segment starting at 0x8000, with size 32
+
+============ Section header 2 ============
+Name is at .shstrtab offset: 33
+Section name: .ARM.attributes
+Type: 0x70000003
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x8020
+Size of section in ELF: 31
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 1
+Entry size (if applicable): 0
+Not to be loaded
+
+============ Section header 3 ============
+Name is at .shstrtab offset: 49
+Section name: .noinit
+Type: 0x1
+Flags: 0x1
+Virtual address (if loaded): 0x18020
+Offset of section in ELF: 0x803f
+Size of section in ELF: 0
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 1
+Entry size (if applicable): 0
+Not to be loaded
+
+============ Section header 4 ============
+Name is at .shstrtab offset: 1
+Section name: .symtab
+Type: 0x2
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x8040
+Size of section in ELF: 416
+Section index link (meanings differ): 5
+Extra info (meanings differ): 11
+Alignment: 4
+Entry size (if applicable): 16
+Not to be loaded
+
+============ Section header 5 ============
+Name is at .shstrtab offset: 9
+Section name: .strtab
+Type: 0x3
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x81e0
+Size of section in ELF: 192
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 1
+Entry size (if applicable): 0
+Not to be loaded
+
+============ Section header 6 ============
+Name is at .shstrtab offset: 17
+Section name: .shstrtab
+Type: 0x3
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x82a0
+Size of section in ELF: 57
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 1
+Entry size (if applicable): 0
+Not to be loaded
+
+0x202a@0x0000801c : I03 : MOV r0, #42
+0xe7ef@0x0000801e : I18 : B -34
+0x2701@0x00008000 : I03 : MOV r7, #1
+0xdf00@0x00008002 : I17 : SWI #0
+Software interrupt: 0
+
+
+
+
+Executed 4 instructions
+r0 = 42
+r1 = 0
+r2 = 0
+r3 = 0
+r4 = 0
+r5 = 0
+r6 = 0
+r7 = 1
+r8 = 0
+r9 = 0
+r10 = 0
+r11 = 0
+r12 = 0
+sp = 4294967292
+lr = 32772
+pc = 32772
+CPSR = { .N = 0, .Z = 0, .C = 0, .V = 0 }
+Read file successfully
+ELF Identifier: ELF
+ELF Type: 0x2
+Architecture: 40
+ELF Version: 1
+Entry point: 32796
+Offset in ELF of program header table: 52
+Offset in ELF of section header table: 33500
+Flags: 0x5000200
+Size of this header: 52
+Size of a program header table entry: 32
+Number of program headers: 1
+Size of a section header table entry: 40
+Number of section headers: 7
+Index of section header table which contains section names: 6
+
+============ Program header 0 ============
+Segment type: 1
+Offset of segment in ELF file: 0
+Virtual address of segment in memory: 0x0
+Physical address of segment in memory: 0x0
+Size of segment in ELF file: 32800
+Size of segment in memory: 32800
+Flags: 0x5
+Alignment: 65536
+
+============ Section header 0 ============
+Name is at .shstrtab offset: 0
+Section name: 
+Type: 0x0
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x0
+Size of section in ELF: 0
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 0
+Entry size (if applicable): 0
+Not to be loaded
+
+============ Section header 1 ============
+Name is at .shstrtab offset: 27
+Section name: .text
+Type: 0x1
+Flags: 0x6
+Virtual address (if loaded): 0x8000
+Offset of section in ELF: 0x8000
+Size of section in ELF: 32
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 4
+Entry size (if applicable): 0
+Allocated and loaded virtual memory segment starting at 0x8000, with size 32
+
+============ Section header 2 ============
+Name is at .shstrtab offset: 33
+Section name: .ARM.attributes
+Type: 0x70000003
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x8020
+Size of section in ELF: 31
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 1
+Entry size (if applicable): 0
+Not to be loaded
+
+============ Section header 3 ============
+Name is at .shstrtab offset: 49
+Section name: .noinit
+Type: 0x1
+Flags: 0x1
+Virtual address (if loaded): 0x18020
+Offset of section in ELF: 0x803f
+Size of section in ELF: 0
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 1
+Entry size (if applicable): 0
+Not to be loaded
+
+============ Section header 4 ============
+Name is at .shstrtab offset: 1
+Section name: .symtab
+Type: 0x2
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x8040
+Size of section in ELF: 416
+Section index link (meanings differ): 5
+Extra info (meanings differ): 11
+Alignment: 4
+Entry size (if applicable): 16
+Not to be loaded
+
+============ Section header 5 ============
+Name is at .shstrtab offset: 9
+Section name: .strtab
+Type: 0x3
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x81e0
+Size of section in ELF: 192
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 1
+Entry size (if applicable): 0
+Not to be loaded
+
+============ Section header 6 ============
+Name is at .shstrtab offset: 17
+Section name: .shstrtab
+Type: 0x3
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x82a0
+Size of section in ELF: 57
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 1
+Entry size (if applicable): 0
+Not to be loaded
+
+0x202a@0x0000801c : I03 : MOV r0, #42
+0xe7ef@0x0000801e : I18 : B -34
+0x2701@0x00008000 : I03 : MOV r7, #1
+0xdf00@0x00008002 : I17 : SWI #0
+Software interrupt: 0
+
+
+
+
+Executed 4 instructions
+r0 = 42
+r1 = 0
+r2 = 0
+r3 = 0
+r4 = 0
+r5 = 0
+r6 = 0
+r7 = 1
+r8 = 0
+r9 = 0
+r10 = 0
+r11 = 0
+r12 = 0
+sp = 4294967292
+lr = 32772
+pc = 32772
+CPSR = { .N = 0, .Z = 0, .C = 0, .V = 0 }
+Read file successfully
+ELF Identifier: ELF
+ELF Type: 0x2
+Architecture: 40
+ELF Version: 1
+Entry point: 32796
+Offset in ELF of program header table: 52
+Offset in ELF of section header table: 33512
+Flags: 0x5000200
+Size of this header: 52
+Size of a program header table entry: 32
+Number of program headers: 1
+Size of a section header table entry: 40
+Number of section headers: 7
+Index of section header table which contains section names: 6
+
+============ Program header 0 ============
+Segment type: 1
+Offset of segment in ELF file: 0
+Virtual address of segment in memory: 0x0
+Physical address of segment in memory: 0x0
+Size of segment in ELF file: 32802
+Size of segment in memory: 32802
+Flags: 0x5
+Alignment: 65536
+
+============ Section header 0 ============
+Name is at .shstrtab offset: 0
+Section name: 
+Type: 0x0
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x0
+Size of section in ELF: 0
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 0
+Entry size (if applicable): 0
+Not to be loaded
+
+============ Section header 1 ============
+Name is at .shstrtab offset: 27
+Section name: .text
+Type: 0x1
+Flags: 0x6
+Virtual address (if loaded): 0x8000
+Offset of section in ELF: 0x8000
+Size of section in ELF: 34
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 4
+Entry size (if applicable): 0
+Allocated and loaded virtual memory segment starting at 0x8000, with size 34
+
+============ Section header 2 ============
+Name is at .shstrtab offset: 33
+Section name: .ARM.attributes
+Type: 0x70000003
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x8022
+Size of section in ELF: 31
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 1
+Entry size (if applicable): 0
+Not to be loaded
+
+============ Section header 3 ============
+Name is at .shstrtab offset: 49
+Section name: .noinit
+Type: 0x1
+Flags: 0x1
+Virtual address (if loaded): 0x18024
+Offset of section in ELF: 0x8041
+Size of section in ELF: 0
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 1
+Entry size (if applicable): 0
+Not to be loaded
+
+============ Section header 4 ============
+Name is at .shstrtab offset: 1
+Section name: .symtab
+Type: 0x2
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x8044
+Size of section in ELF: 416
+Section index link (meanings differ): 5
+Extra info (meanings differ): 11
+Alignment: 4
+Entry size (if applicable): 16
+Not to be loaded
+
+============ Section header 5 ============
+Name is at .shstrtab offset: 9
+Section name: .strtab
+Type: 0x3
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x81e4
+Size of section in ELF: 201
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 1
+Entry size (if applicable): 0
+Not to be loaded
+
+============ Section header 6 ============
+Name is at .shstrtab offset: 17
+Section name: .shstrtab
+Type: 0x3
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x82ad
+Size of section in ELF: 57
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 1
+Entry size (if applicable): 0
+Not to be loaded
+
+0x2001@0x0000801c : I03 : MOV r0, #1
+0x0040@0x0000801e : I01 : LSL R0, R0, #1
+0xe7ee@0x00008020 : I18 : B -36
+0x2701@0x00008000 : I03 : MOV r7, #1
+0xdf00@0x00008002 : I17 : SWI #0
+Software interrupt: 0
+
+
+
+
+Executed 5 instructions
+r0 = 2
+r1 = 0
+r2 = 0
+r3 = 0
+r4 = 0
+r5 = 0
+r6 = 0
+r7 = 1
+r8 = 0
+r9 = 0
+r10 = 0
+r11 = 0
+r12 = 0
+sp = 4294967292
+lr = 32772
+pc = 32772
+CPSR = { .N = 0, .Z = 0, .C = 1, .V = 0 }
+Read file successfully
+ELF Identifier: ELF
+ELF Type: 0x2
+Architecture: 40
+ELF Version: 1
+Entry point: 32796
+Offset in ELF of program header table: 52
+Offset in ELF of section header table: 33512
+Flags: 0x5000200
+Size of this header: 52
+Size of a program header table entry: 32
+Number of program headers: 1
+Size of a section header table entry: 40
+Number of section headers: 7
+Index of section header table which contains section names: 6
+
+============ Program header 0 ============
+Segment type: 1
+Offset of segment in ELF file: 0
+Virtual address of segment in memory: 0x0
+Physical address of segment in memory: 0x0
+Size of segment in ELF file: 32802
+Size of segment in memory: 32802
+Flags: 0x5
+Alignment: 65536
+
+============ Section header 0 ============
+Name is at .shstrtab offset: 0
+Section name: 
+Type: 0x0
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x0
+Size of section in ELF: 0
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 0
+Entry size (if applicable): 0
+Not to be loaded
+
+============ Section header 1 ============
+Name is at .shstrtab offset: 27
+Section name: .text
+Type: 0x1
+Flags: 0x6
+Virtual address (if loaded): 0x8000
+Offset of section in ELF: 0x8000
+Size of section in ELF: 34
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 4
+Entry size (if applicable): 0
+Allocated and loaded virtual memory segment starting at 0x8000, with size 34
+
+============ Section header 2 ============
+Name is at .shstrtab offset: 33
+Section name: .ARM.attributes
+Type: 0x70000003
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x8022
+Size of section in ELF: 31
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 1
+Entry size (if applicable): 0
+Not to be loaded
+
+============ Section header 3 ============
+Name is at .shstrtab offset: 49
+Section name: .noinit
+Type: 0x1
+Flags: 0x1
+Virtual address (if loaded): 0x18024
+Offset of section in ELF: 0x8041
+Size of section in ELF: 0
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 1
+Entry size (if applicable): 0
+Not to be loaded
+
+============ Section header 4 ============
+Name is at .shstrtab offset: 1
+Section name: .symtab
+Type: 0x2
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x8044
+Size of section in ELF: 416
+Section index link (meanings differ): 5
+Extra info (meanings differ): 11
+Alignment: 4
+Entry size (if applicable): 16
+Not to be loaded
+
+============ Section header 5 ============
+Name is at .shstrtab offset: 9
+Section name: .strtab
+Type: 0x3
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x81e4
+Size of section in ELF: 201
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 1
+Entry size (if applicable): 0
+Not to be loaded
+
+============ Section header 6 ============
+Name is at .shstrtab offset: 17
+Section name: .shstrtab
+Type: 0x3
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x82ad
+Size of section in ELF: 57
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 1
+Entry size (if applicable): 0
+Not to be loaded
+
+0x2001@0x0000801c : I03 : MOV r0, #1
+0x0040@0x0000801e : I01 : LSL R0, R0, #1
+0xe7ee@0x00008020 : I18 : B -36
+0x2701@0x00008000 : I03 : MOV r7, #1
+0xdf00@0x00008002 : I17 : SWI #0
+Software interrupt: 0
+
+
+
+
+Executed 5 instructions
+r0 = 2
+r1 = 0
+r2 = 0
+r3 = 0
+r4 = 0
+r5 = 0
+r6 = 0
+r7 = 1
+r8 = 0
+r9 = 0
+r10 = 0
+r11 = 0
+r12 = 0
+sp = 4294967292
+lr = 32772
+pc = 32772
+CPSR = { .N = 0, .Z = 0, .C = 1, .V = 0 }
+Read file successfully
+ELF Identifier: ELF
+ELF Type: 0x2
+Architecture: 40
+ELF Version: 1
+Entry point: 32796
+Offset in ELF of program header table: 52
+Offset in ELF of section header table: 33520
+Flags: 0x5000200
+Size of this header: 52
+Size of a program header table entry: 32
+Number of program headers: 1
+Size of a section header table entry: 40
+Number of section headers: 7
+Index of section header table which contains section names: 6
+
+============ Program header 0 ============
+Segment type: 1
+Offset of segment in ELF file: 0
+Virtual address of segment in memory: 0x0
+Physical address of segment in memory: 0x0
+Size of segment in ELF file: 32806
+Size of segment in memory: 32806
+Flags: 0x5
+Alignment: 65536
+
+============ Section header 0 ============
+Name is at .shstrtab offset: 0
+Section name: 
+Type: 0x0
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x0
+Size of section in ELF: 0
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 0
+Entry size (if applicable): 0
+Not to be loaded
+
+============ Section header 1 ============
+Name is at .shstrtab offset: 27
+Section name: .text
+Type: 0x1
+Flags: 0x6
+Virtual address (if loaded): 0x8000
+Offset of section in ELF: 0x8000
+Size of section in ELF: 38
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 4
+Entry size (if applicable): 0
+Allocated and loaded virtual memory segment starting at 0x8000, with size 38
+
+============ Section header 2 ============
+Name is at .shstrtab offset: 33
+Section name: .ARM.attributes
+Type: 0x70000003
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x8026
+Size of section in ELF: 31
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 1
+Entry size (if applicable): 0
+Not to be loaded
+
+============ Section header 3 ============
+Name is at .shstrtab offset: 49
+Section name: .noinit
+Type: 0x1
+Flags: 0x1
+Virtual address (if loaded): 0x18028
+Offset of section in ELF: 0x8045
+Size of section in ELF: 0
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 1
+Entry size (if applicable): 0
+Not to be loaded
+
+============ Section header 4 ============
+Name is at .shstrtab offset: 1
+Section name: .symtab
+Type: 0x2
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x8048
+Size of section in ELF: 416
+Section index link (meanings differ): 5
+Extra info (meanings differ): 11
+Alignment: 4
+Entry size (if applicable): 16
+Not to be loaded
+
+============ Section header 5 ============
+Name is at .shstrtab offset: 9
+Section name: .strtab
+Type: 0x3
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x81e8
+Size of section in ELF: 205
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 1
+Entry size (if applicable): 0
+Not to be loaded
+
+============ Section header 6 ============
+Name is at .shstrtab offset: 17
+Section name: .shstrtab
+Type: 0x3
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x82b5
+Size of section in ELF: 57
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 1
+Entry size (if applicable): 0
+Not to be loaded
+
+0x2002@0x0000801c : I03 : MOV r0, #2
+0x0880@0x0000801e : I01 : LSR R0, R0, #2
+0xf7ff@0x00008020 : I19 : BL(0) 2047
+0xfff8@0x00008022 : I19 : BL(1) 2040
+0xffff@0x00808012 : I19 : BL(1) 2047
+0xffff@0x00009023 : I19 : BL(1) 2047
+0xffff@0x00809013 : I19 : BL(1) 2047
+0xffff@0x0000a023 : I19 : BL(1) 2047
+0xffff@0x0080a013 : I19 : BL(1) 2047
+0xffff@0x0000b023 : I19 : BL(1) 2047
+0xffff@0x0080b013 : I19 : BL(1) 2047
+0xffff@0x0000c023 : I19 : BL(1) 2047
+0xffff@0x0080c013 : I19 : BL(1) 2047
+0xffff@0x0000d023 : I19 : BL(1) 2047
+0xffff@0x0080d013 : I19 : BL(1) 2047
+0xffff@0x0000e023 : I19 : BL(1) 2047
+0xffff@0x0080e013 : I19 : BL(1) 2047
+0xffff@0x0000f023 : I19 : BL(1) 2047
+0xffff@0x0080f013 : I19 : BL(1) 2047
+0xffff@0x00010023 : I19 : BL(1) 2047
+0xffff@0x00810013 : I19 : BL(1) 2047
+0xffff@0x00011023 : I19 : BL(1) 2047
+0xffff@0x00811013 : I19 : BL(1) 2047
+0xffff@0x00012023 : I19 : BL(1) 2047
+0xffff@0x00812013 : I19 : BL(1) 2047
+0xffff@0x00013023 : I19 : BL(1) 2047
+0xffff@0x00813013 : I19 : BL(1) 2047
+0xffff@0x00014023 : I19 : BL(1) 2047
+0xffff@0x00814013 : I19 : BL(1) 2047
+0xffff@0x00015023 : I19 : BL(1) 2047
+0xffff@0x00815013 : I19 : BL(1) 2047
+0xffff@0x00016023 : I19 : BL(1) 2047
+0xffff@0x00816013 : I19 : BL(1) 2047
+0xffff@0x00017023 : I19 : BL(1) 2047
+0xffff@0x00817013 : I19 : BL(1) 2047
+0xffff@0x00018023 : I19 : BL(1) 2047
+0xffff@0x00818013 : I19 : BL(1) 2047
+0xffff@0x00019023 : I19 : BL(1) 2047
+0xffff@0x00819013 : I19 : BL(1) 2047
+0xffff@0x0001a023 : I19 : BL(1) 2047
+0xffff@0x0081a013 : I19 : BL(1) 2047
+0xffff@0x0001b023 : I19 : BL(1) 2047
+0xffff@0x0081b013 : I19 : BL(1) 2047
+0xffff@0x0001c023 : I19 : BL(1) 2047
+0xffff@0x0081c013 : I19 : BL(1) 2047
+0xffff@0x0001d023 : I19 : BL(1) 2047
+0xffff@0x0081d013 : I19 : BL(1) 2047
+0xffff@0x0001e023 : I19 : BL(1) 2047
+0xffff@0x0081e013 : I19 : BL(1) 2047
+0xffff@0x0001f023 : I19 : BL(1) 2047
+0xffff@0x0081f013 : I19 : BL(1) 2047
+0xffff@0x00020023 : I19 : BL(1) 2047
+0xffff@0x00820013 : I19 : BL(1) 2047
+0xffff@0x00021023 : I19 : BL(1) 2047
+0xffff@0x00821013 : I19 : BL(1) 2047
+0xffff@0x00022023 : I19 : BL(1) 2047
+0xffff@0x00822013 : I19 : BL(1) 2047
+0xffff@0x00023023 : I19 : BL(1) 2047
+0xffff@0x00823013 : I19 : BL(1) 2047
+0xffff@0x00024023 : I19 : BL(1) 2047
+0xffff@0x00824013 : I19 : BL(1) 2047
+0xffff@0x00025023 : I19 : BL(1) 2047
+0xffff@0x00825013 : I19 : BL(1) 2047
+0xffff@0x00026023 : I19 : BL(1) 2047
+0xffff@0x00826013 : I19 : BL(1) 2047
+0xffff@0x00027023 : I19 : BL(1) 2047
+0xffff@0x00827013 : I19 : BL(1) 2047
+0xffff@0x00028023 : I19 : BL(1) 2047
+0xffff@0x00828013 : I19 : BL(1) 2047
+0xffff@0x00029023 : I19 : BL(1) 2047
+0xffff@0x00829013 : I19 : BL(1) 2047
+0xffff@0x0002a023 : I19 : BL(1) 2047
+0xffff@0x0082a013 : I19 : BL(1) 2047
+0xffff@0x0002b023 : I19 : BL(1) 2047
+0xffff@0x0082b013 : I19 : BL(1) 2047
+0xffff@0x0002c023 : I19 : BL(1) 2047
+0xffff@0x0082c013 : I19 : BL(1) 2047
+0xffff@0x0002d023 : I19 : BL(1) 2047
+0xffff@0x0082d013 : I19 : BL(1) 2047
+0xffff@0x0002e023 : I19 : BL(1) 2047
+0xffff@0x0082e013 : I19 : BL(1) 2047
+0xffff@0x0002f023 : I19 : BL(1) 2047
+0xffff@0x0082f013 : I19 : BL(1) 2047
+0xffff@0x00030023 : I19 : BL(1) 2047
+0xffff@0x00830013 : I19 : BL(1) 2047
+0xffff@0x00031023 : I19 : BL(1) 2047
+0xffff@0x00831013 : I19 : BL(1) 2047
+0xffff@0x00032023 : I19 : BL(1) 2047
+0xffff@0x00832013 : I19 : BL(1) 2047
+0xffff@0x00033023 : I19 : BL(1) 2047
+0xffff@0x00833013 : I19 : BL(1) 2047
+0xffff@0x00034023 : I19 : BL(1) 2047
+0xffff@0x00834013 : I19 : BL(1) 2047
+0xffff@0x00035023 : I19 : BL(1) 2047
+0xffff@0x00835013 : I19 : BL(1) 2047
+0xffff@0x00036023 : I19 : BL(1) 2047
+0xffff@0x00836013 : I19 : BL(1) 2047
+0xffff@0x00037023 : I19 : BL(1) 2047
+0xffff@0x00837013 : I19 : BL(1) 2047
+0xffff@0x00038023 : I19 : BL(1) 2047
+
+
+
+
+Executed 100 instructions
+r0 = 0
+r1 = 0
+r2 = 0
+r3 = 0
+r4 = 0
+r5 = 0
+r6 = 0
+r7 = 0
+r8 = 0
+r9 = 0
+r10 = 0
+r11 = 0
+r12 = 0
+sp = 4294967292
+lr = 229413
+pc = 8618003
+CPSR = { .N = 0, .Z = 1, .C = 0, .V = 0 }
+Read file successfully
+ELF Identifier: ELF
+ELF Type: 0x2
+Architecture: 40
+ELF Version: 1
+Entry point: 32796
+Offset in ELF of program header table: 52
+Offset in ELF of section header table: 33520
+Flags: 0x5000200
+Size of this header: 52
+Size of a program header table entry: 32
+Number of program headers: 1
+Size of a section header table entry: 40
+Number of section headers: 7
+Index of section header table which contains section names: 6
+
+============ Program header 0 ============
+Segment type: 1
+Offset of segment in ELF file: 0
+Virtual address of segment in memory: 0x0
+Physical address of segment in memory: 0x0
+Size of segment in ELF file: 32806
+Size of segment in memory: 32806
+Flags: 0x5
+Alignment: 65536
+
+============ Section header 0 ============
+Name is at .shstrtab offset: 0
+Section name: 
+Type: 0x0
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x0
+Size of section in ELF: 0
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 0
+Entry size (if applicable): 0
+Not to be loaded
+
+============ Section header 1 ============
+Name is at .shstrtab offset: 27
+Section name: .text
+Type: 0x1
+Flags: 0x6
+Virtual address (if loaded): 0x8000
+Offset of section in ELF: 0x8000
+Size of section in ELF: 38
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 4
+Entry size (if applicable): 0
+Allocated and loaded virtual memory segment starting at 0x8000, with size 38
+
+============ Section header 2 ============
+Name is at .shstrtab offset: 33
+Section name: .ARM.attributes
+Type: 0x70000003
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x8026
+Size of section in ELF: 31
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 1
+Entry size (if applicable): 0
+Not to be loaded
+
+============ Section header 3 ============
+Name is at .shstrtab offset: 49
+Section name: .noinit
+Type: 0x1
+Flags: 0x1
+Virtual address (if loaded): 0x18028
+Offset of section in ELF: 0x8045
+Size of section in ELF: 0
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 1
+Entry size (if applicable): 0
+Not to be loaded
+
+============ Section header 4 ============
+Name is at .shstrtab offset: 1
+Section name: .symtab
+Type: 0x2
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x8048
+Size of section in ELF: 416
+Section index link (meanings differ): 5
+Extra info (meanings differ): 11
+Alignment: 4
+Entry size (if applicable): 16
+Not to be loaded
+
+============ Section header 5 ============
+Name is at .shstrtab offset: 9
+Section name: .strtab
+Type: 0x3
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x81e8
+Size of section in ELF: 205
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 1
+Entry size (if applicable): 0
+Not to be loaded
+
+============ Section header 6 ============
+Name is at .shstrtab offset: 17
+Section name: .shstrtab
+Type: 0x3
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x82b5
+Size of section in ELF: 57
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 1
+Entry size (if applicable): 0
+Not to be loaded
+
+0x2002@0x0000801c : I03 : MOV r0, #2
+0x0880@0x0000801e : I01 : LSR R0, R0, #2
+0xf7ff@0x00008020 : I19 : BL(0) 2047
+0xfff8@0x00008022 : I19 : BL(1) 2040
+0xffff@0x00808012 : I19 : BL(1) 2047
+0xffff@0x00009023 : I19 : BL(1) 2047
+0xffff@0x00809013 : I19 : BL(1) 2047
+0xffff@0x0000a023 : I19 : BL(1) 2047
+0xffff@0x0080a013 : I19 : BL(1) 2047
+0xffff@0x0000b023 : I19 : BL(1) 2047
+0xffff@0x0080b013 : I19 : BL(1) 2047
+0xffff@0x0000c023 : I19 : BL(1) 2047
+0xffff@0x0080c013 : I19 : BL(1) 2047
+0xffff@0x0000d023 : I19 : BL(1) 2047
+0xffff@0x0080d013 : I19 : BL(1) 2047
+0xffff@0x0000e023 : I19 : BL(1) 2047
+0xffff@0x0080e013 : I19 : BL(1) 2047
+0xffff@0x0000f023 : I19 : BL(1) 2047
+0xffff@0x0080f013 : I19 : BL(1) 2047
+0xffff@0x00010023 : I19 : BL(1) 2047
+0xffff@0x00810013 : I19 : BL(1) 2047
+0xffff@0x00011023 : I19 : BL(1) 2047
+0xffff@0x00811013 : I19 : BL(1) 2047
+0xffff@0x00012023 : I19 : BL(1) 2047
+0xffff@0x00812013 : I19 : BL(1) 2047
+0xffff@0x00013023 : I19 : BL(1) 2047
+0xffff@0x00813013 : I19 : BL(1) 2047
+0xffff@0x00014023 : I19 : BL(1) 2047
+0xffff@0x00814013 : I19 : BL(1) 2047
+0xffff@0x00015023 : I19 : BL(1) 2047
+0xffff@0x00815013 : I19 : BL(1) 2047
+0xffff@0x00016023 : I19 : BL(1) 2047
+0xffff@0x00816013 : I19 : BL(1) 2047
+0xffff@0x00017023 : I19 : BL(1) 2047
+0xffff@0x00817013 : I19 : BL(1) 2047
+0xffff@0x00018023 : I19 : BL(1) 2047
+0xffff@0x00818013 : I19 : BL(1) 2047
+0xffff@0x00019023 : I19 : BL(1) 2047
+0xffff@0x00819013 : I19 : BL(1) 2047
+0xffff@0x0001a023 : I19 : BL(1) 2047
+0xffff@0x0081a013 : I19 : BL(1) 2047
+0xffff@0x0001b023 : I19 : BL(1) 2047
+0xffff@0x0081b013 : I19 : BL(1) 2047
+0xffff@0x0001c023 : I19 : BL(1) 2047
+0xffff@0x0081c013 : I19 : BL(1) 2047
+0xffff@0x0001d023 : I19 : BL(1) 2047
+0xffff@0x0081d013 : I19 : BL(1) 2047
+0xffff@0x0001e023 : I19 : BL(1) 2047
+0xffff@0x0081e013 : I19 : BL(1) 2047
+0xffff@0x0001f023 : I19 : BL(1) 2047
+0xffff@0x0081f013 : I19 : BL(1) 2047
+0xffff@0x00020023 : I19 : BL(1) 2047
+0xffff@0x00820013 : I19 : BL(1) 2047
+0xffff@0x00021023 : I19 : BL(1) 2047
+0xffff@0x00821013 : I19 : BL(1) 2047
+0xffff@0x00022023 : I19 : BL(1) 2047
+0xffff@0x00822013 : I19 : BL(1) 2047
+0xffff@0x00023023 : I19 : BL(1) 2047
+0xffff@0x00823013 : I19 : BL(1) 2047
+0xffff@0x00024023 : I19 : BL(1) 2047
+0xffff@0x00824013 : I19 : BL(1) 2047
+0xffff@0x00025023 : I19 : BL(1) 2047
+0xffff@0x00825013 : I19 : BL(1) 2047
+0xffff@0x00026023 : I19 : BL(1) 2047
+0xffff@0x00826013 : I19 : BL(1) 2047
+0xffff@0x00027023 : I19 : BL(1) 2047
+0xffff@0x00827013 : I19 : BL(1) 2047
+0xffff@0x00028023 : I19 : BL(1) 2047
+0xffff@0x00828013 : I19 : BL(1) 2047
+0xffff@0x00029023 : I19 : BL(1) 2047
+0xffff@0x00829013 : I19 : BL(1) 2047
+0xffff@0x0002a023 : I19 : BL(1) 2047
+0xffff@0x0082a013 : I19 : BL(1) 2047
+0xffff@0x0002b023 : I19 : BL(1) 2047
+0xffff@0x0082b013 : I19 : BL(1) 2047
+0xffff@0x0002c023 : I19 : BL(1) 2047
+0xffff@0x0082c013 : I19 : BL(1) 2047
+0xffff@0x0002d023 : I19 : BL(1) 2047
+0xffff@0x0082d013 : I19 : BL(1) 2047
+0xffff@0x0002e023 : I19 : BL(1) 2047
+0xffff@0x0082e013 : I19 : BL(1) 2047
+0xffff@0x0002f023 : I19 : BL(1) 2047
+0xffff@0x0082f013 : I19 : BL(1) 2047
+0xffff@0x00030023 : I19 : BL(1) 2047
+0xffff@0x00830013 : I19 : BL(1) 2047
+0xffff@0x00031023 : I19 : BL(1) 2047
+0xffff@0x00831013 : I19 : BL(1) 2047
+0xffff@0x00032023 : I19 : BL(1) 2047
+0xffff@0x00832013 : I19 : BL(1) 2047
+0xffff@0x00033023 : I19 : BL(1) 2047
+0xffff@0x00833013 : I19 : BL(1) 2047
+0xffff@0x00034023 : I19 : BL(1) 2047
+0xffff@0x00834013 : I19 : BL(1) 2047
+0xffff@0x00035023 : I19 : BL(1) 2047
+0xffff@0x00835013 : I19 : BL(1) 2047
+0xffff@0x00036023 : I19 : BL(1) 2047
+0xffff@0x00836013 : I19 : BL(1) 2047
+0xffff@0x00037023 : I19 : BL(1) 2047
+0xffff@0x00837013 : I19 : BL(1) 2047
+0xffff@0x00038023 : I19 : BL(1) 2047
+
+
+
+
+Executed 100 instructions
+r0 = 0
+r1 = 0
+r2 = 0
+r3 = 0
+r4 = 0
+r5 = 0
+r6 = 0
+r7 = 0
+r8 = 0
+r9 = 0
+r10 = 0
+r11 = 0
+r12 = 0
+sp = 4294967292
+lr = 229413
+pc = 8618003
+CPSR = { .N = 0, .Z = 1, .C = 0, .V = 0 }
+Read file successfully
+ELF Identifier: ELF
+ELF Type: 0x2
+Architecture: 40
+ELF Version: 1
+Entry point: 32796
+Offset in ELF of program header table: 52
+Offset in ELF of section header table: 33520
+Flags: 0x5000200
+Size of this header: 52
+Size of a program header table entry: 32
+Number of program headers: 1
+Size of a section header table entry: 40
+Number of section headers: 7
+Index of section header table which contains section names: 6
+
+============ Program header 0 ============
+Segment type: 1
+Offset of segment in ELF file: 0
+Virtual address of segment in memory: 0x0
+Physical address of segment in memory: 0x0
+Size of segment in ELF file: 32806
+Size of segment in memory: 32806
+Flags: 0x5
+Alignment: 65536
+
+============ Section header 0 ============
+Name is at .shstrtab offset: 0
+Section name: 
+Type: 0x0
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x0
+Size of section in ELF: 0
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 0
+Entry size (if applicable): 0
+Not to be loaded
+
+============ Section header 1 ============
+Name is at .shstrtab offset: 27
+Section name: .text
+Type: 0x1
+Flags: 0x6
+Virtual address (if loaded): 0x8000
+Offset of section in ELF: 0x8000
+Size of section in ELF: 38
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 4
+Entry size (if applicable): 0
+Allocated and loaded virtual memory segment starting at 0x8000, with size 38
+
+============ Section header 2 ============
+Name is at .shstrtab offset: 33
+Section name: .ARM.attributes
+Type: 0x70000003
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x8026
+Size of section in ELF: 31
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 1
+Entry size (if applicable): 0
+Not to be loaded
+
+============ Section header 3 ============
+Name is at .shstrtab offset: 49
+Section name: .noinit
+Type: 0x1
+Flags: 0x1
+Virtual address (if loaded): 0x18028
+Offset of section in ELF: 0x8045
+Size of section in ELF: 0
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 1
+Entry size (if applicable): 0
+Not to be loaded
+
+============ Section header 4 ============
+Name is at .shstrtab offset: 1
+Section name: .symtab
+Type: 0x2
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x8048
+Size of section in ELF: 416
+Section index link (meanings differ): 5
+Extra info (meanings differ): 11
+Alignment: 4
+Entry size (if applicable): 16
+Not to be loaded
+
+============ Section header 5 ============
+Name is at .shstrtab offset: 9
+Section name: .strtab
+Type: 0x3
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x81e8
+Size of section in ELF: 204
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 1
+Entry size (if applicable): 0
+Not to be loaded
+
+============ Section header 6 ============
+Name is at .shstrtab offset: 17
+Section name: .shstrtab
+Type: 0x3
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x82b4
+Size of section in ELF: 57
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 1
+Entry size (if applicable): 0
+Not to be loaded
+
+0x2002@0x0000801c : I03 : MOV r0, #2
+0x0840@0x0000801e : I01 : LSR R0, R0, #1
+0xf7ff@0x00008020 : I19 : BL(0) 2047
+0xfff8@0x00008022 : I19 : BL(1) 2040
+0xffff@0x00808012 : I19 : BL(1) 2047
+0xffff@0x00009023 : I19 : BL(1) 2047
+0xffff@0x00809013 : I19 : BL(1) 2047
+0xffff@0x0000a023 : I19 : BL(1) 2047
+0xffff@0x0080a013 : I19 : BL(1) 2047
+0xffff@0x0000b023 : I19 : BL(1) 2047
+0xffff@0x0080b013 : I19 : BL(1) 2047
+0xffff@0x0000c023 : I19 : BL(1) 2047
+0xffff@0x0080c013 : I19 : BL(1) 2047
+0xffff@0x0000d023 : I19 : BL(1) 2047
+0xffff@0x0080d013 : I19 : BL(1) 2047
+0xffff@0x0000e023 : I19 : BL(1) 2047
+0xffff@0x0080e013 : I19 : BL(1) 2047
+0xffff@0x0000f023 : I19 : BL(1) 2047
+0xffff@0x0080f013 : I19 : BL(1) 2047
+0xffff@0x00010023 : I19 : BL(1) 2047
+0xffff@0x00810013 : I19 : BL(1) 2047
+0xffff@0x00011023 : I19 : BL(1) 2047
+0xffff@0x00811013 : I19 : BL(1) 2047
+0xffff@0x00012023 : I19 : BL(1) 2047
+0xffff@0x00812013 : I19 : BL(1) 2047
+0xffff@0x00013023 : I19 : BL(1) 2047
+0xffff@0x00813013 : I19 : BL(1) 2047
+0xffff@0x00014023 : I19 : BL(1) 2047
+0xffff@0x00814013 : I19 : BL(1) 2047
+0xffff@0x00015023 : I19 : BL(1) 2047
+0xffff@0x00815013 : I19 : BL(1) 2047
+0xffff@0x00016023 : I19 : BL(1) 2047
+0xffff@0x00816013 : I19 : BL(1) 2047
+0xffff@0x00017023 : I19 : BL(1) 2047
+0xffff@0x00817013 : I19 : BL(1) 2047
+0xffff@0x00018023 : I19 : BL(1) 2047
+0xffff@0x00818013 : I19 : BL(1) 2047
+0xffff@0x00019023 : I19 : BL(1) 2047
+0xffff@0x00819013 : I19 : BL(1) 2047
+0xffff@0x0001a023 : I19 : BL(1) 2047
+0xffff@0x0081a013 : I19 : BL(1) 2047
+0xffff@0x0001b023 : I19 : BL(1) 2047
+0xffff@0x0081b013 : I19 : BL(1) 2047
+0xffff@0x0001c023 : I19 : BL(1) 2047
+0xffff@0x0081c013 : I19 : BL(1) 2047
+0xffff@0x0001d023 : I19 : BL(1) 2047
+0xffff@0x0081d013 : I19 : BL(1) 2047
+0xffff@0x0001e023 : I19 : BL(1) 2047
+0xffff@0x0081e013 : I19 : BL(1) 2047
+0xffff@0x0001f023 : I19 : BL(1) 2047
+0xffff@0x0081f013 : I19 : BL(1) 2047
+0xffff@0x00020023 : I19 : BL(1) 2047
+0xffff@0x00820013 : I19 : BL(1) 2047
+0xffff@0x00021023 : I19 : BL(1) 2047
+0xffff@0x00821013 : I19 : BL(1) 2047
+0xffff@0x00022023 : I19 : BL(1) 2047
+0xffff@0x00822013 : I19 : BL(1) 2047
+0xffff@0x00023023 : I19 : BL(1) 2047
+0xffff@0x00823013 : I19 : BL(1) 2047
+0xffff@0x00024023 : I19 : BL(1) 2047
+0xffff@0x00824013 : I19 : BL(1) 2047
+0xffff@0x00025023 : I19 : BL(1) 2047
+0xffff@0x00825013 : I19 : BL(1) 2047
+0xffff@0x00026023 : I19 : BL(1) 2047
+0xffff@0x00826013 : I19 : BL(1) 2047
+0xffff@0x00027023 : I19 : BL(1) 2047
+0xffff@0x00827013 : I19 : BL(1) 2047
+0xffff@0x00028023 : I19 : BL(1) 2047
+0xffff@0x00828013 : I19 : BL(1) 2047
+0xffff@0x00029023 : I19 : BL(1) 2047
+0xffff@0x00829013 : I19 : BL(1) 2047
+0xffff@0x0002a023 : I19 : BL(1) 2047
+0xffff@0x0082a013 : I19 : BL(1) 2047
+0xffff@0x0002b023 : I19 : BL(1) 2047
+0xffff@0x0082b013 : I19 : BL(1) 2047
+0xffff@0x0002c023 : I19 : BL(1) 2047
+0xffff@0x0082c013 : I19 : BL(1) 2047
+0xffff@0x0002d023 : I19 : BL(1) 2047
+0xffff@0x0082d013 : I19 : BL(1) 2047
+0xffff@0x0002e023 : I19 : BL(1) 2047
+0xffff@0x0082e013 : I19 : BL(1) 2047
+0xffff@0x0002f023 : I19 : BL(1) 2047
+0xffff@0x0082f013 : I19 : BL(1) 2047
+0xffff@0x00030023 : I19 : BL(1) 2047
+0xffff@0x00830013 : I19 : BL(1) 2047
+0xffff@0x00031023 : I19 : BL(1) 2047
+0xffff@0x00831013 : I19 : BL(1) 2047
+0xffff@0x00032023 : I19 : BL(1) 2047
+0xffff@0x00832013 : I19 : BL(1) 2047
+0xffff@0x00033023 : I19 : BL(1) 2047
+0xffff@0x00833013 : I19 : BL(1) 2047
+0xffff@0x00034023 : I19 : BL(1) 2047
+0xffff@0x00834013 : I19 : BL(1) 2047
+0xffff@0x00035023 : I19 : BL(1) 2047
+0xffff@0x00835013 : I19 : BL(1) 2047
+0xffff@0x00036023 : I19 : BL(1) 2047
+0xffff@0x00836013 : I19 : BL(1) 2047
+0xffff@0x00037023 : I19 : BL(1) 2047
+0xffff@0x00837013 : I19 : BL(1) 2047
+0xffff@0x00038023 : I19 : BL(1) 2047
+
+
+
+
+Executed 100 instructions
+r0 = 1
+r1 = 0
+r2 = 0
+r3 = 0
+r4 = 0
+r5 = 0
+r6 = 0
+r7 = 0
+r8 = 0
+r9 = 0
+r10 = 0
+r11 = 0
+r12 = 0
+sp = 4294967292
+lr = 229413
+pc = 8618003
+CPSR = { .N = 0, .Z = 0, .C = 1, .V = 0 }
+Read file successfully
+ELF Identifier: ELF
+ELF Type: 0x2
+Architecture: 40
+ELF Version: 1
+Entry point: 32796
+Offset in ELF of program header table: 52
+Offset in ELF of section header table: 33520
+Flags: 0x5000200
+Size of this header: 52
+Size of a program header table entry: 32
+Number of program headers: 1
+Size of a section header table entry: 40
+Number of section headers: 7
+Index of section header table which contains section names: 6
+
+============ Program header 0 ============
+Segment type: 1
+Offset of segment in ELF file: 0
+Virtual address of segment in memory: 0x0
+Physical address of segment in memory: 0x0
+Size of segment in ELF file: 32806
+Size of segment in memory: 32806
+Flags: 0x5
+Alignment: 65536
+
+============ Section header 0 ============
+Name is at .shstrtab offset: 0
+Section name: 
+Type: 0x0
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x0
+Size of section in ELF: 0
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 0
+Entry size (if applicable): 0
+Not to be loaded
+
+============ Section header 1 ============
+Name is at .shstrtab offset: 27
+Section name: .text
+Type: 0x1
+Flags: 0x6
+Virtual address (if loaded): 0x8000
+Offset of section in ELF: 0x8000
+Size of section in ELF: 38
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 4
+Entry size (if applicable): 0
+Allocated and loaded virtual memory segment starting at 0x8000, with size 38
+
+============ Section header 2 ============
+Name is at .shstrtab offset: 33
+Section name: .ARM.attributes
+Type: 0x70000003
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x8026
+Size of section in ELF: 31
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 1
+Entry size (if applicable): 0
+Not to be loaded
+
+============ Section header 3 ============
+Name is at .shstrtab offset: 49
+Section name: .noinit
+Type: 0x1
+Flags: 0x1
+Virtual address (if loaded): 0x18028
+Offset of section in ELF: 0x8045
+Size of section in ELF: 0
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 1
+Entry size (if applicable): 0
+Not to be loaded
+
+============ Section header 4 ============
+Name is at .shstrtab offset: 1
+Section name: .symtab
+Type: 0x2
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x8048
+Size of section in ELF: 416
+Section index link (meanings differ): 5
+Extra info (meanings differ): 11
+Alignment: 4
+Entry size (if applicable): 16
+Not to be loaded
+
+============ Section header 5 ============
+Name is at .shstrtab offset: 9
+Section name: .strtab
+Type: 0x3
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x81e8
+Size of section in ELF: 204
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 1
+Entry size (if applicable): 0
+Not to be loaded
+
+============ Section header 6 ============
+Name is at .shstrtab offset: 17
+Section name: .shstrtab
+Type: 0x3
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x82b4
+Size of section in ELF: 57
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 1
+Entry size (if applicable): 0
+Not to be loaded
+
+0x2002@0x0000801c : I03 : MOV r0, #2
+0x0840@0x0000801e : I01 : LSR R0, R0, #1
+0xf7ff@0x00008020 : I19 : BL(0) 2047
+0xfff8@0x00008022 : I19 : BL(1) 2040
+0xffff@0x00808012 : I19 : BL(1) 2047
+0xffff@0x00009023 : I19 : BL(1) 2047
+0xffff@0x00809013 : I19 : BL(1) 2047
+0xffff@0x0000a023 : I19 : BL(1) 2047
+0xffff@0x0080a013 : I19 : BL(1) 2047
+0xffff@0x0000b023 : I19 : BL(1) 2047
+0xffff@0x0080b013 : I19 : BL(1) 2047
+0xffff@0x0000c023 : I19 : BL(1) 2047
+0xffff@0x0080c013 : I19 : BL(1) 2047
+0xffff@0x0000d023 : I19 : BL(1) 2047
+0xffff@0x0080d013 : I19 : BL(1) 2047
+0xffff@0x0000e023 : I19 : BL(1) 2047
+0xffff@0x0080e013 : I19 : BL(1) 2047
+0xffff@0x0000f023 : I19 : BL(1) 2047
+0xffff@0x0080f013 : I19 : BL(1) 2047
+0xffff@0x00010023 : I19 : BL(1) 2047
+0xffff@0x00810013 : I19 : BL(1) 2047
+0xffff@0x00011023 : I19 : BL(1) 2047
+0xffff@0x00811013 : I19 : BL(1) 2047
+0xffff@0x00012023 : I19 : BL(1) 2047
+0xffff@0x00812013 : I19 : BL(1) 2047
+0xffff@0x00013023 : I19 : BL(1) 2047
+0xffff@0x00813013 : I19 : BL(1) 2047
+0xffff@0x00014023 : I19 : BL(1) 2047
+0xffff@0x00814013 : I19 : BL(1) 2047
+0xffff@0x00015023 : I19 : BL(1) 2047
+0xffff@0x00815013 : I19 : BL(1) 2047
+0xffff@0x00016023 : I19 : BL(1) 2047
+0xffff@0x00816013 : I19 : BL(1) 2047
+0xffff@0x00017023 : I19 : BL(1) 2047
+0xffff@0x00817013 : I19 : BL(1) 2047
+0xffff@0x00018023 : I19 : BL(1) 2047
+0xffff@0x00818013 : I19 : BL(1) 2047
+0xffff@0x00019023 : I19 : BL(1) 2047
+0xffff@0x00819013 : I19 : BL(1) 2047
+0xffff@0x0001a023 : I19 : BL(1) 2047
+0xffff@0x0081a013 : I19 : BL(1) 2047
+0xffff@0x0001b023 : I19 : BL(1) 2047
+0xffff@0x0081b013 : I19 : BL(1) 2047
+0xffff@0x0001c023 : I19 : BL(1) 2047
+0xffff@0x0081c013 : I19 : BL(1) 2047
+0xffff@0x0001d023 : I19 : BL(1) 2047
+0xffff@0x0081d013 : I19 : BL(1) 2047
+0xffff@0x0001e023 : I19 : BL(1) 2047
+0xffff@0x0081e013 : I19 : BL(1) 2047
+0xffff@0x0001f023 : I19 : BL(1) 2047
+0xffff@0x0081f013 : I19 : BL(1) 2047
+0xffff@0x00020023 : I19 : BL(1) 2047
+0xffff@0x00820013 : I19 : BL(1) 2047
+0xffff@0x00021023 : I19 : BL(1) 2047
+0xffff@0x00821013 : I19 : BL(1) 2047
+0xffff@0x00022023 : I19 : BL(1) 2047
+0xffff@0x00822013 : I19 : BL(1) 2047
+0xffff@0x00023023 : I19 : BL(1) 2047
+0xffff@0x00823013 : I19 : BL(1) 2047
+0xffff@0x00024023 : I19 : BL(1) 2047
+0xffff@0x00824013 : I19 : BL(1) 2047
+0xffff@0x00025023 : I19 : BL(1) 2047
+0xffff@0x00825013 : I19 : BL(1) 2047
+0xffff@0x00026023 : I19 : BL(1) 2047
+0xffff@0x00826013 : I19 : BL(1) 2047
+0xffff@0x00027023 : I19 : BL(1) 2047
+0xffff@0x00827013 : I19 : BL(1) 2047
+0xffff@0x00028023 : I19 : BL(1) 2047
+0xffff@0x00828013 : I19 : BL(1) 2047
+0xffff@0x00029023 : I19 : BL(1) 2047
+0xffff@0x00829013 : I19 : BL(1) 2047
+0xffff@0x0002a023 : I19 : BL(1) 2047
+0xffff@0x0082a013 : I19 : BL(1) 2047
+0xffff@0x0002b023 : I19 : BL(1) 2047
+0xffff@0x0082b013 : I19 : BL(1) 2047
+0xffff@0x0002c023 : I19 : BL(1) 2047
+0xffff@0x0082c013 : I19 : BL(1) 2047
+0xffff@0x0002d023 : I19 : BL(1) 2047
+0xffff@0x0082d013 : I19 : BL(1) 2047
+0xffff@0x0002e023 : I19 : BL(1) 2047
+0xffff@0x0082e013 : I19 : BL(1) 2047
+0xffff@0x0002f023 : I19 : BL(1) 2047
+0xffff@0x0082f013 : I19 : BL(1) 2047
+0xffff@0x00030023 : I19 : BL(1) 2047
+0xffff@0x00830013 : I19 : BL(1) 2047
+0xffff@0x00031023 : I19 : BL(1) 2047
+0xffff@0x00831013 : I19 : BL(1) 2047
+0xffff@0x00032023 : I19 : BL(1) 2047
+0xffff@0x00832013 : I19 : BL(1) 2047
+0xffff@0x00033023 : I19 : BL(1) 2047
+0xffff@0x00833013 : I19 : BL(1) 2047
+0xffff@0x00034023 : I19 : BL(1) 2047
+0xffff@0x00834013 : I19 : BL(1) 2047
+0xffff@0x00035023 : I19 : BL(1) 2047
+0xffff@0x00835013 : I19 : BL(1) 2047
+0xffff@0x00036023 : I19 : BL(1) 2047
+0xffff@0x00836013 : I19 : BL(1) 2047
+0xffff@0x00037023 : I19 : BL(1) 2047
+0xffff@0x00837013 : I19 : BL(1) 2047
+0xffff@0x00038023 : I19 : BL(1) 2047
+
+
+
+
+Executed 100 instructions
+r0 = 1
+r1 = 0
+r2 = 0
+r3 = 0
+r4 = 0
+r5 = 0
+r6 = 0
+r7 = 0
+r8 = 0
+r9 = 0
+r10 = 0
+r11 = 0
+r12 = 0
+sp = 4294967292
+lr = 229413
+pc = 8618003
+CPSR = { .N = 0, .Z = 0, .C = 1, .V = 0 }
+Read file successfully
+ELF Identifier: ELF
+ELF Type: 0x2
+Architecture: 40
+ELF Version: 1
+Entry point: 32796
+Offset in ELF of program header table: 52
+Offset in ELF of section header table: 33540
+Flags: 0x5000200
+Size of this header: 52
+Size of a program header table entry: 32
+Number of program headers: 1
+Size of a section header table entry: 40
+Number of section headers: 7
+Index of section header table which contains section names: 6
+
+============ Program header 0 ============
+Segment type: 1
+Offset of segment in ELF file: 0
+Virtual address of segment in memory: 0x0
+Physical address of segment in memory: 0x0
+Size of segment in ELF file: 32812
+Size of segment in memory: 32812
+Flags: 0x5
+Alignment: 65536
+
+============ Section header 0 ============
+Name is at .shstrtab offset: 0
+Section name: 
+Type: 0x0
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x0
+Size of section in ELF: 0
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 0
+Entry size (if applicable): 0
+Not to be loaded
+
+============ Section header 1 ============
+Name is at .shstrtab offset: 27
+Section name: .text
+Type: 0x1
+Flags: 0x6
+Virtual address (if loaded): 0x8000
+Offset of section in ELF: 0x8000
+Size of section in ELF: 44
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 4
+Entry size (if applicable): 0
+Allocated and loaded virtual memory segment starting at 0x8000, with size 44
+
+============ Section header 2 ============
+Name is at .shstrtab offset: 33
+Section name: .ARM.attributes
+Type: 0x70000003
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x802c
+Size of section in ELF: 31
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 1
+Entry size (if applicable): 0
+Not to be loaded
+
+============ Section header 3 ============
+Name is at .shstrtab offset: 49
+Section name: .noinit
+Type: 0x1
+Flags: 0x1
+Virtual address (if loaded): 0x1802c
+Offset of section in ELF: 0x804b
+Size of section in ELF: 0
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 1
+Entry size (if applicable): 0
+Not to be loaded
+
+============ Section header 4 ============
+Name is at .shstrtab offset: 1
+Section name: .symtab
+Type: 0x2
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x804c
+Size of section in ELF: 432
+Section index link (meanings differ): 5
+Extra info (meanings differ): 12
+Alignment: 4
+Entry size (if applicable): 16
+Not to be loaded
+
+============ Section header 5 ============
+Name is at .shstrtab offset: 9
+Section name: .strtab
+Type: 0x3
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x81fc
+Size of section in ELF: 204
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 1
+Entry size (if applicable): 0
+Not to be loaded
+
+============ Section header 6 ============
+Name is at .shstrtab offset: 17
+Section name: .shstrtab
+Type: 0x3
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x82c8
+Size of section in ELF: 57
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 1
+Entry size (if applicable): 0
+Not to be loaded
+
+0x4802@0x0000801c : I06 : LDR r0, [PC, #8]
+0x2101@0x0000801e : I03 : MOV r1, #1
+0x1840@0x00008020 : I02 : ADD r0, r0, r1
+0xf7ff@0x00008022 : I19 : BL(0) 2047
+0xfff3@0x00008024 : I19 : BL(1) 2035
+0xffff@0x0080800a : I19 : BL(1) 2047
+0xffff@0x00009025 : I19 : BL(1) 2047
+0xffff@0x0080900b : I19 : BL(1) 2047
+0xffff@0x0000a025 : I19 : BL(1) 2047
+0xffff@0x0080a00b : I19 : BL(1) 2047
+0xffff@0x0000b025 : I19 : BL(1) 2047
+0xffff@0x0080b00b : I19 : BL(1) 2047
+0xffff@0x0000c025 : I19 : BL(1) 2047
+0xffff@0x0080c00b : I19 : BL(1) 2047
+0xffff@0x0000d025 : I19 : BL(1) 2047
+0xffff@0x0080d00b : I19 : BL(1) 2047
+0xffff@0x0000e025 : I19 : BL(1) 2047
+0xffff@0x0080e00b : I19 : BL(1) 2047
+0xffff@0x0000f025 : I19 : BL(1) 2047
+0xffff@0x0080f00b : I19 : BL(1) 2047
+0xffff@0x00010025 : I19 : BL(1) 2047
+0xffff@0x0081000b : I19 : BL(1) 2047
+0xffff@0x00011025 : I19 : BL(1) 2047
+0xffff@0x0081100b : I19 : BL(1) 2047
+0xffff@0x00012025 : I19 : BL(1) 2047
+0xffff@0x0081200b : I19 : BL(1) 2047
+0xffff@0x00013025 : I19 : BL(1) 2047
+0xffff@0x0081300b : I19 : BL(1) 2047
+0xffff@0x00014025 : I19 : BL(1) 2047
+0xffff@0x0081400b : I19 : BL(1) 2047
+0xffff@0x00015025 : I19 : BL(1) 2047
+0xffff@0x0081500b : I19 : BL(1) 2047
+0xffff@0x00016025 : I19 : BL(1) 2047
+0xffff@0x0081600b : I19 : BL(1) 2047
+0xffff@0x00017025 : I19 : BL(1) 2047
+0xffff@0x0081700b : I19 : BL(1) 2047
+0xffff@0x00018025 : I19 : BL(1) 2047
+0xffff@0x0081800b : I19 : BL(1) 2047
+0xffff@0x00019025 : I19 : BL(1) 2047
+0xffff@0x0081900b : I19 : BL(1) 2047
+0xffff@0x0001a025 : I19 : BL(1) 2047
+0xffff@0x0081a00b : I19 : BL(1) 2047
+0xffff@0x0001b025 : I19 : BL(1) 2047
+0xffff@0x0081b00b : I19 : BL(1) 2047
+0xffff@0x0001c025 : I19 : BL(1) 2047
+0xffff@0x0081c00b : I19 : BL(1) 2047
+0xffff@0x0001d025 : I19 : BL(1) 2047
+0xffff@0x0081d00b : I19 : BL(1) 2047
+0xffff@0x0001e025 : I19 : BL(1) 2047
+0xffff@0x0081e00b : I19 : BL(1) 2047
+0xffff@0x0001f025 : I19 : BL(1) 2047
+0xffff@0x0081f00b : I19 : BL(1) 2047
+0xffff@0x00020025 : I19 : BL(1) 2047
+0xffff@0x0082000b : I19 : BL(1) 2047
+0xffff@0x00021025 : I19 : BL(1) 2047
+0xffff@0x0082100b : I19 : BL(1) 2047
+0xffff@0x00022025 : I19 : BL(1) 2047
+0xffff@0x0082200b : I19 : BL(1) 2047
+0xffff@0x00023025 : I19 : BL(1) 2047
+0xffff@0x0082300b : I19 : BL(1) 2047
+0xffff@0x00024025 : I19 : BL(1) 2047
+0xffff@0x0082400b : I19 : BL(1) 2047
+0xffff@0x00025025 : I19 : BL(1) 2047
+0xffff@0x0082500b : I19 : BL(1) 2047
+0xffff@0x00026025 : I19 : BL(1) 2047
+0xffff@0x0082600b : I19 : BL(1) 2047
+0xffff@0x00027025 : I19 : BL(1) 2047
+0xffff@0x0082700b : I19 : BL(1) 2047
+0xffff@0x00028025 : I19 : BL(1) 2047
+0xffff@0x0082800b : I19 : BL(1) 2047
+0xffff@0x00029025 : I19 : BL(1) 2047
+0xffff@0x0082900b : I19 : BL(1) 2047
+0xffff@0x0002a025 : I19 : BL(1) 2047
+0xffff@0x0082a00b : I19 : BL(1) 2047
+0xffff@0x0002b025 : I19 : BL(1) 2047
+0xffff@0x0082b00b : I19 : BL(1) 2047
+0xffff@0x0002c025 : I19 : BL(1) 2047
+0xffff@0x0082c00b : I19 : BL(1) 2047
+0xffff@0x0002d025 : I19 : BL(1) 2047
+0xffff@0x0082d00b : I19 : BL(1) 2047
+0xffff@0x0002e025 : I19 : BL(1) 2047
+0xffff@0x0082e00b : I19 : BL(1) 2047
+0xffff@0x0002f025 : I19 : BL(1) 2047
+0xffff@0x0082f00b : I19 : BL(1) 2047
+0xffff@0x00030025 : I19 : BL(1) 2047
+0xffff@0x0083000b : I19 : BL(1) 2047
+0xffff@0x00031025 : I19 : BL(1) 2047
+0xffff@0x0083100b : I19 : BL(1) 2047
+0xffff@0x00032025 : I19 : BL(1) 2047
+0xffff@0x0083200b : I19 : BL(1) 2047
+0xffff@0x00033025 : I19 : BL(1) 2047
+0xffff@0x0083300b : I19 : BL(1) 2047
+0xffff@0x00034025 : I19 : BL(1) 2047
+0xffff@0x0083400b : I19 : BL(1) 2047
+0xffff@0x00035025 : I19 : BL(1) 2047
+0xffff@0x0083500b : I19 : BL(1) 2047
+0xffff@0x00036025 : I19 : BL(1) 2047
+0xffff@0x0083600b : I19 : BL(1) 2047
+0xffff@0x00037025 : I19 : BL(1) 2047
+0xffff@0x0083700b : I19 : BL(1) 2047
+
+
+
+
+Executed 100 instructions
+r0 = 3891003380
+r1 = 1
+r2 = 0
+r3 = 0
+r4 = 0
+r5 = 0
+r6 = 0
+r7 = 0
+r8 = 0
+r9 = 0
+r10 = 0
+r11 = 0
+r12 = 0
+sp = 4294967292
+lr = 8613901
+pc = 229413
+CPSR = { .N = 1, .Z = 0, .C = 0, .V = 0 }
+Read file successfully
+ELF Identifier: ELF
+ELF Type: 0x2
+Architecture: 40
+ELF Version: 1
+Entry point: 32796
+Offset in ELF of program header table: 52
+Offset in ELF of section header table: 33540
+Flags: 0x5000200
+Size of this header: 52
+Size of a program header table entry: 32
+Number of program headers: 1
+Size of a section header table entry: 40
+Number of section headers: 7
+Index of section header table which contains section names: 6
+
+============ Program header 0 ============
+Segment type: 1
+Offset of segment in ELF file: 0
+Virtual address of segment in memory: 0x0
+Physical address of segment in memory: 0x0
+Size of segment in ELF file: 32812
+Size of segment in memory: 32812
+Flags: 0x5
+Alignment: 65536
+
+============ Section header 0 ============
+Name is at .shstrtab offset: 0
+Section name: 
+Type: 0x0
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x0
+Size of section in ELF: 0
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 0
+Entry size (if applicable): 0
+Not to be loaded
+
+============ Section header 1 ============
+Name is at .shstrtab offset: 27
+Section name: .text
+Type: 0x1
+Flags: 0x6
+Virtual address (if loaded): 0x8000
+Offset of section in ELF: 0x8000
+Size of section in ELF: 44
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 4
+Entry size (if applicable): 0
+Allocated and loaded virtual memory segment starting at 0x8000, with size 44
+
+============ Section header 2 ============
+Name is at .shstrtab offset: 33
+Section name: .ARM.attributes
+Type: 0x70000003
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x802c
+Size of section in ELF: 31
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 1
+Entry size (if applicable): 0
+Not to be loaded
+
+============ Section header 3 ============
+Name is at .shstrtab offset: 49
+Section name: .noinit
+Type: 0x1
+Flags: 0x1
+Virtual address (if loaded): 0x1802c
+Offset of section in ELF: 0x804b
+Size of section in ELF: 0
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 1
+Entry size (if applicable): 0
+Not to be loaded
+
+============ Section header 4 ============
+Name is at .shstrtab offset: 1
+Section name: .symtab
+Type: 0x2
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x804c
+Size of section in ELF: 432
+Section index link (meanings differ): 5
+Extra info (meanings differ): 12
+Alignment: 4
+Entry size (if applicable): 16
+Not to be loaded
+
+============ Section header 5 ============
+Name is at .shstrtab offset: 9
+Section name: .strtab
+Type: 0x3
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x81fc
+Size of section in ELF: 204
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 1
+Entry size (if applicable): 0
+Not to be loaded
+
+============ Section header 6 ============
+Name is at .shstrtab offset: 17
+Section name: .shstrtab
+Type: 0x3
+Flags: 0x0
+Virtual address (if loaded): 0x0
+Offset of section in ELF: 0x82c8
+Size of section in ELF: 57
+Section index link (meanings differ): 0
+Extra info (meanings differ): 0
+Alignment: 1
+Entry size (if applicable): 0
+Not to be loaded
+
+0x4802@0x0000801c : I06 : LDR r0, [PC, #8]
+0x2101@0x0000801e : I03 : MOV r1, #1
+0x1840@0x00008020 : I02 : ADD r0, r0, r1
+0xf7ff@0x00008022 : I19 : BL(0) 2047
+0xfff3@0x00008024 : I19 : BL(1) 2035
+0xffff@0x0080800a : I19 : BL(1) 2047
+0xffff@0x00009025 : I19 : BL(1) 2047
+0xffff@0x0080900b : I19 : BL(1) 2047
+0xffff@0x0000a025 : I19 : BL(1) 2047
+0xffff@0x0080a00b : I19 : BL(1) 2047
+0xffff@0x0000b025 : I19 : BL(1) 2047
+0xffff@0x0080b00b : I19 : BL(1) 2047
+0xffff@0x0000c025 : I19 : BL(1) 2047
+0xffff@0x0080c00b : I19 : BL(1) 2047
+0xffff@0x0000d025 : I19 : BL(1) 2047
+0xffff@0x0080d00b : I19 : BL(1) 2047
+0xffff@0x0000e025 : I19 : BL(1) 2047
+0xffff@0x0080e00b : I19 : BL(1) 2047
+0xffff@0x0000f025 : I19 : BL(1) 2047
+0xffff@0x0080f00b : I19 : BL(1) 2047
+0xffff@0x00010025 : I19 : BL(1) 2047
+0xffff@0x0081000b : I19 : BL(1) 2047
+0xffff@0x00011025 : I19 : BL(1) 2047
+0xffff@0x0081100b : I19 : BL(1) 2047
+0xffff@0x00012025 : I19 : BL(1) 2047
+0xffff@0x0081200b : I19 : BL(1) 2047
+0xffff@0x00013025 : I19 : BL(1) 2047
+0xffff@0x0081300b : I19 : BL(1) 2047
+0xffff@0x00014025 : I19 : BL(1) 2047
+0xffff@0x0081400b : I19 : BL(1) 2047
+0xffff@0x00015025 : I19 : BL(1) 2047
+0xffff@0x0081500b : I19 : BL(1) 2047
+0xffff@0x00016025 : I19 : BL(1) 2047
+0xffff@0x0081600b : I19 : BL(1) 2047
+0xffff@0x00017025 : I19 : BL(1) 2047
+0xffff@0x0081700b : I19 : BL(1) 2047
+0xffff@0x00018025 : I19 : BL(1) 2047
+0xffff@0x0081800b : I19 : BL(1) 2047
+0xffff@0x00019025 : I19 : BL(1) 2047
+0xffff@0x0081900b : I19 : BL(1) 2047
+0xffff@0x0001a025 : I19 : BL(1) 2047
+0xffff@0x0081a00b : I19 : BL(1) 2047
+0xffff@0x0001b025 : I19 : BL(1) 2047
+0xffff@0x0081b00b : I19 : BL(1) 2047
+0xffff@0x0001c025 : I19 : BL(1) 2047
+0xffff@0x0081c00b : I19 : BL(1) 2047
+0xffff@0x0001d025 : I19 : BL(1) 2047
+0xffff@0x0081d00b : I19 : BL(1) 2047
+0xffff@0x0001e025 : I19 : BL(1) 2047
+0xffff@0x0081e00b : I19 : BL(1) 2047
+0xffff@0x0001f025 : I19 : BL(1) 2047
+0xffff@0x0081f00b : I19 : BL(1) 2047
+0xffff@0x00020025 : I19 : BL(1) 2047
+0xffff@0x0082000b : I19 : BL(1) 2047
+0xffff@0x00021025 : I19 : BL(1) 2047
+0xffff@0x0082100b : I19 : BL(1) 2047
+0xffff@0x00022025 : I19 : BL(1) 2047
+0xffff@0x0082200b : I19 : BL(1) 2047
+0xffff@0x00023025 : I19 : BL(1) 2047
+0xffff@0x0082300b : I19 : BL(1) 2047
+0xffff@0x00024025 : I19 : BL(1) 2047
+0xffff@0x0082400b : I19 : BL(1) 2047
+0xffff@0x00025025 : I19 : BL(1) 2047
+0xffff@0x0082500b : I19 : BL(1) 2047
+0xffff@0x00026025 : I19 : BL(1) 2047
+0xffff@0x0082600b : I19 : BL(1) 2047
+0xffff@0x00027025 : I19 : BL(1) 2047
+0xffff@0x0082700b : I19 : BL(1) 2047
+0xffff@0x00028025 : I19 : BL(1) 2047
+0xffff@0x0082800b : I19 : BL(1) 2047
+0xffff@0x00029025 : I19 : BL(1) 2047
+0xffff@0x0082900b : I19 : BL(1) 2047
+0xffff@0x0002a025 : I19 : BL(1) 2047
+0xffff@0x0082a00b : I19 : BL(1) 2047
+0xffff@0x0002b025 : I19 : BL(1) 2047
+0xffff@0x0082b00b : I19 : BL(1) 2047
+0xffff@0x0002c025 : I19 : BL(1) 2047
+0xffff@0x0082c00b : I19 : BL(1) 2047
+0xffff@0x0002d025 : I19 : BL(1) 2047
+0xffff@0x0082d00b : I19 : BL(1) 2047
+0xffff@0x0002e025 : I19 : BL(1) 2047
+0xffff@0x0082e00b : I19 : BL(1) 2047
+0xffff@0x0002f025 : I19 : BL(1) 2047
+0xffff@0x0082f00b : I19 : BL(1) 2047
+0xffff@0x00030025 : I19 : BL(1) 2047
+0xffff@0x0083000b : I19 : BL(1) 2047
+0xffff@0x00031025 : I19 : BL(1) 2047
+0xffff@0x0083100b : I19 : BL(1) 2047
+0xffff@0x00032025 : I19 : BL(1) 2047
+0xffff@0x0083200b : I19 : BL(1) 2047
+0xffff@0x00033025 : I19 : BL(1) 2047
+0xffff@0x0083300b : I19 : BL(1) 2047
+0xffff@0x00034025 : I19 : BL(1) 2047
+0xffff@0x0083400b : I19 : BL(1) 2047
+0xffff@0x00035025 : I19 : BL(1) 2047
+0xffff@0x0083500b : I19 : BL(1) 2047
+0xffff@0x00036025 : I19 : BL(1) 2047
+0xffff@0x0083600b : I19 : BL(1) 2047
+0xffff@0x00037025 : I19 : BL(1) 2047
+0xffff@0x0083700b : I19 : BL(1) 2047
+
+
+
+
+Executed 100 instructions
+r0 = 3891003380
+r1 = 1
+r2 = 0
+r3 = 0
+r4 = 0
+r5 = 0
+r6 = 0
+r7 = 0
+r8 = 0
+r9 = 0
+r10 = 0
+r11 = 0
+r12 = 0
+sp = 4294967292
+lr = 8613901
+pc = 229413
+CPSR = { .N = 1, .Z = 0, .C = 0, .V = 0 }
+TEST SUCCESS (QEMU): c.c -> 73
+TEST FAILED (WIN): c.c -> 0, supposed to be 73
+TEST FAILED (WSL): c.c -> 0, supposed to be 73
+TEST SUCCESS (QEMU): lib/is_status_n.s -> 10
+TEST FAILED (WIN): lib/is_status_n.s -> 0, supposed to be 10
+TEST FAILED (WSL): lib/is_status_n.s -> 0, supposed to be 10
+TEST SUCCESS (QEMU): instructions/exitcode.s -> 42
+TEST SUCCESS (WIN): instructions/exitcode.s -> 42
+TEST SUCCESS (WSL): instructions/exitcode.s -> 42
+TEST SUCCESS (QEMU): instructions/set01/00lsl/test1.s -> 2
+TEST SUCCESS (WIN): instructions/set01/00lsl/test1.s -> 2
+TEST SUCCESS (WSL): instructions/set01/00lsl/test1.s -> 2
+TEST SUCCESS (QEMU): instructions/set01/01lsr/carry_yes.s -> 1
+TEST FAILED (WIN): instructions/set01/01lsr/carry_yes.s -> 0, supposed to be 1
+TEST FAILED (WSL): instructions/set01/01lsr/carry_yes.s -> 0, supposed to be 1
+TEST SUCCESS (QEMU): instructions/set01/01lsr/carry_no.s -> 0
+TEST SUCCESS (WIN): instructions/set01/01lsr/carry_no.s -> 0
+TEST SUCCESS (WSL): instructions/set01/01lsr/carry_no.s -> 0
+TEST SUCCESS (QEMU): instructions/set02/00add/test1.s -> 1
+TEST FAILED (WIN): instructions/set02/00add/test1.s -> 0, supposed to be 1
+TEST FAILED (WSL): instructions/set02/00add/test1.s -> 0, supposed to be 1

@@ -736,7 +736,7 @@ void tliHighRegOperations(VM_instance* vm, uint16_t instruction)
             compareSetNZ(vm, vm->registers[rd] + vm->registers[8+rs]);
             compareSetCV(vm, vm->registers[rd], vm->registers[8+rs]);
             vm->registers[rd] = vm->registers[rd] + vm->registers[8+rs];
-        } else if (h1_and_2 == 0x10) {
+        } else if (h1_and_2 == 0b10) {
             // ADD Hd, Rs
             // Sum together the values in high register Hd (8+Rd) and low register Rs
             // then store the result in Hd
@@ -779,17 +779,17 @@ void tliHighRegOperations(VM_instance* vm, uint16_t instruction)
             vm->finished = true;
         }
     } else if (op == 0b10) {
-        if (h1_and_2 == 0x01) {
+        if (h1_and_2 == 0b01) {
             // MOV Rd, Hs
             // Moves a value from high register Hs (8+Rs) into low register Rd
             // rd <= 7 and (8+rs) <= 15, so this is safe
             printf("MOV r%u, r%u\n", rd, 8+rs);
             vm->registers[rd] = vm->registers[8+rs];
-        } else if (h1_and_2 == 0x10) {
+        } else if (h1_and_2 == 0b10) {
             // MOV Hd, Rs
             printf("MOV h%u, r%u\n", 8+rd, rs);
             vm->registers[8+rd] = vm->registers[rs];
-        } else if (h1_and_2 == 0x11) {
+        } else if (h1_and_2 == 0b11) {
             // MOV Hd, Hs
             printf("MOV h%u, h%u\n", 8+rd, 8+rs);
             vm->registers[8+rd] = vm->registers[8+rs];
@@ -800,12 +800,12 @@ void tliHighRegOperations(VM_instance* vm, uint16_t instruction)
     } else {
         if (h1_and_2 == 0b00) {
             // BX Rs
-            printf("BX r%u\n", rs);
-            vm_program_counter(vm) = rs & 0xFFFFFFFE;
+            printf("BX r%u (0x%x)\n", rs, vm->registers[rs] & 0xFFFFFFFE);
+            vm_program_counter(vm) = vm->registers[rs] & 0xFFFFFFFE;
         } else if (h1_and_2 == 0b01) {
             // BX Hs
-            printf("BX h%u\n", 8+rs);
-            vm_program_counter(vm) = rs & 0xFFFFFFFE;
+            printf("BX h%u (0x%x)\n", 8+rs, vm->registers[8+rs] & 0xFFFFFFFE);
+            vm_program_counter(vm) = vm->registers[8+rs] & 0xFFFFFFFE;
         } else {
             printf("Invalid command %x\n", instruction);
             vm->finished = true;
@@ -832,13 +832,17 @@ void tliPCRelativeLoad(VM_instance* vm, uint16_t instruction)
     // Calculate the offset by multiplying word8 by 4
     uint16_t offset = word8 << 2;
 
-    printf("LDR r%u, [PC, #%u]\n", rd, offset);
+    printf("LDR r%u, [PC, #%u]", rd, offset);
 
     // Calculate the memory location by adding the offset to the PC
-    uint32_t addr = (vm_program_counter(vm) & 0xFFFFFFFC) + offset;
+    // We have to add an extra 2 because the assembler would have expected prefetch to make the PC 2 more than it will
+    // be in this implementation
+    uint32_t addr = ((vm_program_counter(vm)+2) & 0xFFFFFFFC) + offset;
+    uint32_t wordToLoad = load(vm, addr, 4);
+    printf(" (r%u := [0x%x] = %u)\n", rd, addr, wordToLoad);
 
     // Load a word into the destination register (big endian)
-    vm->registers[rd] = load(vm, addr, 4);
+    vm->registers[rd] = wordToLoad;
 }
 
 
@@ -963,12 +967,12 @@ void tliLoadStoreWithImmediateOffset(VM_instance* vm, uint16_t instruction)
         if (load_or_store == 0) {
             // STR Rd, [Rb, #lmm]
             // Store the contents of Rd into the word starting at memory address Rb+lmm
-            printf("STR r%u, [r%u, #%u]\n", rd, rb, (offset5 << 2));
+            printf("STR r%u, [r%u, #%u] ([Word@0x%x] := r%u = %u)\n", rd, rb, (offset5 << 2), addr, rd, vm->registers[rd]);
             store(vm, addr, vm->registers[rd], 4);
         } else {
             // LDR Rd, [Rb, #lmm]
             // Load the word at Rb+lmm into register Rd
-            printf("LDR r%u, [r%u, #%u]\n", rd, rb, (offset5 << 2));
+            printf("LDR r%u, [r%u, #%u] (r%u := [Word@0x%x] = %u)\n", rd, rb, (offset5 << 2), rd, addr, load(vm, addr, 4));
             vm->registers[rd] = load(vm, addr, 4);
         }
     } else {
@@ -1317,8 +1321,12 @@ void tliConditionalBranch(VM_instance* vm, uint16_t instruction)
     } else {
         printf("Invalid command %x", instruction);
         vm->finished = true;
+        return;
     }
     printf(printFormat, targetAddress);
+    if (condition) {
+        vm_program_counter(vm) = targetAddress;
+    }
 }
 
 

@@ -1,11 +1,13 @@
 import json
 import subprocess
 import os.path
+import sys
 
 
 def main():
     # Compile start.s and lib.s fresh, so any changes are used
-    subprocess.run(["arm-none-eabi-as", "-o", "start.o", "start.s"])
+    subprocess.run(["arm-none-eabi-as", "-o", "start_arm.o", "start.s"])
+    subprocess.run(["arm-none-eabi-as", "-mthumb", "-o", "start_thumb.o", "start.s"])
     subprocess.run(["arm-none-eabi-as", "-mthumb", "-o", "lib.o", "lib.s"])
 
     # Load the tests file
@@ -31,20 +33,31 @@ def main():
             raise Exception(f"Unknown test file type: {test_filename_full}")
 
         # Link for QEMU (with ARM-to-Thumb start code) and for the VM (starting with the main function)
-        subprocess.run(["arm-none-eabi-ld", "start.o", "lib.o", obj_filename_full, "-o", elf_filename_full.replace(".elf", ".qemu.elf")])
-        subprocess.run(["arm-none-eabi-ld", "lib.o", obj_filename_full, "-o", elf_filename_full.replace(".elf", ".sim.elf"), "-e", "main"])
+        subprocess.run(["arm-none-eabi-ld", "start_arm.o", "lib.o", obj_filename_full, "-o", elf_filename_full.replace(".elf", ".qemu.elf")])
+        subprocess.run(["arm-none-eabi-ld", "start_thumb.o", "lib.o", obj_filename_full, "-o", elf_filename_full.replace(".elf", ".sim.elf")])
 
         # Then we execute that using qemu and see the result
         return_code_direct_simulation = subprocess.run(["qemu-arm", elf_filename_full.replace(".elf", ".qemu.elf")]).returncode
 
         # Run it also with the Windows-compiled ARMTinyVM
-        return_code_vm = subprocess.run(["../cmake-build-debug/ARMTinyVM", elf_filename_full.replace(".elf", ".sim.elf")]).returncode
+        return_code_vm_win = subprocess.run(["../cmake-build-debug-mingw/ARMTinyVM.exe", elf_filename_full.replace(".elf", ".sim.elf")]).returncode
+        return_code_vm_wsl = subprocess.run(["../cmake-build-debug-for-wsl/ARMTinyVM", elf_filename_full.replace(".elf", ".sim.elf")]).returncode
 
         # Does the result match what we wanted?
         if return_code_direct_simulation == expected_result:
-            print(f"TEST SUCCESS: {test_filename_full} -> {return_code_direct_simulation}")
+            print(f"TEST SUCCESS (QEMU): {test_filename_full} -> {return_code_direct_simulation}", file=sys.stderr)
         else:
-            print(f"TEST FAILED: {test_filename_full} -> {return_code_direct_simulation}, supposed to be {expected_result}")
+            print(f"TEST FAILED (QEMU): {test_filename_full} -> {return_code_direct_simulation}, supposed to be {expected_result}", file=sys.stderr)
+
+        if return_code_vm_win == expected_result:
+            print(f"TEST SUCCESS (WIN): {test_filename_full} -> {return_code_vm_win}", file=sys.stderr)
+        else:
+            print(f"TEST FAILED (WIN): {test_filename_full} -> {return_code_vm_win}, supposed to be {expected_result}", file=sys.stderr)
+
+        if return_code_vm_wsl == expected_result:
+            print(f"TEST SUCCESS (WSL): {test_filename_full} -> {return_code_vm_wsl}", file=sys.stderr)
+        else:
+            print(f"TEST FAILED (WSL): {test_filename_full} -> {return_code_vm_wsl}, supposed to be {expected_result}", file=sys.stderr)
 
 
 if __name__ == "__main__":
