@@ -12,6 +12,8 @@ def main():
     parser = ArgumentParser()
     parser.add_argument("directories", nargs="*", default=["./instructions", "./lib"],
                         help="Directories to run tests from. Leaving empty defaults to ./instructions and ./lib")
+    parser.add_argument("-p", "--preserve", action="store_true", help="If -p is set, then the .o and .elf files won't "
+                                                                      "be deleted after a successful test")
     args = parser.parse_args()
 
     # Compile start.s and lib.s fresh, so any changes are used
@@ -27,7 +29,8 @@ def main():
             expected_return = get_test_expected_result(filename)
             if expected_return:
                 tests[filename] = expected_return
-    print(tests)
+
+    full_success = True
 
     # Each key is the relative address of an assembly or C file
     # Each value is the intended exit value when that program is executed
@@ -62,16 +65,28 @@ def main():
             print(f"TEST SUCCESS (QEMU): {test_filename_full} -> {return_code_direct_simulation}", file=sys.stderr)
         else:
             print(f"TEST FAILED (QEMU): {test_filename_full} -> {return_code_direct_simulation}, supposed to be {expected_result}", file=sys.stderr)
+            full_success = False
 
         if return_code_vm_win == expected_result:
             print(f"TEST SUCCESS (WIN): {test_filename_full} -> {return_code_vm_win}", file=sys.stderr)
         else:
             print(f"TEST FAILED (WIN): {test_filename_full} -> {return_code_vm_win}, supposed to be {expected_result}", file=sys.stderr)
+            full_success = False
 
         if return_code_vm_wsl == expected_result:
             print(f"TEST SUCCESS (WSL): {test_filename_full} -> {return_code_vm_wsl}", file=sys.stderr)
         else:
             print(f"TEST FAILED (WSL): {test_filename_full} -> {return_code_vm_wsl}, supposed to be {expected_result}", file=sys.stderr)
+            full_success = False
+
+    if full_success and not args.preserve:
+        # In the event of a totally successful test, when the -p flag wasn't set, we will delete all the .o and .elf files
+        # In the chosen test directories
+        for directory in args.directories:
+            for file in glob(os.path.join(directory, "**/*.o"), recursive=True):
+                os.remove(file)
+            for file in glob(os.path.join(directory, "**/*.elf"), recursive=True):
+                os.remove(file)
 
 
 def get_test_expected_result(filename: str) -> Optional[int]:

@@ -346,7 +346,7 @@ void tliMoveShiftedRegister(VM_instance* vm, uint16_t instruction)
         // with Rs
         if (offset5 != 0) {
             // Carry is only changed if the offset was nonzero
-            uint32_t mask = 0xFFFFFFFF << offset5;
+            uint32_t mask = ~(0xFFFFFFFF >> offset5);
             if ((vm->registers[rs]) & mask) {
                 // We did shift off some ones
                 vm_set_cpsr_c(vm);
@@ -366,7 +366,7 @@ void tliMoveShiftedRegister(VM_instance* vm, uint16_t instruction)
         // The carry flag here is sensible, although it's not really a "carry"
         // If we shift any ones off the right hand side, then set C; if not, clear it
         // Carry is set even if shift was 0, although in that case it will always be false
-        uint32_t mask = 0xFFFFFFFF >> (32 - offset5);
+        uint32_t mask = ~(0xFFFFFFFF << offset5);
         if ((vm->registers[rs]) & mask) {
             // We did shift off some ones
             vm_set_cpsr_c(vm);
@@ -388,7 +388,7 @@ void tliMoveShiftedRegister(VM_instance* vm, uint16_t instruction)
         // The carry flag here is sensible, although it's not really a "carry"
         // If we shift any ones off the right hand side, then set C; if not, clear it
         // Carry is set even if shift was 0, although in that case it will always be false
-        uint32_t mask = 0xFFFFFFFF >> (32 - offset5);
+        uint32_t mask = ~(0xFFFFFFFF << offset5);
         if ((vm->registers[rs]) & mask) {
             // We did shift off some ones
             vm_set_cpsr_c(vm);
