@@ -125,7 +125,7 @@ void VM_executeSingleInstruction(VM_instance* vm)
         func = tliLongBranchWithLink;
     } else {
         // No matching operation
-        printf("UNKNOWN INSTRUCTION %x", instruction);
+        printf("UNKNOWN INSTRUCTION %x\n", instruction);
         vm->finished = true;
         return;
     }
@@ -336,7 +336,7 @@ void tliMoveShiftedRegister(VM_instance* vm, uint16_t instruction)
         // LSL Rd, Rs, #Offset5
         // Rd := Rs << Offset5
         // Safe because rs and rd are no higher than 7
-        printf("LSL R%u, R%u, #%u", rd, rs, offset5);
+        printf("LSL R%u, R%u, #%u\n", rd, rs, offset5);
         vm->registers[rd] = (vm->registers[rs]) << offset5;
         compareSetNZ(vm, vm->registers[rd]);
 
@@ -358,7 +358,7 @@ void tliMoveShiftedRegister(VM_instance* vm, uint16_t instruction)
         // LSR Rd, Rs, #Offset5
         // Rd := Rs >>(logical) Offset5
         // Safe because rd and rs and no higher than 7
-        printf("LSR R%u, R%u, #%u", rd, rs, offset5);
+        printf("LSR R%u, R%u, #%u\n", rd, rs, offset5);
         vm->registers[rd] = (vm->registers[rs]) >> offset5;
         compareSetNZ(vm, vm->registers[rd]);
 
@@ -377,7 +377,7 @@ void tliMoveShiftedRegister(VM_instance* vm, uint16_t instruction)
         // Rd := Rs >>(arithmetic) Offset5
         // Safe because rd and rs are no higher than 7
         // In C, while technically this is implementation-defined, in general we do an arithmetic shift using signed int
-        printf("ASR R%u, R%u, #%u", rd, rs, offset5);
+        printf("ASR R%u, R%u, #%u\n", rd, rs, offset5);
         vm->registers[rd] = (uint32_t) (((int32_t) (vm->registers[rs])) >> offset5);
         compareSetNZ(vm, vm->registers[rd]);
 
@@ -432,7 +432,7 @@ void tliAddSubtract(VM_instance* vm, uint16_t instruction)
             // Rd := Rs + Offset3
             // Safe because rd, rs are no higher than 7
             // rn is equivalent to Offset3 (same bits used in encoding)
-            printf("ADD r%u, r%u, #%u", rd, rs, rn);
+            printf("ADD r%u, r%u, #%u\n", rd, rs, rn);
             vm->registers[rd] = vm->registers[rs] + rn;
             compareSetNZ(vm, vm->registers[rd]);
             compareSetCV(vm, vm->registers[rs], rn);
@@ -451,7 +451,7 @@ void tliAddSubtract(VM_instance* vm, uint16_t instruction)
             // Rd := Rs - Offset3
             // Safe because rd, rs are no higher than 7
             // rn is equivalent to Offset3 (same bits used in encoding)
-            printf("SUB r%u, r%u, #%u", rd, rs, rn);
+            printf("SUB r%u, r%u, #%u\n", rd, rs, rn);
             vm->registers[rd] = vm->registers[rs] - rn;
             compareSetNZ(vm, vm->registers[rd]);
             compareSetCV(vm, vm->registers[rs], 0 - rn);
@@ -486,7 +486,7 @@ void tliMovCmpAddSubImmediate(VM_instance* vm, uint16_t instruction)
     } else if (op == 0b01) {
         // CMP Rd, #Offset
         // Compares the register with the 8-bit offset
-        printf("CMP r%u, #%u", rd, offset);
+        printf("CMP r%u, #%u\n", rd, offset);
 
         // Set comparison registers based on Rd - Offset
         compareSetNZ(vm, vm->registers[rd] - offset);
@@ -494,14 +494,14 @@ void tliMovCmpAddSubImmediate(VM_instance* vm, uint16_t instruction)
     } else if (op == 0b10) {
         // ADD Rd, #Offset
         // Adds the offset to the register
-        printf("ADD r%u, #%u", rd, offset);
+        printf("ADD r%u, #%u\n", rd, offset);
         compareSetCV(vm, vm->registers[rd], offset);
         vm->registers[rd] += offset;
         compareSetNZ(vm, vm->registers[rd]);
     } else {
         // SUB Rd, #Offset
         // Subtracts the offset from the register
-        printf("SUB r%u, #%u", rd, offset);
+        printf("SUB r%u, #%u\n", rd, offset);
         compareSetCV(vm, vm->registers[rd], 0L - offset);
         vm->registers[rd] -= offset;
         compareSetNZ(vm, vm->registers[rd]);
@@ -525,17 +525,17 @@ void tliALUOperations(VM_instance* vm, uint16_t instruction)
 
     if (op == 0b0000) {
         // AND Rd, Rs
-        printf("AND r%u, r%u", rd, rs);
+        printf("AND r%u, r%u\n", rd, rs);
         vm->registers[rd] = vm->registers[rd] & vm->registers[rs];
         compareSetNZ(vm, vm->registers[rd]);
     } else if (op == 0b0001) {
         // EOR Rd, Rs
-        printf("EOR r%u, r%u", rd, rs);
+        printf("EOR r%u, r%u\n", rd, rs);
         vm->registers[rd] = vm->registers[rd] ^ vm->registers[rs];
         compareSetNZ(vm, vm->registers[rd]);
     } else if (op == 0b0010) {
         // LSL Rd, Rs
-        printf("LSL r%u, r%u", rd, rs);
+        printf("LSL r%u, r%u\n", rd, rs);
         if ((vm->registers[rs] & 0xFF) != 0) {
             // Carry is only changed if the offset was nonzero
             uint32_t mask = 0xFFFFFFFF << vm->registers[rs];
@@ -550,7 +550,7 @@ void tliALUOperations(VM_instance* vm, uint16_t instruction)
         compareSetNZ(vm, vm->registers[rd]);
     } else if (op == 0b0011) {
         // LSR Rd, Rs
-        printf("LSR r%u, r%u", rd, rs);
+        printf("LSR r%u, r%u\n", rd, rs);
         uint32_t mask = 0xFFFFFFFF >> (32 - vm->registers[rs]);
         if ((vm->registers[rd]) & mask) {
             // We did shift off some ones
@@ -562,7 +562,7 @@ void tliALUOperations(VM_instance* vm, uint16_t instruction)
         compareSetNZ(vm, vm->registers[rd]);
     } else if (op == 0b0100) {
         // ASR Rd, Rs
-        printf("ASR r%u, r%u", rd, rs);
+        printf("ASR r%u, r%u\n", rd, rs);
         uint32_t mask = 0xFFFFFFFF >> (32 - vm->registers[rs]);
         if ((vm->registers[rs] & 0xFF) != 0) {
             if ((vm->registers[rd]) & mask) {
@@ -576,7 +576,7 @@ void tliALUOperations(VM_instance* vm, uint16_t instruction)
         compareSetNZ(vm, vm->registers[rd]);
     } else if (op == 0b0101) {
         // ADC Rd, Rs
-        printf("ADC r%u, r%u", rd, rs);
+        printf("ADC r%u, r%u\n", rd, rs);
 
         uint8_t carryAtStart = vm_get_cpsr_c(vm);
 
@@ -603,7 +603,7 @@ void tliALUOperations(VM_instance* vm, uint16_t instruction)
         compareSetNZ(vm, vm->registers[rd]);
     } else if (op == 0b0110) {
         // SBC Rd, Rs
-        printf("SBC r%u, r%u", rd, rs);
+        printf("SBC r%u, r%u\n", rd, rs);
 
         uint8_t carryAtStart = vm_get_cpsr_c(vm);
 
@@ -630,7 +630,7 @@ void tliALUOperations(VM_instance* vm, uint16_t instruction)
         compareSetNZ(vm, vm->registers[rd]);
     } else if (op == 0b0111) {
         // ROR Rd, Rs
-        printf("ROR r%u, r%u", rd, rs);
+        printf("ROR r%u, r%u\n", rd, rs);
 
         vm->registers[rd] = (vm->registers[rd] >> vm->registers[rs]) | (vm->registers[rd] << (32 - vm->registers[rs]));
         compareSetNZ(vm, vm->registers[rd]);
@@ -645,52 +645,52 @@ void tliALUOperations(VM_instance* vm, uint16_t instruction)
         }
     } else if (op == 0b1000) {
         // TST Rd, Rs
-        printf("TST r%u, r%u", rd, rs);
+        printf("TST r%u, r%u\n", rd, rs);
 
         // Just set condition bits without changing rd
         compareSetNZ(vm, (vm->registers[rd]) & (vm->registers[rs]));
     } else if (op == 0b1001) {
         // NEG Rd, Rs
-        printf("NEG r%u, r%u", rd, rs);
+        printf("NEG r%u, r%u\n", rd, rs);
 
         compareSetNZ(vm, 0 - vm->registers[rs]);
         compareSetCV(vm, 0, -vm->registers[rs]);
         vm->registers[rd] = 0 - vm->registers[rs];
     } else if (op == 0b1010) {
         // CMP Rd, Rs
-        printf("CMP r%u, r%u", rd, rs);
+        printf("CMP r%u, r%u\n", rd, rs);
 
         // Compare based on the result of rd - rs
         compareSetNZ(vm, vm->registers[rd] - vm->registers[rs]);
         compareSetCV(vm, vm->registers[rd], 0 - vm->registers[rs]);
     } else if (op == 0b1011) {
         // CMN Rd, Rs
-        printf("CMN r%u, r%u", rd, rs);
+        printf("CMN r%u, r%u\n", rd, rs);
 
         // Compare based on the result of rd + rs
         compareSetNZ(vm, vm->registers[rd] + vm->registers[rs]);
         compareSetCV(vm, vm->registers[rd], vm->registers[rs]);
     } else if (op == 0b1100) {
         // ORR Rd, Rs
-        printf("ORR r%u, r%u", rd, rs);
+        printf("ORR r%u, r%u\n", rd, rs);
 
         vm->registers[rd] = (vm->registers[rd]) | (vm->registers[rs]);
         compareSetNZ(vm, vm->registers[rd]);
     } else if (op == 0b1101) {
         // MUL Rd, Rs
-        printf("MUL r%u, r%u", rd, rs);
+        printf("MUL r%u, r%u\n", rd, rs);
 
         vm->registers[rd] = vm->registers[rd] * vm->registers[rs];
         compareSetNZ(vm, vm->registers[rd]);
     } else if (op == 0b1110) {
         // BIC Rd, Rs
-        printf("BIC r%u, r%u", rd, rs);
+        printf("BIC r%u, r%u\n", rd, rs);
 
         vm->registers[rd] = (vm->registers[rd]) & (~(vm->registers[rs]));
         compareSetNZ(vm, vm->registers[rd]);
     } else if (op == 0b1111) {
         // MVN Rd, Rs
-        printf("MVN r%u, r%u", rd, rs);
+        printf("MVN r%u, r%u\n", rd, rs);
 
         vm->registers[rd] = ~(vm->registers[rs]);
         compareSetNZ(vm, vm->registers[rd]);
@@ -722,7 +722,7 @@ void tliHighRegOperations(VM_instance* vm, uint16_t instruction)
             // ADD Rd, Hs
             // Sum together the values in a low register Rd and a high register Rs (8+Rs),
             // and store the result in low register Rd
-            printf("ADD r%u, H%u", rd, 8+rs);
+            printf("ADD r%u, H%u\n", rd, 8+rs);
             compareSetNZ(vm, vm->registers[rd] + vm->registers[8+rs]);
             compareSetCV(vm, vm->registers[rd], vm->registers[8+rs]);
             vm->registers[rd] = vm->registers[rd] + vm->registers[8+rs];
@@ -730,7 +730,7 @@ void tliHighRegOperations(VM_instance* vm, uint16_t instruction)
             // ADD Hd, Rs
             // Sum together the values in high register Hd (8+Rd) and low register Rs
             // then store the result in Hd
-            printf("ADD H%u, R%u", 8+rd, rs);
+            printf("ADD H%u, R%u\n", 8+rd, rs);
             compareSetNZ(vm, vm->registers[8+rd] + vm->registers[rs]);
             compareSetCV(vm, vm->registers[8+rd], vm->registers[rs]);
             vm->registers[8+rd] = vm->registers[rs];
@@ -738,34 +738,34 @@ void tliHighRegOperations(VM_instance* vm, uint16_t instruction)
             // ADD Hd, Hs
             // Sum together the values in the high registers Hd (8+Rd) and Hs (8+Rs)
             // then store the result in Hd
-            printf("ADD H%u, H%u", 8+rd, 8+rs);
+            printf("ADD H%u, H%u\n", 8+rd, 8+rs);
             compareSetNZ(vm, vm->registers[8+rd] + vm->registers[8+rs]);
             compareSetCV(vm, vm->registers[8+rd], vm->registers[8+rs]);
             vm->registers[8+rd] = vm->registers[8+rd] + vm->registers[8+rs];
         } else {
-            printf("Invalid command %x", instruction);
+            printf("Invalid command %x\n", instruction);
             vm->finished = true;
         }
     } else if (op == 0b01) {
         if (h1_and_2 == 0b01) {
             // CMP Rd, Hs
-            printf("CMP r%u, h%u", rd, 8+rs);
+            printf("CMP r%u, h%u\n", rd, 8+rs);
 
             compareSetNZ(vm, vm->registers[rd] - vm->registers[8+rs]);
             compareSetCV(vm, vm->registers[rd], 0 - vm->registers[8+rs]);
         } else if (h1_and_2 == 0b10) {
             // CMP Hd, Rs
-            printf("CMP h%u, r%u", 8+rd, rs);
+            printf("CMP h%u, r%u\n", 8+rd, rs);
 
             compareSetNZ(vm, vm->registers[8+rd] - vm->registers[rs]);
             compareSetCV(vm, vm->registers[8+rd], 0 - vm->registers[rs]);
         } else if (h1_and_2 == 0b11) {
             // CMP Hd, Hs
-            printf("CMP h%u, h%u", 8+rd, 8+rs);
+            printf("CMP h%u, h%u\n", 8+rd, 8+rs);
             compareSetNZ(vm, vm->registers[8+rd] - vm->registers[8+rs]);
             compareSetCV(vm, vm->registers[8+rd], vm->registers[8+rs]);
         } else {
-            printf("Invalid command %x", instruction);
+            printf("Invalid command %x\n", instruction);
             vm->finished = true;
         }
     } else if (op == 0b10) {
@@ -777,27 +777,27 @@ void tliHighRegOperations(VM_instance* vm, uint16_t instruction)
             vm->registers[rd] = vm->registers[8+rs];
         } else if (h1_and_2 == 0x10) {
             // MOV Hd, Rs
-            printf("MOV h%u, r%u", 8+rd, rs);
+            printf("MOV h%u, r%u\n", 8+rd, rs);
             vm->registers[8+rd] = vm->registers[rs];
         } else if (h1_and_2 == 0x11) {
             // MOV Hd, Hs
-            printf("MOV h%u, h%u", 8+rd, 8+rs);
+            printf("MOV h%u, h%u\n", 8+rd, 8+rs);
             vm->registers[8+rd] = vm->registers[8+rs];
         } else {
-            printf("Invalid command %x", instruction);
+            printf("Invalid command %x\n", instruction);
             vm->finished = true;
         }
     } else {
         if (h1_and_2 == 0b00) {
             // BX Rs
-            printf("BX r%u", rs);
+            printf("BX r%u\n", rs);
             vm_program_counter(vm) = rs & 0xFFFFFFFE;
         } else if (h1_and_2 == 0b01) {
             // BX Hs
-            printf("BX h%u", 8+rs);
+            printf("BX h%u\n", 8+rs);
             vm_program_counter(vm) = rs & 0xFFFFFFFE;
         } else {
-            printf("Invalid command %x", instruction);
+            printf("Invalid command %x\n", instruction);
             vm->finished = true;
         }
     }
@@ -820,7 +820,7 @@ void tliPCRelativeLoad(VM_instance* vm, uint16_t instruction)
     // Calculate the offset by multiplying word8 by 4
     uint16_t offset = word8 << 2;
 
-    printf("LDR r%u, [PC, #%u]", rd, offset);
+    printf("LDR r%u, [PC, #%u]\n", rd, offset);
 
     // Calculate the memory location by adding the offset to the PC
     uint32_t addr = (vm_program_counter(vm) & 0xFFFFFFFC) + offset;
@@ -852,23 +852,23 @@ void tliLoadWithRegOffset(VM_instance* vm, uint16_t instruction)
         if (byte_or_word == 0) {
             // STR Rd, [Rb, Ro]
             // Store a word from Rd into the address
-            printf("STR r%u, [r%u, r%u]", rd, rb, ro);
+            printf("STR r%u, [r%u, r%u]\n", rd, rb, ro);
             store(vm, addr, vm->registers[rd], 4);
         } else {
             // STRB Rd, [Rb, Ro]
-            printf("STRB r%u, [r%u, r%u]", rd, rb, ro);
+            printf("STRB r%u, [r%u, r%u]\n", rd, rb, ro);
             store(vm, addr, vm->registers[rd] & 0xFF, 1);
         }
     } else {
         if (byte_or_word == 0) {
             // LDR Rd, [Rb, Ro]
             // Load a word from Rb + Ro into Rd
-            printf("LDR r%u, [r%u, r%u]", rd, rb, ro);
+            printf("LDR r%u, [r%u, r%u]\n", rd, rb, ro);
             vm->registers[rd] = load(vm, addr, 4);
         } else {
             // LDRB Rd, [Rb, Ro]
             // Load a byte from Rb + Ro into Rd
-            printf("LDRB r%u, [r%u, r%u]", rd, rb, ro);
+            printf("LDRB r%u, [r%u, r%u]\n", rd, rb, ro);
             vm->registers[rd] = load(vm, addr, 1);
         }
     }
@@ -897,26 +897,26 @@ void tliLoadStoreSignExtendedByte(VM_instance* vm, uint16_t instruction)
         if (h == 0) {
             // STRH Rd, [Rb, Ro]
             // Store half-word from Rd into memory address Rb+Ro
-            printf("STRH r%u, [r%u, r%u]", rd, rb, ro);
+            printf("STRH r%u, [r%u, r%u]\n", rd, rb, ro);
             store(vm, addr, vm->registers[rd] & 0x0000FFFF, 2);
         } else {
             // LDRH Rd, [Rb, Ro]
             // Load half-word from Rb+Ro into register Rd
-            printf("LDRH r%u, [r%u, r%u]", rd, rb, ro);
+            printf("LDRH r%u, [r%u, r%u]\n", rd, rb, ro);
             vm->registers[rd] = load(vm, addr, 2);
         }
     } else {
         if (h == 0) {
             // LDSB Rd, [Rb, Ro]
             // Load byte from Rb+Ro, sign-extend it to word size, and put it in Rd
-            printf("LDSB r%u, [r%u, r%u]", rd, rb, ro);
+            printf("LDSB r%u, [r%u, r%u]\n", rd, rb, ro);
             uint32_t value = load(vm, addr, 1);
             value = (value & 0x000000FF) | ((value & 0x80) ? 0xFFFFFF00 : 0);
             vm->registers[rd] = value;
         } else {
             // LDSH Rd, [Rb, Ro]
             // Load half-word from Rb+Ro, sign-extend it to word size, and put it in Rd
-            printf("LDSH r%u, [r%u, r%u]", rd, rb, ro);
+            printf("LDSH r%u, [r%u, r%u]\n", rd, rb, ro);
             uint32_t value = load(vm, addr, 2);
             value = (value & 0x0000FFFF) | ((value & 0x8000) ? 0xFFFF0000 : 0);
             vm->registers[rd] = value;
@@ -945,12 +945,12 @@ void tliLoadStoreWithImmediateOffset(VM_instance* vm, uint16_t instruction)
         if (load_or_store == 0) {
             // STR Rd, [Rb, #lmm]
             // Store the contents of Rd into the word starting at memory address Rb+lmm
-            printf("STR r%u, [r%u, #%u]", rd, rb, (offset5 << 2));
+            printf("STR r%u, [r%u, #%u]\n", rd, rb, (offset5 << 2));
             store(vm, addr, vm->registers[rd], 4);
         } else {
             // LDR Rd, [Rb, #lmm]
             // Load the word at Rb+lmm into register Rd
-            printf("LDR r%u, [r%u, #%u]", rd, rb, (offset5 << 2));
+            printf("LDR r%u, [r%u, #%u]\n", rd, rb, (offset5 << 2));
             vm->registers[rd] = load(vm, addr, 4);
         }
     } else {
@@ -958,12 +958,12 @@ void tliLoadStoreWithImmediateOffset(VM_instance* vm, uint16_t instruction)
         if (load_or_store == 0) {
             // STRB Rd, [Rb, #lmm]
             // Store the least significant byte of Rd in memory address Rb+lmm
-            printf("STRB r%u, [r%u, #%u]", rd, rb, offset5);
+            printf("STRB r%u, [r%u, #%u]\n", rd, rb, offset5);
             store(vm, addr, vm->registers[rd], 1);
         } else {
             // LDRB Rd, [Rb, #lmm]
             // Load the byte at Rb+lmm into register Rd
-            printf("LDRB r%u, [r%u, #%u]", rd, rb, offset5);
+            printf("LDRB r%u, [r%u, #%u]\n", rd, rb, offset5);
             vm->registers[rd] = load(vm, addr, 1);
         }
     }
@@ -989,12 +989,12 @@ void tliLoadStoreHalfWord(VM_instance* vm, uint16_t instruction)
     if (load_or_store == 0) {
         // STRH Rd, [Rb, #lmm]
         // Stores the least significant 16 bits of Rd into memory address Rb+lmm
-        printf("STRH r%u, [r%u, #%u]", rd, rb, (offset5 << 1));
+        printf("STRH r%u, [r%u, #%u]\n", rd, rb, (offset5 << 1));
         store(vm, addr, vm->registers[rd], 2);
     } else {
         // LDRH Rd, [Rb, #lmm]
         // Loads the half-word from address Rb+lmm and stores it in register Rd
-        printf("LDRH r%u, [r%u, #%u]", rd, rb, (offset5 << 1));
+        printf("LDRH r%u, [r%u, #%u]\n", rd, rb, (offset5 << 1));
         vm->registers[rd] = load(vm, addr, 2);
     }
 }
@@ -1018,12 +1018,12 @@ void tliSPRelativeLoad(VM_instance* vm, uint16_t instruction)
     if (load_or_store == 0) {
         // STR Rd, [SP, #lmm]
         // Store the contents of register Rd into address SP+lmm
-        printf("STR r%u, [SP, #%u]", rd, ((uint16_t) word8) << 2);
+        printf("STR r%u, [SP, #%u]\n", rd, ((uint16_t) word8) << 2);
         store(vm, addr, vm->registers[rd], 4);
     } else {
         // LDR Rd, [SP, #lmm]
         // Load the contents of address SP+lmm into register Rd
-        printf("LDR r%u, [SP, #%u]", rd, ((uint16_t) word8) << 2);
+        printf("LDR r%u, [SP, #%u]\n", rd, ((uint16_t) word8) << 2);
         vm->registers[rd] = load(vm, addr, 4);
     }
 }
@@ -1047,12 +1047,12 @@ void tliLoadAddress(VM_instance* vm, uint16_t instruction)
     if (sp == 0) {
         // ADD Rd, PC, #lmm
         // Add lmm to PC and store the resulting address in Rd
-        printf("ADD r%u, PC, #%u", rd, lmm);
+        printf("ADD r%u, PC, #%u\n", rd, lmm);
         vm->registers[rd] = vm_program_counter(vm) + lmm;
     } else {
         // ADD Rd, SP, #lmm
         // Add lmm to SP and store the resulting address in Rd
-        printf("ADD r%u, SP, #%u", rd, lmm);
+        printf("ADD r%u, SP, #%u\n", rd, lmm);
         vm->registers[rd] = vm_stack_pointer(vm) + lmm;
     }
 }
@@ -1075,12 +1075,12 @@ void tliAddOffsetToSP(VM_instance* vm, uint16_t instruction)
     if (sign == 0) {
         // ADD SP, #lmm
         // Increase the stack pointer by lmm
-        printf("ADD SP, #%u", lmm);
+        printf("ADD SP, #%u\n", lmm);
         vm_stack_pointer(vm) = vm_stack_pointer(vm) + lmm;
     } else {
         // ADD SP, #-lmm
         // Decrease the stack pointer by lmm
-        printf("ADD SP, #-%u", lmm);
+        printf("ADD SP, #-%u\n", lmm);
         vm_stack_pointer(vm) = vm_stack_pointer(vm) - lmm;
     }
 }
@@ -1123,7 +1123,7 @@ void tliPushPopRegisters(VM_instance* vm, uint16_t instruction)
     // Pushing goes from the highest register to the lowest, popping goes from lowest to highest
     if (load_or_store == 0) {
         // Push
-        printf("push {...*%u}", numRegistersInvolved);
+        printf("push {...*%u}\n", numRegistersInvolved);
         for (int8_t i = 15; i >= 0; i--) {
             if (use_registers[i]) {
                 vm_stack_pointer(vm) -= 4;
@@ -1132,7 +1132,7 @@ void tliPushPopRegisters(VM_instance* vm, uint16_t instruction)
         }
     } else {
         // Pop
-        printf("pop {...*%u}", numRegistersInvolved);
+        printf("pop {...*%u}\n", numRegistersInvolved);
         for (int8_t i = 0; i < 16; i++) {
             if (use_registers[i]) {
                 vm->registers[i] = load(vm, vm_stack_pointer(vm), 4);
@@ -1172,7 +1172,7 @@ void tliMultipleLoadStore(VM_instance* vm, uint16_t instruction)
     if (load_or_store == 0) {
         // STMIA Rb!, {rlist}
         // Store the registers in rlist starting at base address rb
-        printf("STMIA r%u!, {...*%u}", rb, numRegistersInvolved);
+        printf("STMIA r%u!, {...*%u}\n", rb, numRegistersInvolved);
         for (int8_t i = 0; i < 8; i++) {
             if (use_registers[i]) {
                 store(vm, baseAddress, vm->registers[i], 4);
@@ -1182,7 +1182,7 @@ void tliMultipleLoadStore(VM_instance* vm, uint16_t instruction)
     } else {
         // LDMIA Rb!, {rlist}
         // Load the registers in rlist starting at base address rb
-        printf("LDMIA r%u!, {...*%u}", rb, numRegistersInvolved);
+        printf("LDMIA r%u!, {...*%u}\n", rb, numRegistersInvolved);
         for (uint8_t i = 0; i < 8; i++) {
             if (use_registers[i]) {
                 vm->registers[i] = load(vm, baseAddress, 4);
@@ -1215,77 +1215,78 @@ void tliConditionalBranch(VM_instance* vm, uint16_t instruction)
     if (cond == 0b0000) {
         // BEQ label
         // Branch if Z set (equal)
-        printFormat = "BEQ %u";
+        printFormat = "BEQ %u\n";
         condition = vm_get_cpsr_z(vm);
     } else if (cond == 0b0001) {
         // BNE label
         // Branch if Z clear (not equal)
-        printFormat = "BNE %u";
+        printFormat = "BNE %u\n";
         condition = !vm_get_cpsr_z(vm);
     } else if (cond == 0b0010) {
         // BCS label
         // Branch if C set (unsigned higher or same)
-        printFormat = "BCS %u";
+        printFormat = "BCS %u\n";
         condition = vm_get_cpsr_c(vm);
     } else if (cond == 0b0011) {
         // BCC label
         // Branch if C clear (unsigned lower)
-        printFormat = "BCC %u";
+        printFormat = "BCC %u\n";
         condition = !vm_get_cpsr_c(vm);
     } else if (cond == 0b0100) {
         // BMI label
         // Branch if N set (negative)
-        printFormat = "BMI %u";
+        printFormat = "BMI %u\n";
         condition = vm_get_cpsr_n(vm);
     } else if (cond == 0b0101) {
         // BPL label
         // Branch if N clear (positive or zero)
-        printFormat = "BPL %u";
+        printFormat = "BPL %u\n";
         condition = !vm_get_cpsr_n(vm);
     } else if (cond == 0b0110) {
         // BVS label
         // Branch if V set (overflow)
-        printFormat = "BVS %u";
+        printFormat = "BVS %u\n";
         condition = vm_get_cpsr_v(vm);
     } else if (cond == 0b0111) {
         // BVC label
         // Branch if V clear (no overflow)
-        printFormat = "BVC %u";
+        printFormat = "BVC %u\n";
         condition = !vm_get_cpsr_v(vm);
     } else if (cond == 0b1000) {
         // BHI label
         // Branch if C set and Z clear (unsigned higher)
-        printFormat = "BHI $u";
+        printFormat = "BHI %u\n";
         condition = vm_get_cpsr_c(vm) && !vm_get_cpsr_z(vm);
     } else if (cond == 0b1001) {
         // BLS label
         // Branch if C clear or Z set (unsigned lower or same)
-        printFormat = "BLS %u";
+        printFormat = "BLS %u\n";
         condition = !vm_get_cpsr_c(vm) || vm_get_cpsr_z(vm);
     } else if (cond == 0b1010) {
         // BGE label
         // Branch if N set and V set, or N clear and V clear (greater or equal)
-        printFormat = "BGE %u";
+        printFormat = "BGE %u\n";
         condition = (vm_get_cpsr_n(vm) && vm_get_cpsr_v(vm)) || (!vm_get_cpsr_n(vm) || !vm_get_cpsr_v(vm));
     } else if (cond == 0b1011) {
         // BLT label
         // Branch if N set and V clear, or N clear and V set (less than)
-        printFormat = "BLT %u";
+        printFormat = "BLT %u\n";
         condition = (vm_get_cpsr_n(vm) && !vm_get_cpsr_v(vm)) || (!vm_get_cpsr_n(vm) && vm_get_cpsr_v(vm));
     } else if (cond == 0b1100) {
         // BGT label
         // Branch if Z clear, and either N set and V set or N clear and V clear (greater than)
-        printFormat = "BGT %u";
+        printFormat = "BGT %u\n";
         condition = !vm_get_cpsr_z(vm) && ((vm_get_cpsr_n(vm) && vm_get_cpsr_v(vm)) || (!vm_get_cpsr_n(vm) && !vm_get_cpsr_v(vm)));
     } else if (cond == 0b1101) {
         // BLE label
         // Branch if Z set, or N set and V clear, or N clear and V set (less than or equal)
-        printFormat = "BLE %u";
+        printFormat = "BLE %u\n";
         condition = vm_get_cpsr_z(vm) || (vm_get_cpsr_n(vm) && !vm_get_cpsr_v(vm)) || (!vm_get_cpsr_n(vm) && vm_get_cpsr_v(vm));
     } else {
         printf("Invalid command %x", instruction);
         vm->finished = true;
     }
+    printf(printFormat, targetAddress);
 }
 
 
@@ -1324,7 +1325,7 @@ void tliUnconditionalBranch(VM_instance* vm, uint16_t instruction)
     // Calculate how to jump; we shift offset11 by 1, leading to a 12-bit number, then sign-extend it to 32 bits
     uint32_t relJump = offset11 << 1;
     relJump = (relJump & 0x00000FFF) | ((relJump & 0x0800) ? 0xFFFFF000 : 0);
-    printf("B %d", relJump);
+    printf("B %d\n", relJump);
     uint32_t addr = vm_program_counter(vm) + relJump;
 
     // Jump to the new address
@@ -1349,6 +1350,7 @@ void tliLongBranchWithLink(VM_instance* vm, uint16_t instruction)
     if (high_or_low == 0) {
         // The first instruction; shift left by 12 bits, add it to the current PC, and store the result in LR
         vm_link_register(vm) = vm_program_counter(vm) + (offset << 12);
+        printf("BL(0) %u\n", offset);
     } else {
         // The second instruction; put together the first half of the offset and the offset given in this instruction
         uint32_t targetAddress = vm_link_register(vm) + (offset << 1);
@@ -1358,6 +1360,7 @@ void tliLongBranchWithLink(VM_instance* vm, uint16_t instruction)
         // mode if coming back from and ARM function.
         vm_link_register(vm) = vm_program_counter(vm) | 1;
         vm_program_counter(vm) = targetAddress;
+        printf("BL(1) %u\n", offset);
     }
 }
 

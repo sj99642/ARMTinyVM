@@ -134,14 +134,13 @@ int main(int argc, char* argv[])
         printf("Section index link (meanings differ): %u\n", sectionHeader->sh_link);
         printf("Extra info (meanings differ): %u\n", sectionHeader->sh_info);
         printf("Alignment: %u\n", sectionHeader->sh_addralign);
-        printf("Entry size (if applicable): %u\n\n", sectionHeader->sh_entsize);
+        printf("Entry size (if applicable): %u\n", sectionHeader->sh_entsize);
 
         if (sectionHeader->sh_flags & SHF_ALLOC) {
             // Needs to actually be loaded at runtime
             segments[numAllocatedSegments].virtualStartAddress = sectionHeader->sh_addr;
             segments[numAllocatedSegments].length = sectionHeader->sh_size;
             segments[numAllocatedSegments].content = malloc(sectionHeader->sh_size);
-            numAllocatedSegments++;
 
             // Load the content of the section from the ELF file into the newly allocated memory
             memcpy(
@@ -149,10 +148,11 @@ int main(int argc, char* argv[])
                     &(elfContent[sectionHeader->sh_offset]),
                     sectionHeader->sh_size
             );
+            numAllocatedSegments++;
 
-            printf("Allocated and loaded virtual memory segment starting at 0x%x, with size %u\n", sectionHeader->sh_addr, sectionHeader->sh_size);
+            printf("Allocated and loaded virtual memory segment starting at 0x%x, with size %u\n\n", sectionHeader->sh_addr, sectionHeader->sh_size);
         } else {
-            printf("Not to be loaded\n");
+            printf("Not to be loaded\n\n");
         }
 
         ++sectionNum;
