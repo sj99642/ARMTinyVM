@@ -275,15 +275,15 @@ uint32_t load(VM_instance* vm, uint32_t addr, uint8_t bytes)
         return vm->interactionInstructions->readByte(addr);
     } else if (bytes == 2) {
         // Half word
-        uint32_t value = vm->interactionInstructions->readByte(addr);
-        value += vm->interactionInstructions->readByte(addr+1) << 8;
+        uint32_t value = (uint32_t) vm->interactionInstructions->readByte(addr);
+        value += (uint32_t) (vm->interactionInstructions->readByte(addr+1)) << 8;
         return value;
     } else {
         // Full word
-        uint32_t value = vm->interactionInstructions->readByte(addr);
-        value += vm->interactionInstructions->readByte(addr+1) << 8;
-        value += vm->interactionInstructions->readByte(addr+2) << 16;
-        value += vm->interactionInstructions->readByte(addr+3) << 24;
+        uint32_t value = (uint32_t) vm->interactionInstructions->readByte(addr);
+        value += (uint32_t) (vm->interactionInstructions->readByte(addr+1)) << 8;
+        value += (uint32_t) (vm->interactionInstructions->readByte(addr+2)) << 16;
+        value += (uint32_t) (vm->interactionInstructions->readByte(addr+3)) << 24;
         return value;
     }
 }
@@ -297,13 +297,13 @@ void store(VM_instance* vm, uint32_t addr, uint32_t value, uint8_t bytes)
     } else if (bytes == 2) {
         // Half word
         vm->interactionInstructions->writeByte(addr,   (uint8_t) (value & 0x000000FF));
-        vm->interactionInstructions->writeByte(addr+1, (uint8_t) (value & 0x0000FF00) >> 8);
+        vm->interactionInstructions->writeByte(addr+1, (uint8_t) ((value & 0x0000FF00) >> 8));
     } else {
         // Full word
         vm->interactionInstructions->writeByte(addr,   (uint8_t) (value & 0x000000FF));
-        vm->interactionInstructions->writeByte(addr+1, (uint8_t) (value & 0x0000FF00) >> 8);
-        vm->interactionInstructions->writeByte(addr+2, (uint8_t) (value & 0x00FF0000) >> 16);
-        vm->interactionInstructions->writeByte(addr+3, (uint8_t) (value & 0xFF000000) >> 24);
+        vm->interactionInstructions->writeByte(addr+1, (uint8_t) ((value & 0x0000FF00) >> 8));
+        vm->interactionInstructions->writeByte(addr+2, (uint8_t) ((value & 0x00FF0000) >> 16));
+        vm->interactionInstructions->writeByte(addr+3, (uint8_t) ((value & 0xFF000000) >> 24));
     }
 }
 
@@ -1135,7 +1135,7 @@ void tliPushPopRegisters(VM_instance* vm, uint16_t instruction)
     uint8_t numRegistersInvolved = 0;
     bool use_registers[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     for (uint8_t i = 0; i < 8; i++) {
-        if (rlist & (1 << (7-i))) {
+        if (rlist & (1 << i)) {
             use_registers[i] = 1;
             ++numRegistersInvolved;
         }
@@ -1160,6 +1160,7 @@ void tliPushPopRegisters(VM_instance* vm, uint16_t instruction)
             if (use_registers[i]) {
                 vm_stack_pointer(vm) -= 4;
                 store(vm, vm_stack_pointer(vm), vm->registers[i], 4);
+                printf("<Pushing r%u (%u) to 0x%x>\n", i, vm->registers[i], vm_stack_pointer(vm));
             }
         }
     } else {
@@ -1168,6 +1169,7 @@ void tliPushPopRegisters(VM_instance* vm, uint16_t instruction)
         for (int8_t i = 0; i < 16; i++) {
             if (use_registers[i]) {
                 vm->registers[i] = load(vm, vm_stack_pointer(vm), 4);
+                printf("<Popping 0x%x (%u) to r%u>\n", vm_stack_pointer(vm), vm->registers[i], i);
                 vm_stack_pointer(vm) += 4;
             }
         }
@@ -1196,7 +1198,7 @@ void tliMultipleLoadStore(VM_instance* vm, uint16_t instruction)
     uint8_t numRegistersInvolved = 0;
     bool use_registers[16] = {0, 0, 0, 0, 0, 0, 0, 0};
     for (uint8_t i = 0; i < 8; i++) {
-        if (rlist & (1 << (7-i))) {
+        if (rlist & (1 << i)) {
             use_registers[i] = 1;
             ++numRegistersInvolved;
         }
@@ -1242,9 +1244,13 @@ void tliConditionalBranch(VM_instance* vm, uint16_t instruction)
     printf("I16 : ");
 
     uint8_t cond =    (instruction & 0b0000111100000000) >> 8;
-    int8_t soffset8 = (int8_t) (instruction & 0b0000000011111111);
+    uint8_t soffset8 = instruction & 0b0000000011111111;
 
-    uint32_t targetAddress = vm_program_counter(vm) + soffset8;
+    // soffset8 is unsigned but should actually be treated as signed
+    // Sign-extend it to 32 bits, and shift to the left by 1 (since the shift must be halfword-aligned)
+    // Finally, we add 2 to the PC in the calculation because ARM expects it there (instruction prefetch)
+    uint32_t offset = ((instruction & 0x80) ? (instruction | 0xFFFFFF00) : instruction) << 1;
+    uint32_t targetAddress = vm_program_counter(vm) + 2 + offset;
 
     bool condition;
     char* printFormat;
@@ -1399,18 +1405,27 @@ void tliLongBranchWithLink(VM_instance* vm, uint16_t instruction)
     uint16_t offset =     (instruction & 0b0000011111111111);
 
     if (high_or_low == 0) {
-        // The first instruction; shift left by 12 bits, add it to the current PC, and store the result in LR
-        vm_link_register(vm) = vm_program_counter(vm) + (offset << 12);
+        // The first instruction; shift left by 12 bits, add it to the current PC (+2 because of prefetch), and store
+        // the result in LR
+        vm_link_register(vm) = (offset << 12);
         printf("BL(0) %u\n", offset);
     } else {
-        // The second instruction; put together the first half of the offset and the offset given in this instruction
-        uint32_t targetAddress = vm_link_register(vm) + (offset << 1);
+        // At the start of the second instruction, we should already have the first bit in the link register
+        // Add this offset, shifted by 1, to it
+        vm_link_register(vm) += (offset << 1);
+
+        // Now, LR is a 32-bit int containing a 23-bit signed number
+        // We need to sign-extend it and intepret the result as a signed int
+        int32_t totalOffset = (int32_t) ((vm_link_register(vm) & (1 << 22)) ? (vm_link_register(vm) | 0xff800000) : vm_link_register(vm));
+
+        // totalOffset is now a signed int, relative to the program counter
+        uint32_t targetAddress = vm_program_counter(vm) + totalOffset;
 
         // We put this new calculated address into PC and the address of the next instruction along in LR
         // Set the lowest bit of the link register because while irrelevant for us it will cause a switch to Thumb
         // mode if coming back from and ARM function.
         vm_link_register(vm) = vm_program_counter(vm) | 1;
-        vm_program_counter(vm) = targetAddress;
+        vm_program_counter(vm) = targetAddress ;
         printf("BL(1) %u\n", offset);
     }
 }
