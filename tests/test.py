@@ -38,7 +38,7 @@ def main():
         return_code_direct_simulation = subprocess.run(["qemu-arm", elf_filename_full.replace(".elf", ".qemu.elf")]).returncode
 
         # Run it also with the Windows-compiled ARMTinyVM
-        return_code_vm = subprocess.run(["../cmake-build-debug/ARMTinyVM.exe", elf_filename_full.replace(".elf", ".sim.elf")]).returncode
+        return_code_vm = subprocess.run(["../cmake-build-debug/ARMTinyVM", elf_filename_full.replace(".elf", ".sim.elf")]).returncode
 
         # Does the result match what we wanted?
         if return_code_direct_simulation == expected_result:

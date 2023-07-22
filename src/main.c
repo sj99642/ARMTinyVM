@@ -10,13 +10,28 @@
 #include <elf.h>
 #endif
 
-#define ELF_MAX_SIZE (1024*1024*1024)
+#define MAX_NUM_SEGMENTS 10
+#define STACK_START_ADDR 0xFFFFFFFC
+#define MAX_STACK_SIZE 0x10000
 
-// FUNCTION DECLARATIONS
+// FUNCTION AND STRUCT DECLARATIONS
 int main(int argc, char* argv[]);
 uint8_t readByte(uint32_t addr);
 void writeByte(uint32_t addr, uint8_t value);
 void softwareInterrupt(VM_instance* vm, uint8_t number);
+
+
+typedef struct runtimeSegment {
+    uint32_t virtualStartAddress;
+    uint32_t length;
+    char* content;
+} runtimeSegment;
+
+
+// VARIABLES FOR EXECUTION
+
+runtimeSegment segments[MAX_NUM_SEGMENTS];
+uint8_t numAllocatedSegments = 0;
 
 
 // FUNCTION DEFINITIONS
@@ -44,8 +59,9 @@ int main(int argc, char* argv[])
     // Allocate memory big enough for the full file
     char* elfContent = malloc(elfSize);
 
-    // Read the whole file into that buffer
+    // Read the whole file into that buffer, then close the file
     fread(elfContent, elfSize, 1, file);
+    fclose(file);
 
     // We can now address elfContent however we want
     Elf32_Ehdr* header = (Elf32_Ehdr*) &(elfContent[0]);
@@ -75,7 +91,7 @@ int main(int argc, char* argv[])
         programHeader = (Elf32_Phdr*) &(elfContent[header->e_phoff + (programNum * header->e_phentsize)]);
 
         // Print out its information
-        printf("Program header %u\n", programNum);
+        printf("============ Program header %u ============\n", programNum);
         printf("Segment type: %u\n", programHeader->p_type);
         printf("Offset of segment in ELF file: %u\n", programHeader->p_offset);
         printf("Virtual address of segment in memory: 0x%x\n", programHeader->p_vaddr);
@@ -89,6 +105,16 @@ int main(int argc, char* argv[])
         ++programNum;
     } while (programNum < header->e_phnum);
 
+
+    // Before we process the sections, we need to find a pointer to the section containing the names
+    // The header for this section begins at index e_shstrndx in the section header table
+    // This section header's sh_offset field then gives the index in the file at which the content of the section begins
+    // From then on, each section will give an index (in bytes) into this field for where their own name begins (stored
+    // as a null-terminated string)
+    Elf32_Shdr* stringSectionHeader = (Elf32_Shdr*) &(elfContent[header->e_shoff + (header->e_shstrndx * header->e_shentsize)]);
+    char* sectionNameList = &(elfContent[stringSectionHeader->sh_offset]);
+
+
     // Now go through the section headers in a similar manner
     Elf32_Half sectionNum = 0;
     Elf32_Shdr* sectionHeader;
@@ -97,8 +123,9 @@ int main(int argc, char* argv[])
         sectionHeader = (Elf32_Shdr*) &(elfContent[header->e_shoff + (sectionNum * header->e_shentsize)]);
 
         // Print its information
-        printf("Section header %u\n", sectionNum);
+        printf("============ Section header %u ============\n", sectionNum);
         printf("Name is at .shstrtab offset: %u\n", sectionHeader->sh_name);
+        printf("Section name: %s\n", &(sectionNameList[sectionHeader->sh_name]));
         printf("Type: 0x%x\n", sectionHeader->sh_type);
         printf("Flags: 0x%x\n", sectionHeader->sh_flags);
         printf("Virtual address (if loaded): 0x%x\n", sectionHeader->sh_addr);
@@ -109,40 +136,57 @@ int main(int argc, char* argv[])
         printf("Alignment: %u\n", sectionHeader->sh_addralign);
         printf("Entry size (if applicable): %u\n\n", sectionHeader->sh_entsize);
 
+        if (sectionHeader->sh_flags & SHF_ALLOC) {
+            // Needs to actually be loaded at runtime
+            segments[numAllocatedSegments].virtualStartAddress = sectionHeader->sh_addr;
+            segments[numAllocatedSegments].length = sectionHeader->sh_size;
+            segments[numAllocatedSegments].content = malloc(sectionHeader->sh_size);
+            numAllocatedSegments++;
+
+            // Load the content of the section from the ELF file into the newly allocated memory
+            memcpy(
+                    segments[numAllocatedSegments].content,
+                    &(elfContent[sectionHeader->sh_offset]),
+                    sectionHeader->sh_size
+            );
+
+            printf("Allocated and loaded virtual memory segment starting at 0x%x, with size %u\n", sectionHeader->sh_addr, sectionHeader->sh_size);
+        } else {
+            printf("Not to be loaded\n");
+        }
+
         ++sectionNum;
     } while (sectionNum < header->e_shnum);
 
-    fclose(file);
-    return 0;
+    // One last segment to allocate is for the stack to live in, which will be full of zeroes
+    segments[numAllocatedSegments].virtualStartAddress = STACK_START_ADDR - MAX_STACK_SIZE;
+    segments[numAllocatedSegments].length = MAX_STACK_SIZE;
+    segments[numAllocatedSegments].content = calloc(MAX_STACK_SIZE, 1);
+    numAllocatedSegments++;
 
-//    VM_interaction_instructions instrs = {
-//        .readByte = readByte,
-//        .writeByte = writeByte,
-//        .softwareInterrupt = softwareInterrupt
-//    };
-//    VM_instance vm = VM_new(&instrs, MEM_SIZE, 0);
-//    uint32_t instrs_executed = VM_executeNInstructions(&vm, 10);
-//    printf("Number of instructions executed: %u\n", instrs_executed);
-//    VM_print(&vm);
-//    return 0;
+    // Now we have set up the memory space and can begin to execute the code
+    VM_interaction_instructions instrs = {
+            .readByte = readByte,
+            .writeByte = writeByte,
+            .softwareInterrupt = softwareInterrupt
+    };
+    VM_instance vm = VM_new(&instrs, STACK_START_ADDR, header->e_entry & 0xFFFFFFFE);
+    uint32_t instrsExecuted = VM_executeNInstructions(&vm, 100);
+    printf("\n\n\n\nExecuted %u instructions\n", instrsExecuted);
+    VM_print(&vm);
+
+    return 0;
 }
 
-/*
 uint8_t readByte(uint32_t addr)
 {
-    if (addr < MEM_SIZE) {
-        return memory[addr];
-    } else {
-        return 0xFF;
-    }
+    return 0;
 }
 
 
 void writeByte(uint32_t addr, uint8_t value)
 {
-    if (addr < MEM_SIZE) {
-        memory[addr] = value;
-    }
+
 }
 
 
@@ -152,4 +196,3 @@ void softwareInterrupt(VM_instance* vm, uint8_t number)
     printf("Software interrupt: %u\n", number);
     vm->finished = true;
 }
-*/
