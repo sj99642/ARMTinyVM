@@ -24,7 +24,7 @@ void softwareInterrupt(VM_instance* vm, uint8_t number);
 typedef struct runtimeSegment {
     uint32_t virtualStartAddress;
     uint32_t length;
-    char* content;
+    uint8_t* content;
 } runtimeSegment;
 
 
@@ -161,7 +161,7 @@ int main(int argc, char* argv[])
     // One last segment to allocate is for the stack to live in, which will be full of zeroes
     segments[numAllocatedSegments].virtualStartAddress = STACK_START_ADDR - MAX_STACK_SIZE;
     segments[numAllocatedSegments].length = MAX_STACK_SIZE;
-    segments[numAllocatedSegments].content = calloc(MAX_STACK_SIZE, 1);
+    segments[numAllocatedSegments].content = (uint8_t*) calloc(MAX_STACK_SIZE, 1);
     numAllocatedSegments++;
 
     // Now we have set up the memory space and can begin to execute the code
@@ -178,21 +178,61 @@ int main(int argc, char* argv[])
     return 0;
 }
 
-uint8_t readByte(uint32_t addr)
+/**
+ * Tries to find the byte pointed to by this virtual memory address, by searching in the `segments` array. Returns NULL
+ * if none found.
+ * @param addr
+ * @return
+ */
+uint8_t* getVirtualMemoryByte(uint32_t addr)
 {
-    return 0;
+    for (uint8_t i = 0; i < numAllocatedSegments; i++) {
+        // Is this address included in this segment?
+        if ((addr >= segments[i].virtualStartAddress) && (addr < (segments[i].virtualStartAddress + segments[i].length))) {
+            // The byte is in this segment
+            // Calculate its offset and find a pointer to that byte
+            uint32_t offset = addr - segments[i].virtualStartAddress;
+            return &(segments[i].content[offset]);
+        }
+    }
+
+    // No matches found
+    return NULL;
 }
 
 
+/**
+ * Reads a byte from the given virtual address. Returns 0xFF if the address is invalid.
+ * @param addr
+ * @return
+ */
+uint8_t readByte(uint32_t addr)
+{
+    uint8_t* bytePtr = getVirtualMemoryByte(addr);
+    if (bytePtr == NULL) {
+        return 0xFF;
+    } else {
+        return *bytePtr;
+    }
+}
+
+
+/**
+ * Writes a byte to the given virtual address. Does nothing if the address is invalid.
+ * @param addr
+ * @param value
+ */
 void writeByte(uint32_t addr, uint8_t value)
 {
-
+    uint8_t* bytePtr = getVirtualMemoryByte(addr);
+    if (bytePtr != NULL) {
+        *bytePtr = value;
+    }
 }
 
 
 void softwareInterrupt(VM_instance* vm, uint8_t number)
 {
-    printf("SWI #%u\n", number);
     printf("Software interrupt: %u\n", number);
     vm->finished = true;
 }
