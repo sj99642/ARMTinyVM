@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <malloc.h>
-#include <errno.h>
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32) || defined(WIN64) || defined(_WIN64) || defined(__WIN64)
 #include "win_elf.h"
@@ -32,6 +31,7 @@ typedef struct runtimeSegment {
 
 runtimeSegment segments[MAX_NUM_SEGMENTS];
 uint8_t numAllocatedSegments = 0;
+int32_t exitCode = -0x40000000;
 
 
 // FUNCTION DEFINITIONS
@@ -175,7 +175,7 @@ int main(int argc, char* argv[])
     printf("\n\n\n\nExecuted %u instructions\n", instrsExecuted);
     VM_print(&vm);
 
-    return 0;
+    return (int8_t) exitCode;
 }
 
 /**
@@ -234,5 +234,15 @@ void writeByte(uint32_t addr, uint8_t value)
 void softwareInterrupt(VM_instance* vm, uint8_t number)
 {
     printf("Software interrupt: %u\n", number);
+
+    if (number == 0) {
+        // This is intended as a system call
+        // Check in r7 to see which system call
+        if (vm->registers[7] == 1) {
+            // We're being asked for the exit() syscall, and the exit code will be in r0
+            exitCode = (int32_t) vm->registers[0];
+        }
+    }
+
     vm->finished = true;
 }

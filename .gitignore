@@ -55,6 +55,7 @@ dkms.conf
 .idea/
 cmake-build-debug/
 cmake-build-debug-for-wsl/
+cmake-build-debug-mingw/
 
 # CMake
 build/
