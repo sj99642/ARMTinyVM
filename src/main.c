@@ -171,7 +171,7 @@ int main(int argc, char* argv[])
             .softwareInterrupt = softwareInterrupt
     };
     VM_instance vm = VM_new(&instrs, STACK_START_ADDR, header->e_entry & 0xFFFFFFFE);
-    uint32_t instrsExecuted = VM_executeNInstructions(&vm, 100);
+    uint32_t instrsExecuted = VM_executeNInstructions(&vm, 1000);
     printf("\n\n\n\nExecuted %u instructions\n", instrsExecuted);
     VM_print(&vm);
 

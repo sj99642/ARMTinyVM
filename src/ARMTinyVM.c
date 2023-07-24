@@ -254,14 +254,14 @@ void compareSetC(VM_instance* vm, uint32_t a, uint32_t b)
          // if sum has a different sign than this, we've had an overflow
          if (i32_sign(sum) == i32_sign(a)) {
              // Same sign, so no overflow
-             vm_clr_cpsr_z(vm);
+             vm_clr_cpsr_v(vm);
          } else {
              // Different sign, so overflow
-             vm_set_cpsr_z(vm);
+             vm_set_cpsr_v(vm);
          }
      } else {
          // An overflow is impossible if the signs of the operands are different
-         vm_clr_cpsr_z(vm);
+         vm_clr_cpsr_v(vm);
      }
 }
 
