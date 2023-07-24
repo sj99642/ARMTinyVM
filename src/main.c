@@ -165,12 +165,7 @@ int main(int argc, char* argv[])
     numAllocatedSegments++;
 
     // Now we have set up the memory space and can begin to execute the code
-    VM_interaction_instructions instrs = {
-            .readByte = readByte,
-            .writeByte = writeByte,
-            .softwareInterrupt = softwareInterrupt
-    };
-    VM_instance vm = VM_new(&instrs, STACK_START_ADDR, header->e_entry & 0xFFFFFFFE);
+    VM_instance vm = VM_new(&readByte, &writeByte, &softwareInterrupt, STACK_START_ADDR, header->e_entry & 0xFFFFFFFE);
     uint32_t instrsExecuted = VM_executeNInstructions(&vm, 1000);
     printf("\n\n\n\nExecuted %u instructions\n", instrsExecuted);
     VM_print(&vm);

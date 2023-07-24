@@ -49,7 +49,9 @@ void store(VM_instance* vm, uint32_t addr, uint32_t value, uint8_t bytes);
  * @param initialProgramCounter
  * @return
  */
-VM_instance VM_new(VM_interaction_instructions* instrs,
+VM_instance VM_new(uint8_t (*readByte)(uint32_t addr),
+                   void (*writeByte)(uint32_t addr, uint8_t value),
+                   void (*softwareInterrupt)(VM_instance* vm, uint8_t number),
                    uint32_t initialStackPointer,
                    uint32_t initialProgramCounter)
 {
@@ -58,7 +60,9 @@ VM_instance VM_new(VM_interaction_instructions* instrs,
     vm_stack_pointer(&ret) = initialStackPointer;
     vm_program_counter(&ret) = initialProgramCounter;
     ret.cpsr = 0;
-    ret.interactionInstructions = instrs;
+    ret.readByte = readByte;
+    ret.writeByte = writeByte;
+    ret.softwareInterrupt = softwareInterrupt;
     ret.finished = false;
 
     return ret;
@@ -73,7 +77,7 @@ VM_instance VM_new(VM_interaction_instructions* instrs,
 void VM_executeSingleInstruction(VM_instance* vm)
 {
     // Cache the readByte function
-    uint8_t (*const readByte)(uint32_t addr) = vm->interactionInstructions->readByte;
+    uint8_t (*const readByte)(uint32_t addr) = vm->readByte;
 
     // Get the 16-bit instruction
     // They're stored little-endian, so the lowest byte is the least significant bit
@@ -87,7 +91,7 @@ void VM_executeSingleInstruction(VM_instance* vm)
 
     // Decode the instruction and act accordingly
     uint8_t instrFirstByte = (instruction & 0xFF00) >> 8;
-    void (*func)(VM_instance*, uint16_t) = tliMoveShiftedRegister;
+    void (*func)(VM_instance*, uint16_t);
     if (istl_move_shifted_reg(instrFirstByte)) {
         func = tliMoveShiftedRegister;
     } else if (istl_add_subtract(instrFirstByte)) {
@@ -275,18 +279,18 @@ uint32_t load(VM_instance* vm, uint32_t addr, uint8_t bytes)
 {
     if (bytes == 1) {
         // Single byte
-        return vm->interactionInstructions->readByte(addr);
+        return vm->readByte(addr);
     } else if (bytes == 2) {
         // Half word
-        uint32_t value = (uint32_t) vm->interactionInstructions->readByte(addr);
-        value += (uint32_t) (vm->interactionInstructions->readByte(addr+1)) << 8;
+        uint32_t value = (uint32_t) vm->readByte(addr);
+        value += (uint32_t) (vm->readByte(addr+1)) << 8;
         return value;
     } else {
         // Full word
-        uint32_t value = (uint32_t) vm->interactionInstructions->readByte(addr);
-        value += (uint32_t) (vm->interactionInstructions->readByte(addr+1)) << 8;
-        value += (uint32_t) (vm->interactionInstructions->readByte(addr+2)) << 16;
-        value += (uint32_t) (vm->interactionInstructions->readByte(addr+3)) << 24;
+        uint32_t value = (uint32_t) vm->readByte(addr);
+        value += (uint32_t) (vm->readByte(addr+1)) << 8;
+        value += (uint32_t) (vm->readByte(addr+2)) << 16;
+        value += (uint32_t) (vm->readByte(addr+3)) << 24;
         return value;
     }
 }
@@ -296,17 +300,17 @@ void store(VM_instance* vm, uint32_t addr, uint32_t value, uint8_t bytes)
 {
     if (bytes == 1) {
         // Single byte
-        vm->interactionInstructions->writeByte(addr, (uint8_t) (value & 0x000000FFUL));
+        vm->writeByte(addr, (uint8_t) (value & 0x000000FFUL));
     } else if (bytes == 2) {
         // Half word
-        vm->interactionInstructions->writeByte(addr,   (uint8_t)  (value & 0x000000FFUL));
-        vm->interactionInstructions->writeByte(addr+1, (uint8_t) ((value & 0x0000FF00UL) >> 8));
+        vm->writeByte(addr,   (uint8_t)  (value & 0x000000FFUL));
+        vm->writeByte(addr+1, (uint8_t) ((value & 0x0000FF00UL) >> 8));
     } else {
         // Full word
-        vm->interactionInstructions->writeByte(addr,   (uint8_t)  (value & 0x000000FFUL));
-        vm->interactionInstructions->writeByte(addr+1, (uint8_t) ((value & 0x0000FF00UL) >> 8));
-        vm->interactionInstructions->writeByte(addr+2, (uint8_t) ((value & 0x00FF0000UL) >> 16));
-        vm->interactionInstructions->writeByte(addr+3, (uint8_t) ((value & 0xFF000000UL) >> 24));
+        vm->writeByte(addr,   (uint8_t)  (value & 0x000000FFUL));
+        vm->writeByte(addr+1, (uint8_t) ((value & 0x0000FF00UL) >> 8));
+        vm->writeByte(addr+2, (uint8_t) ((value & 0x00FF0000UL) >> 16));
+        vm->writeByte(addr+3, (uint8_t) ((value & 0xFF000000UL) >> 24));
     }
 }
 
@@ -1255,12 +1259,12 @@ void tliConditionalBranch(VM_instance* vm, uint16_t instruction)
     printf("I16 : ");
 
     uint8_t cond =    (instruction & 0b0000111100000000) >> 8;
-    uint8_t soffset8 = instruction & 0b0000000011111111;
+    uint32_t soffset8 = instruction & 0b0000000011111111;
 
     // soffset8 is unsigned but should actually be treated as signed
     // Sign-extend it to 32 bits, and shift to the left by 1 (since the shift must be halfword-aligned)
     // Finally, we add 2 to the PC in the calculation because ARM expects it there (instruction prefetch)
-    uint32_t offset = ((instruction & 0x80UL) ? (instruction | 0xFFFFFF00UL) : instruction) << 1;
+    uint32_t offset = ((soffset8 & 0x80UL) ? (soffset8 | 0xFFFFFF00UL) : soffset8) << 1;
     uint32_t targetAddress = vm_program_counter(vm) + 2 + offset;
 
     bool condition;
@@ -1367,7 +1371,7 @@ void tliSoftwareInterrupt(VM_instance* vm, uint16_t instruction)
     vm_link_register(vm) = vm_program_counter(vm);
 
     // Trigger the interrupt
-    vm->interactionInstructions->softwareInterrupt(vm, value);
+    vm->softwareInterrupt(vm, value);
 }
 
 
