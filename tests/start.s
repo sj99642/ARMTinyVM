@@ -1,5 +1,6 @@
 .global _start
 
+.section .text._start,"ax"
 _start:
     // Jump to main function in Thumb mode (this code will be compiled in ARM mode)
     // Manually put the exit function in LR in case main tries to jump back

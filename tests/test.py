@@ -45,13 +45,13 @@ def main():
         if test_filename_full.endswith(".s"):
             subprocess.run(["arm-none-eabi-as", "-mthumb", "-mcpu=arm7tdmi", "-o", obj_filename_full, test_filename_full])
         elif test_filename_full.endswith(".c"):
-            subprocess.run(["arm-none-eabi-gcc", "-mthumb", "-Os", "-mcpu=arm7tdmi", "-nostdlib", "-c", "-o", obj_filename_full, test_filename_full])
+            subprocess.run(["arm-none-eabi-gcc", "-mthumb", "-ffunction-sections", "-Os", "-mcpu=arm7tdmi", "-nostdlib", "-c", "-o", obj_filename_full, test_filename_full])
         else:
             raise Exception(f"Unknown test file type: {test_filename_full}")
 
         # Link for QEMU (with ARM-to-Thumb start code) and for the VM (starting with the main function)
-        subprocess.run(["arm-none-eabi-ld", "start_arm.o", "lib.o", obj_filename_full, "-o", elf_filename_full.replace(".elf", ".qemu.elf")])
-        subprocess.run(["arm-none-eabi-ld", "start_thumb.o", "lib.o", obj_filename_full, "-o", elf_filename_full.replace(".elf", ".sim.elf")])
+        subprocess.run(["arm-none-eabi-ld", "-gc-sections", "start_arm.o", "lib.o", obj_filename_full, "-o", elf_filename_full.replace(".elf", ".qemu.elf")])
+        subprocess.run(["arm-none-eabi-ld", "-gc-sections", "start_thumb.o", "lib.o", obj_filename_full, "-o", elf_filename_full.replace(".elf", ".sim.elf")])
 
         # Then we execute that using qemu and see the result
         return_code_direct_simulation = subprocess.run(["qemu-arm", elf_filename_full.replace(".elf", ".qemu.elf")]).returncode
@@ -80,7 +80,8 @@ def main():
             full_success = False
 
     if full_success and not args.preserve:
-        # In the event of a totally successful test, when the -p flag wasn't set, we will delete all the .o and .elf files
+        # In the event of a totally successful test, when the -p flag wasn't set,
+        # we will delete all the .o and .elf files
         # In the chosen test directories
         for directory in args.directories:
             for file in glob(os.path.join(directory, "**/*.o"), recursive=True):
