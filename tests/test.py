@@ -60,6 +60,10 @@ def main():
         return_code_vm_win = subprocess.run(["../cmake-build-debug-mingw/ARMTinyVM.exe", elf_filename_full.replace(".elf", ".sim.elf")]).returncode
         return_code_vm_wsl = subprocess.run(["../cmake-build-debug-for-wsl/ARMTinyVM", elf_filename_full.replace(".elf", ".sim.elf")]).returncode
 
+        # Finally, we have to do the dirty work of recompiling the virtual machine with avr-gcc, since it can't read
+        # files so we have to rewrite and recompile it every time with the program hardcoded. We then run it via
+        # QEMU.
+
         # Does the result match what we wanted?
         if return_code_direct_simulation == expected_result:
             print(f"TEST SUCCESS (QEMU): {test_filename_full} -> {return_code_direct_simulation}", file=sys.stderr)
@@ -107,6 +111,16 @@ def get_test_expected_result(filename: str) -> Optional[int]:
             print(f"No expected result found in {filename}", file=sys.stderr)
             return None
         return int(number.group(0))
+
+
+def recompile_vm_for_avr(test_filename: str):
+    """
+    Reads the .elf at `test_filename` and recompiles the whole virtual machine, hard-coded to execute that code from
+    that particular ELF.
+    :param test_filename:
+    :return:
+    """
+    # Firstly, we have to modify ../src/avr_program.txt to contain a description of the program
 
 
 if __name__ == "__main__":
