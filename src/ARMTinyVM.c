@@ -34,6 +34,9 @@ void store(VM_instance* vm, uint32_t addr, uint32_t value, uint8_t bytes);
 #define i16_sign(n) (((n) & 0x8000) >> 15)
 #define i8_sign(n)  (((n) & 0x80) >> 7)
 
+#if __has_include(<avr/version.h>)
+#define printf(...)
+#endif // __has_include(<avr/version.h>)
 
 // PUBLIC FUNCTIONS
 
@@ -75,7 +78,7 @@ void VM_executeSingleInstruction(VM_instance* vm)
     // Get the 16-bit instruction
     // They're stored little-endian, so the lowest byte is the least significant bit
     uint16_t instruction = readByte(vm_program_counter(vm));
-    instruction += readByte(vm_program_counter(vm)+1) << 8;
+    instruction += readByte(vm_program_counter(vm)+1UL) << 8UL;
 
     printf("0x%04x@0x%08x : ", instruction, vm_program_counter(vm));
 
@@ -206,7 +209,7 @@ void compareSetNZ(VM_instance* vm, uint32_t value)
     }
 
     // Set V if the value is 0
-    if (value == 0) {
+    if (value == 0UL) {
         vm_set_cpsr_z(vm);
     } else {
         vm_clr_cpsr_z(vm);
@@ -293,17 +296,17 @@ void store(VM_instance* vm, uint32_t addr, uint32_t value, uint8_t bytes)
 {
     if (bytes == 1) {
         // Single byte
-        vm->interactionInstructions->writeByte(addr, (uint8_t) (value & 0x000000FF));
+        vm->interactionInstructions->writeByte(addr, (uint8_t) (value & 0x000000FFUL));
     } else if (bytes == 2) {
         // Half word
-        vm->interactionInstructions->writeByte(addr,   (uint8_t) (value & 0x000000FF));
-        vm->interactionInstructions->writeByte(addr+1, (uint8_t) ((value & 0x0000FF00) >> 8));
+        vm->interactionInstructions->writeByte(addr,   (uint8_t)  (value & 0x000000FFUL));
+        vm->interactionInstructions->writeByte(addr+1, (uint8_t) ((value & 0x0000FF00UL) >> 8));
     } else {
         // Full word
-        vm->interactionInstructions->writeByte(addr,   (uint8_t) (value & 0x000000FF));
-        vm->interactionInstructions->writeByte(addr+1, (uint8_t) ((value & 0x0000FF00) >> 8));
-        vm->interactionInstructions->writeByte(addr+2, (uint8_t) ((value & 0x00FF0000) >> 16));
-        vm->interactionInstructions->writeByte(addr+3, (uint8_t) ((value & 0xFF000000) >> 24));
+        vm->interactionInstructions->writeByte(addr,   (uint8_t)  (value & 0x000000FFUL));
+        vm->interactionInstructions->writeByte(addr+1, (uint8_t) ((value & 0x0000FF00UL) >> 8));
+        vm->interactionInstructions->writeByte(addr+2, (uint8_t) ((value & 0x00FF0000UL) >> 16));
+        vm->interactionInstructions->writeByte(addr+3, (uint8_t) ((value & 0xFF000000UL) >> 24));
     }
 }
 
@@ -346,7 +349,7 @@ void tliMoveShiftedRegister(VM_instance* vm, uint16_t instruction)
         // with Rs
         if (offset5 != 0) {
             // Carry is only changed if the offset was nonzero
-            uint32_t mask = ~(0xFFFFFFFF >> offset5);
+            uint32_t mask = ~(0xFFFFFFFFUL >> offset5);
             if ((vm->registers[rs]) & mask) {
                 // We did shift off some ones
                 vm_set_cpsr_c(vm);
@@ -366,7 +369,7 @@ void tliMoveShiftedRegister(VM_instance* vm, uint16_t instruction)
         // The carry flag here is sensible, although it's not really a "carry"
         // If we shift any ones off the right hand side, then set C; if not, clear it
         // Carry is set even if shift was 0, although in that case it will always be false
-        uint32_t mask = ~(0xFFFFFFFF << offset5);
+        uint32_t mask = ~(0xFFFFFFFFUL << offset5);
         if ((vm->registers[rs]) & mask) {
             // We did shift off some ones
             vm_set_cpsr_c(vm);
@@ -388,7 +391,7 @@ void tliMoveShiftedRegister(VM_instance* vm, uint16_t instruction)
         // The carry flag here is sensible, although it's not really a "carry"
         // If we shift any ones off the right hand side, then set C; if not, clear it
         // Carry is set even if shift was 0, although in that case it will always be false
-        uint32_t mask = ~(0xFFFFFFFF << offset5);
+        uint32_t mask = ~(0xFFFFFFFFUL << offset5);
         if ((vm->registers[rs]) & mask) {
             // We did shift off some ones
             vm_set_cpsr_c(vm);
@@ -553,7 +556,7 @@ void tliALUOperations(VM_instance* vm, uint16_t instruction)
         printf("LSL r%u, r%u\n", rd, rs);
         if ((vm->registers[rs] & 0xFF) != 0) {
             // Carry is only changed if the offset was nonzero
-            uint32_t mask = 0xFFFFFFFF << vm->registers[rs];
+            uint32_t mask = 0xFFFFFFFFUL << vm->registers[rs];
             if ((vm->registers[rd]) & mask) {
                 // We did shift off some ones
                 vm_set_cpsr_c(vm);
@@ -566,7 +569,7 @@ void tliALUOperations(VM_instance* vm, uint16_t instruction)
     } else if (op == 0b0011) {
         // LSR Rd, Rs
         printf("LSR r%u, r%u\n", rd, rs);
-        uint32_t mask = 0xFFFFFFFF >> (32 - vm->registers[rs]);
+        uint32_t mask = 0xFFFFFFFFUL >> (32 - vm->registers[rs]);
         if ((vm->registers[rd]) & mask) {
             // We did shift off some ones
             vm_set_cpsr_c(vm);
@@ -578,7 +581,7 @@ void tliALUOperations(VM_instance* vm, uint16_t instruction)
     } else if (op == 0b0100) {
         // ASR Rd, Rs
         printf("ASR r%u, r%u\n", rd, rs);
-        uint32_t mask = 0xFFFFFFFF >> (32 - vm->registers[rs]);
+        uint32_t mask = 0xFFFFFFFFUL >> (32 - vm->registers[rs]);
         if ((vm->registers[rs] & 0xFF) != 0) {
             if ((vm->registers[rd]) & mask) {
                 // We did shift off some ones
@@ -647,7 +650,7 @@ void tliALUOperations(VM_instance* vm, uint16_t instruction)
         // ROR Rd, Rs
         printf("ROR r%u, r%u\n", rd, rs);
 
-        if ((vm->registers[rs] & 0xFF) != 0) {
+        if ((vm->registers[rs] & 0xFFUL) != 0) {
             // Carry flag only affected if lower 8 bits of Rs is non-zero
             if (~(0xFFFFFFFF << (vm->registers[rs])) & (vm->registers[rd])) {
                 // Carry should be set if the lowest Rs bits of Rd aren't all zero
@@ -838,7 +841,7 @@ void tliPCRelativeLoad(VM_instance* vm, uint16_t instruction)
     uint8_t word8 = instruction & 0b0000000011111111;
 
     // Calculate the offset by multiplying word8 by 4
-    uint16_t offset = word8 << 2;
+    uint16_t offset = ((uint16_t) word8) << 2;
 
     printf("LDR r%u, [PC, #%u]", rd, offset);
 
@@ -939,14 +942,14 @@ void tliLoadStoreSignExtendedByte(VM_instance* vm, uint16_t instruction)
             // Load byte from Rb+Ro, sign-extend it to word size, and put it in Rd
             printf("LDSB r%u, [r%u, r%u]\n", rd, rb, ro);
             uint32_t value = load(vm, addr, 1);
-            value = (value & 0x000000FF) | ((value & 0x80) ? 0xFFFFFF00 : 0);
+            value = (value & 0x000000FFUL) | ((value & 0x80UL) ? 0xFFFFFF00UL : 0UL);
             vm->registers[rd] = value;
         } else {
             // LDSH Rd, [Rb, Ro]
             // Load half-word from Rb+Ro, sign-extend it to word size, and put it in Rd
             printf("LDSH r%u, [r%u, r%u]\n", rd, rb, ro);
             uint32_t value = load(vm, addr, 2);
-            value = (value & 0x0000FFFF) | ((value & 0x8000) ? 0xFFFF0000 : 0);
+            value = (value & 0x0000FFFFUL) | ((value & 0x8000UL) ? 0xFFFF0000UL : 0UL);
             vm->registers[rd] = value;
         }
     }
@@ -1016,17 +1019,17 @@ void tliLoadStoreHalfWord(VM_instance* vm, uint16_t instruction)
     uint8_t rb =            (instruction & 0b0000000000111000) >> 3;
     uint8_t rd =            (instruction & 0b0000000000000111);
 
-    uint32_t addr = vm->registers[rb] + (offset5 << 1);
+    uint32_t addr = vm->registers[rb] + (((uint32_t) offset5) << 1);
 
     if (load_or_store == 0) {
         // STRH Rd, [Rb, #lmm]
         // Stores the least significant 16 bits of Rd into memory address Rb+lmm
-        printf("STRH r%u, [r%u, #%u]\n", rd, rb, (offset5 << 1));
+        printf("STRH r%u, [r%u, #%u]\n", rd, rb, (((uint32_t) offset5) << 1));
         store(vm, addr, vm->registers[rd], 2);
     } else {
         // LDRH Rd, [Rb, #lmm]
         // Loads the half-word from address Rb+lmm and stores it in register Rd
-        printf("LDRH r%u, [r%u, #%u]\n", rd, rb, (offset5 << 1));
+        printf("LDRH r%u, [r%u, #%u]\n", rd, rb, (((uint32_t) offset5) << 1));
         vm->registers[rd] = load(vm, addr, 2);
     }
 }
@@ -1047,17 +1050,17 @@ void tliSPRelativeLoad(VM_instance* vm, uint16_t instruction)
     uint8_t rd =            (instruction & 0b0000011100000000) >> 8;
     uint8_t word8 =         (instruction & 0b0000000011111111);
 
-    uint32_t addr = vm_stack_pointer(vm) + ((uint32_t) word8 << 2);
+    uint32_t addr = vm_stack_pointer(vm) + (((uint32_t) word8) << 2);
 
     if (load_or_store == 0) {
         // STR Rd, [SP, #lmm]
         // Store the contents of register Rd into address SP+lmm
-        printf("STR r%u, [SP, #%u]\n", rd, ((uint16_t) word8) << 2);
+        printf("STR r%u, [SP, #%u]\n", rd, ((uint32_t) word8) << 2);
         store(vm, addr, vm->registers[rd], 4);
     } else {
         // LDR Rd, [SP, #lmm]
         // Load the contents of address SP+lmm into register Rd
-        printf("LDR r%u, [SP, #%u]\n", rd, ((uint16_t) word8) << 2);
+        printf("LDR r%u, [SP, #%u]\n", rd, ((uint32_t) word8) << 2);
         vm->registers[rd] = load(vm, addr, 4);
     }
 }
@@ -1136,7 +1139,7 @@ void tliPushPopRegisters(VM_instance* vm, uint16_t instruction)
     printf("I14 : ");
 
     uint8_t load_or_store = (instruction & 0b0000100000000000) >> 10;
-    uint8_t pc_lr =      (instruction & 0b0000000100000000) >> 8;
+    uint8_t pc_lr =         (instruction & 0b0000000100000000) >> 8;
     uint8_t rlist =         (instruction & 0b0000000011111111);
 
     // Calculate which registers are included in the register list
@@ -1257,7 +1260,7 @@ void tliConditionalBranch(VM_instance* vm, uint16_t instruction)
     // soffset8 is unsigned but should actually be treated as signed
     // Sign-extend it to 32 bits, and shift to the left by 1 (since the shift must be halfword-aligned)
     // Finally, we add 2 to the PC in the calculation because ARM expects it there (instruction prefetch)
-    uint32_t offset = ((instruction & 0x80) ? (instruction | 0xFFFFFF00) : instruction) << 1;
+    uint32_t offset = ((instruction & 0x80UL) ? (instruction | 0xFFFFFF00UL) : instruction) << 1;
     uint32_t targetAddress = vm_program_counter(vm) + 2 + offset;
 
     bool condition;
@@ -1383,7 +1386,7 @@ void tliUnconditionalBranch(VM_instance* vm, uint16_t instruction)
 
     // Calculate how to jump; we shift offset11 by 1, leading to a 12-bit number, then sign-extend it to 32 bits
     uint32_t relJump = offset11 << 1;
-    relJump = (relJump & 0x00000FFF) | ((relJump & 0x0800) ? 0xFFFFF000 : 0);
+    relJump = (relJump & 0x00000FFFUL) | ((relJump & 0x0800UL) ? 0xFFFFF000UL : 0UL);
 
     // In a real ARM processor, at this point the PC would be 4 bytes ahead of the current instruction, whereas in this
     // implemention is only 2 ahead due to lack of prefetch. The assembler will be operating on that assumption when
@@ -1416,16 +1419,16 @@ void tliLongBranchWithLink(VM_instance* vm, uint16_t instruction)
     if (high_or_low == 0) {
         // The first instruction; shift left by 12 bits, add it to the current PC (+2 because of prefetch), and store
         // the result in LR
-        vm_link_register(vm) = (offset << 12);
+        vm_link_register(vm) = (((uint32_t) offset) << 12);
         printf("BL(0) %u\n", offset);
     } else {
         // At the start of the second instruction, we should already have the first bit in the link register
         // Add this offset, shifted by 1, to it
-        vm_link_register(vm) += (offset << 1);
+        vm_link_register(vm) += (((uint32_t) offset) << 1);
 
         // Now, LR is a 32-bit int containing a 23-bit signed number
         // We need to sign-extend it and intepret the result as a signed int
-        int32_t totalOffset = (int32_t) ((vm_link_register(vm) & (1 << 22)) ? (vm_link_register(vm) | 0xff800000) : vm_link_register(vm));
+        int32_t totalOffset = (int32_t) ((vm_link_register(vm) & (1UL << 22)) ? (vm_link_register(vm) | 0xff800000UL) : vm_link_register(vm));
 
         // totalOffset is now a signed int, relative to the program counter
         uint32_t targetAddress = vm_program_counter(vm) + totalOffset;

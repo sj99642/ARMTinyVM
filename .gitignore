@@ -56,6 +56,8 @@ dkms.conf
 cmake-build-debug/
 cmake-build-debug-for-wsl/
 cmake-build-debug-mingw/
+cmake-build-debug-atmel/
+cmake-build-release/
 
 # CMake
 build/
