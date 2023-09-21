@@ -28,6 +28,9 @@ void tliUnconditionalBranch(VM_instance* vm, uint16_t instruction);
 void tliLongBranchWithLink(VM_instance* vm, uint16_t instruction);
 uint32_t load(VM_instance* vm, uint32_t addr, uint8_t bytes);
 void store(VM_instance* vm, uint32_t addr, uint32_t value, uint8_t bytes);
+void compareSetCV(VM_instance* vm, uint32_t a, uint32_t b);
+void compareSetC(VM_instance* vm, uint32_t a, uint32_t b);
+void compareSetNZ(VM_instance* vm, uint32_t value);
 
 
 #define i32_sign(n) (((n) & 0x80000000) >> 31)
@@ -245,7 +248,7 @@ void compareSetC(VM_instance* vm, uint32_t a, uint32_t b)
  * This function runs compareSetC, and also sets the overflow bit (V) appropriately. We know an overflow has happened if
  * the two operands have the same sign as each other, but the result of an addition has a different sign.
  */
- void compareSetCV(VM_instance* vm, uint32_t a, uint32_t b)
+void compareSetCV(VM_instance* vm, uint32_t a, uint32_t b)
 {
      uint32_t sum = a + b;
 
