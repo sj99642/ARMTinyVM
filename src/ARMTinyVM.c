@@ -90,7 +90,7 @@ void VM_executeSingleInstruction(VM_instance* vm)
     uint16_t instruction = readByte(vm_program_counter(vm));
     instruction += readByte(vm_program_counter(vm)+1UL) << 8UL;
 
-    printf__("0x%04x@0x%08x : ", instruction, vm_program_counter(vm));
+    printf__("0x%04x@0x%08lx : ", instruction, vm_program_counter(vm));
 
     // Now we have the instruction, we increment the program counter by 2 to go to the next instruction
     vm_program_counter(vm) += 2;
@@ -181,13 +181,13 @@ void VM_print(VM_instance* vm)
 {
     // 12 general purpose registers
     for (uint8_t r = 0; r < 13; r++) {
-        printf__("r%u = %u\n", r, vm->registers[r]);
+        printf__("r%u = %lu\n", r, (unsigned long) vm->registers[r]);
     }
 
     // Explicitly print the special purpose registers
-    printf__("sp = %u\n", vm_stack_pointer(vm));
-    printf__("lr = %u\n", vm_link_register(vm));
-    printf__("pc = %u\n", vm_program_counter(vm));
+    printf__("sp = %lu\n", (unsigned long) vm_stack_pointer(vm));
+    printf__("lr = %lu\n", (unsigned long) vm_link_register(vm));
+    printf__("pc = %lu\n", (unsigned long) vm_program_counter(vm));
 
     // CPSR register
     printf__("CPSR = { .N = %u, .Z = %u, .C = %u, .V = %u }\n",
@@ -386,7 +386,7 @@ void tliMoveShiftedRegister(VM_instance* vm, uint16_t instruction)
         } else {
             vm_clr_cpsr_c(vm);
         }
-        printf__("vm->registers[r%u] == %u\n", rs, vm->registers[rs]);
+        printf__("vm->registers[r%u] == %lu\n", rs, (unsigned long) vm->registers[rs]);
         printf__("Carry: %d\n", vm_get_cpsr_c(vm));
 
         vm->registers[rd] = (vm->registers[rs]) >> offset5;
@@ -774,7 +774,7 @@ void tliHighRegOperations(VM_instance* vm, uint16_t instruction)
             compareSetCV(vm, vm->registers[8+rd], vm->registers[8+rs]);
             vm->registers[8+rd] = vm->registers[8+rd] + vm->registers[8+rs];
         } else {
-            printf__("Invalid command %x\n", instruction);
+            printf__("Invalid instruction %x\n", instruction);
             vm->finished = true;
         }
     } else if (op == 0b01) {
@@ -821,11 +821,11 @@ void tliHighRegOperations(VM_instance* vm, uint16_t instruction)
     } else {
         if (h1_and_2 == 0b00) {
             // BX Rs
-            printf__("BX r%u (0x%x)\n", rs, vm->registers[rs] & 0xFFFFFFFE);
+            printf__("BX r%u (0x%lx)\n", rs, (unsigned long) (vm->registers[rs] & 0xFFFFFFFE));
             vm_program_counter(vm) = vm->registers[rs] & 0xFFFFFFFE;
         } else if (h1_and_2 == 0b01) {
             // BX Hs
-            printf__("BX h%u (0x%x)\n", 8+rs, vm->registers[8+rs] & 0xFFFFFFFE);
+            printf__("BX h%u (0x%lx)\n", 8+rs, (unsigned long) (vm->registers[8+rs] & 0xFFFFFFFE));
             vm_program_counter(vm) = vm->registers[8+rs] & 0xFFFFFFFE;
         } else {
             printf__("Invalid command %x\n", instruction);
@@ -1181,7 +1181,7 @@ void tliPushPopRegisters(VM_instance* vm, uint16_t instruction)
             if (use_registers[i]) {
                 vm_stack_pointer(vm) -= 4;
                 store(vm, vm_stack_pointer(vm), vm->registers[i], 4);
-                printf__("<Pushing r%u (%u) to 0x%x>\n", i, vm->registers[i], vm_stack_pointer(vm));
+                printf__("<Pushing r%u (%lu) to 0x%lx>\n", i, (unsigned long) vm->registers[i], (unsigned long) vm_stack_pointer(vm));
             }
         }
     } else {
@@ -1190,7 +1190,7 @@ void tliPushPopRegisters(VM_instance* vm, uint16_t instruction)
         for (int8_t i = 0; i < 16; i++) {
             if (use_registers[i]) {
                 vm->registers[i] = load(vm, vm_stack_pointer(vm), 4);
-                printf__("<Popping 0x%x (%u) to r%u>\n", vm_stack_pointer(vm), vm->registers[i], i);
+                printf__("<Popping 0x%lx (%lu) to r%u>\n", (unsigned long) vm_stack_pointer(vm), (unsigned long) vm->registers[i], i);
                 vm_stack_pointer(vm) += 4;
             }
         }
