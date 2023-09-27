@@ -1,4 +1,4 @@
-#include "ARMTinyVM.h"
+﻿#include "ARMTinyVM.h"
 #include "instruction_set.h"
 #include <string.h>
 #include <stdio.h>
@@ -1373,8 +1373,12 @@ void tliSoftwareInterrupt(VM_instance* vm, uint16_t instruction)
     uint8_t value = instruction & 0x00FF;
     printf__("SWI #%u\n", value);
 
+#if !__has_include(<avr/version.h>)
     // Move the address of the next instruction into the link register
+    // Only do this if not running on AVR - in that case, the code is being executed virtually, and so the link register
+    // doesn't need to be set to tell code at the other end of the interrupt how to return.
     vm_link_register(vm) = vm_program_counter(vm);
+#endif
 
     // Trigger the interrupt
     vm->softwareInterrupt(vm, value);
