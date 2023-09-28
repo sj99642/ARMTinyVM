@@ -90,7 +90,7 @@ void VM_executeSingleInstruction(VM_instance* vm)
     uint16_t instruction = readByte(vm_program_counter(vm));
     instruction += readByte(vm_program_counter(vm)+1UL) << 8UL;
 
-    printf__("0x%04x@0x%08lx : ", instruction, vm_program_counter(vm));
+    printf__("0x%04x@0x%08lx : ", instruction, (unsigned long) vm_program_counter(vm));
 
     // Now we have the instruction, we increment the program counter by 2 to go to the next instruction
     vm_program_counter(vm) += 2;
@@ -351,7 +351,6 @@ void tliMoveShiftedRegister(VM_instance* vm, uint16_t instruction)
         // LSL Rd, Rs, #Offset5
         // Rd := Rs << Offset5
         // Safe because rs and rd are no higher than 7
-        printf__("LSL R%u, R%u, #%u\n", rd, rs, offset5);
 
         // The carry flag is special in this case - have we shifted any ones off the left hand side?
         // We can find out if that's the case by inspecting the left `offset5` bits
@@ -369,12 +368,12 @@ void tliMoveShiftedRegister(VM_instance* vm, uint16_t instruction)
         }
 
         vm->registers[rd] = (vm->registers[rs]) << offset5;
+		printf__("LSL R%u, R%u, #%u (r%u := %lu)\n", rd, rs, offset5, rd, (unsigned long) vm->registers[rd]);
         compareSetNZ(vm, vm->registers[rd]);
     } else if (op == 1) {
         // LSR Rd, Rs, #Offset5
         // Rd := Rs >>(logical) Offset5
         // Safe because rd and rs and no higher than 7
-        printf__("LSR R%u, R%u, #%u\n", rd, rs, offset5);
 
         // The carry flag here is sensible, although it's not really a "carry"
         // If we shift any ones off the right hand side, then set C; if not, clear it
@@ -390,13 +389,13 @@ void tliMoveShiftedRegister(VM_instance* vm, uint16_t instruction)
         printf__("Carry: %d\n", vm_get_cpsr_c(vm));
 
         vm->registers[rd] = (vm->registers[rs]) >> offset5;
+		printf__("LSR R%u, R%u, #%u (r%u := %lu)\n", rd, rs, offset5, rd, (unsigned long) vm->registers[rd]);
         compareSetNZ(vm, vm->registers[rd]);
     } else if (op == 2) {
         // ASR Rd, Rs, #Offset5
         // Rd := Rs >>(arithmetic) Offset5
         // Safe because rd and rs are no higher than 7
         // In C, while technically this is implementation-defined, in general we do an arithmetic shift using signed int
-        printf__("ASR R%u, R%u, #%u\n", rd, rs, offset5);
 
         // The carry flag here is sensible, although it's not really a "carry"
         // If we shift any ones off the right hand side, then set C; if not, clear it
@@ -410,6 +409,7 @@ void tliMoveShiftedRegister(VM_instance* vm, uint16_t instruction)
         }
 
         vm->registers[rd] = (uint32_t) (((int32_t) (vm->registers[rs])) >> offset5);
+		printf__("ASR R%u, R%u, #%u (r%u := r%lu)\n", rd, rs, offset5, rd, (unsigned long) vm->registers[rd]);
         compareSetNZ(vm, vm->registers[rd]);
     } else {
         // We should never get here
@@ -447,18 +447,18 @@ void tliAddSubtract(VM_instance* vm, uint16_t instruction)
             // ADD Rd, Rs, Rn
             // Rd := Rn + Rs
             // Safe because rd, rn and rs are no higher than 7
-            printf__("ADD r%u, r%u, r%u\n", rd, rs, rn);
             compareSetCV(vm, vm->registers[rn], vm->registers[rs]);
             vm->registers[rd] = vm->registers[rn] + vm->registers[rs];
+			printf__("ADD r%u, r%u, r%u (r%u := %lu)\n", rd, rs, rn, rd, (unsigned long) vm->registers[rd]);
             compareSetNZ(vm, vm->registers[rd]);
         } else {
             // ADD Rd, Rs, #Offset3
             // Rd := Rs + Offset3
             // Safe because rd, rs are no higher than 7
             // rn is equivalent to Offset3 (same bits used in encoding)
-            printf__("ADD r%u, r%u, #%u\n", rd, rs, rn);
             compareSetCV(vm, vm->registers[rs], rn);
             vm->registers[rd] = vm->registers[rs] + rn;
+			printf__("ADD r%u, r%u, #%u (r%u := %lu)\n", rd, rs, rn, rd, (unsigned long) vm->registers[rd]);
             compareSetNZ(vm, vm->registers[rd]);
         }
     } else {
@@ -466,18 +466,18 @@ void tliAddSubtract(VM_instance* vm, uint16_t instruction)
             // SUB Rd, Rs, Rn
             // Rd := Rn - Rs
             // Safe because rd, rn and rs are no higher than 7
-            printf__("SUB r%u, r%u, r%u\n", rd, rs, rn);
             compareSetCV(vm, vm->registers[rn], 0 - vm->registers[rs]);
             vm->registers[rd] = vm->registers[rn] - vm->registers[rs];
+			printf__("SUB r%u, r%u, r%u (r%u := %lu)\n", rd, rs, rn, rd, (unsigned long) vm->registers[rd]);
             compareSetNZ(vm, vm->registers[rd]);
         } else {
             // SUB Rd, Rs, #Offset3
             // Rd := Rs - Offset3
             // Safe because rd, rs are no higher than 7
             // rn is equivalent to Offset3 (same bits used in encoding)
-            printf__("SUB r%u, r%u, #%u\n", rd, rs, rn);
             compareSetCV(vm, vm->registers[rs], 0 - rn);
             vm->registers[rd] = vm->registers[rs] - rn;
+			printf__("SUB r%u, r%u, #%u (r%u := %lu)\n", rd, rs, rn, rd, (unsigned long) vm->registers[rd]);
             compareSetNZ(vm, vm->registers[rd]);
         }
     }
@@ -506,30 +506,29 @@ void tliMovCmpAddSubImmediate(VM_instance* vm, uint16_t instruction)
     if (op == 0b00) {
         // MOV Rd, #Offset
         // Moves the 8-bit immediate value `Offset` into Rd
-        printf__("MOV r%u, #%u\n", rd, offset);
         vm->registers[rd] = offset;
+		printf__("MOV r%u, #%u (r%u := %lu)\n", rd, offset, rd, (unsigned long) vm->registers[rd]);
         compareSetNZ(vm, offset);
     } else if (op == 0b01) {
         // CMP Rd, #Offset
         // Compares the register with the 8-bit offset
-        printf__("CMP r%u, #%u\n", rd, offset);
-
         // Set comparison registers based on Rd - Offset
         compareSetNZ(vm, vm->registers[rd] - offset);
         compareSetCV(vm, vm->registers[rd], 0 - offset);
+		printf__("CMP r%u, #%u\n", rd, offset);
     } else if (op == 0b10) {
         // ADD Rd, #Offset
         // Adds the offset to the register
-        printf__("ADD r%u, #%u\n", rd, offset);
         compareSetCV(vm, vm->registers[rd], offset);
         vm->registers[rd] += offset;
+		printf__("ADD r%u, #%u (r%u := %lu)\n", rd, offset, rd, (unsigned long) vm->registers[rd]);
         compareSetNZ(vm, vm->registers[rd]);
     } else {
         // SUB Rd, #Offset
         // Subtracts the offset from the register
-        printf__("SUB r%u, #%u\n", rd, offset);
         compareSetCV(vm, vm->registers[rd], 0L - offset);
         vm->registers[rd] -= offset;
+		printf__("SUB r%u, #%u (r%u := %lu)\n", rd, offset, rd, (unsigned long) vm->registers[rd]);
         compareSetNZ(vm, vm->registers[rd]);
     }
 }
@@ -553,17 +552,16 @@ void tliALUOperations(VM_instance* vm, uint16_t instruction)
 
     if (op == 0b0000) {
         // AND Rd, Rs
-        printf__("AND r%u, r%u\n", rd, rs);
         vm->registers[rd] = vm->registers[rd] & vm->registers[rs];
+		printf__("AND r%u, r%u (r%u := %lu)\n", rd, rs, rd, (unsigned long) vm->registers[rd]);
         compareSetNZ(vm, vm->registers[rd]);
     } else if (op == 0b0001) {
         // EOR Rd, Rs
-        printf__("EOR r%u, r%u\n", rd, rs);
         vm->registers[rd] = vm->registers[rd] ^ vm->registers[rs];
+		printf__("EOR r%u, r%u (r%u := %lu)\n", rd, rs, rd, (unsigned long) vm->registers[rd]);
         compareSetNZ(vm, vm->registers[rd]);
     } else if (op == 0b0010) {
         // LSL Rd, Rs
-        printf__("LSL r%u, r%u\n", rd, rs);
         if ((vm->registers[rs] & 0xFF) != 0) {
             // Carry is only changed if the offset was nonzero
             uint32_t mask = 0xFFFFFFFFUL << vm->registers[rs];
@@ -575,10 +573,10 @@ void tliALUOperations(VM_instance* vm, uint16_t instruction)
             }
         }
         vm->registers[rd] = vm->registers[rd] << vm->registers[rs];
+		printf__("LSL r%u, r%u (r%u := %lu)\n", rd, rs, rd, (unsigned long) vm->registers[rd]);
         compareSetNZ(vm, vm->registers[rd]);
     } else if (op == 0b0011) {
         // LSR Rd, Rs
-        printf__("LSR r%u, r%u\n", rd, rs);
         uint32_t mask = 0xFFFFFFFFUL >> (32 - vm->registers[rs]);
         if ((vm->registers[rd]) & mask) {
             // We did shift off some ones
@@ -587,10 +585,10 @@ void tliALUOperations(VM_instance* vm, uint16_t instruction)
             vm_clr_cpsr_c(vm);
         }
         vm->registers[rd] = vm->registers[rd] >> vm->registers[rs];
+		printf__("LSR r%u, r%u (r%u := %lu)\n", rd, rs, rd, (unsigned long) vm->registers[rd]);
         compareSetNZ(vm, vm->registers[rd]);
     } else if (op == 0b0100) {
         // ASR Rd, Rs
-        printf__("ASR r%u, r%u\n", rd, rs);
         uint32_t mask = 0xFFFFFFFFUL >> (32 - vm->registers[rs]);
         if ((vm->registers[rs] & 0xFF) != 0) {
             if ((vm->registers[rd]) & mask) {
@@ -601,10 +599,10 @@ void tliALUOperations(VM_instance* vm, uint16_t instruction)
             }
         }
         vm->registers[rd] = (uint32_t) (((int32_t) (vm->registers[rd])) >> vm->registers[rs]);
+		printf__("ASR r%u, r%u (r%u := %lu)\n", rd, rs, rd, (unsigned long) vm->registers[rd]);
         compareSetNZ(vm, vm->registers[rd]);
     } else if (op == 0b0101) {
         // ADC Rd, Rs
-        printf__("ADC r%u, r%u\n", rd, rs);
 
         uint8_t carryAtStart = vm_get_cpsr_c(vm);
 
@@ -628,10 +626,10 @@ void tliALUOperations(VM_instance* vm, uint16_t instruction)
         }
 
         vm->registers[rd] = vm->registers[rd] + vm->registers[rs] + carryAtStart;
+		printf__("ADC r%u, r%u (r%u := %lu)\n", rd, rs, rd, (unsigned long) vm->registers[rd]);
         compareSetNZ(vm, vm->registers[rd]);
     } else if (op == 0b0110) {
         // SBC Rd, Rs
-        printf__("SBC r%u, r%u\n", rd, rs);
 
         uint8_t carryAtStart = vm_get_cpsr_c(vm);
 
@@ -655,11 +653,10 @@ void tliALUOperations(VM_instance* vm, uint16_t instruction)
         }
 
         vm->registers[rd] = vm->registers[rd] - vm->registers[rs] + !carryAtStart;
+		printf__("SBC r%u, r%u (r%u := %lu)\n", rd, rs, rd, (unsigned long) vm->registers[rd]);
         compareSetNZ(vm, vm->registers[rd]);
     } else if (op == 0b0111) {
         // ROR Rd, Rs
-        printf__("ROR r%u, r%u\n", rd, rs);
-
         if ((vm->registers[rs] & 0xFFUL) != 0) {
             // Carry flag only affected if lower 8 bits of Rs is non-zero
             if (~(0xFFFFFFFF << (vm->registers[rs])) & (vm->registers[rd])) {
@@ -671,6 +668,7 @@ void tliALUOperations(VM_instance* vm, uint16_t instruction)
         }
 
         vm->registers[rd] = (vm->registers[rd] >> vm->registers[rs]) | (vm->registers[rd] << (32 - vm->registers[rs]));
+		printf__("ROR r%u, r%u (r%u := %lu)\n", rd, rs, rd, (unsigned long) vm->registers[rd]);
         compareSetNZ(vm, vm->registers[rd]);
     } else if (op == 0b1000) {
         // TST Rd, Rs
@@ -680,11 +678,11 @@ void tliALUOperations(VM_instance* vm, uint16_t instruction)
         compareSetNZ(vm, (vm->registers[rd]) & (vm->registers[rs]));
     } else if (op == 0b1001) {
         // NEG Rd, Rs
-        printf__("NEG r%u, r%u\n", rd, rs);
 
         compareSetNZ(vm, 0 - vm->registers[rs]);
         compareSetCV(vm, 0, -vm->registers[rs]);
         vm->registers[rd] = 0 - vm->registers[rs];
+		printf__("NEG r%u, r%u (r%u := %lu)\n", rd, rs, rd, (unsigned long) vm->registers[rd]);
     } else if (op == 0b1010) {
         // CMP Rd, Rs
         printf__("CMP r%u, r%u\n", rd, rs);
@@ -701,27 +699,23 @@ void tliALUOperations(VM_instance* vm, uint16_t instruction)
         compareSetCV(vm, vm->registers[rd], vm->registers[rs]);
     } else if (op == 0b1100) {
         // ORR Rd, Rs
-        printf__("ORR r%u, r%u\n", rd, rs);
-
         vm->registers[rd] = (vm->registers[rd]) | (vm->registers[rs]);
+		printf__("ORR r%u, r%u (r%u := %lu)\n", rd, rs, rd, (unsigned long) vm->registers[rd]);
         compareSetNZ(vm, vm->registers[rd]);
     } else if (op == 0b1101) {
         // MUL Rd, Rs
-        printf__("MUL r%u, r%u\n", rd, rs);
-
         vm->registers[rd] = vm->registers[rd] * vm->registers[rs];
+		printf__("MUL r%u, r%u (r%u := %lu)\n", rd, rs, rd, (unsigned long) vm->registers[rd]);
         compareSetNZ(vm, vm->registers[rd]);
     } else if (op == 0b1110) {
         // BIC Rd, Rs
-        printf__("BIC r%u, r%u\n", rd, rs);
-
         vm->registers[rd] = (vm->registers[rd]) & (~(vm->registers[rs]));
+		printf__("BIC r%u, r%u (r%u := %lu)\n", rd, rs, rd, (unsigned long) vm->registers[rd]);
         compareSetNZ(vm, vm->registers[rd]);
     } else if (op == 0b1111) {
         // MVN Rd, Rs
-        printf__("MVN r%u, r%u\n", rd, rs);
-
         vm->registers[rd] = ~(vm->registers[rs]);
+		printf__("MVN r%u, r%u (r%u := %lu)\n", rd, rs, rd, (unsigned long) vm->registers[rd]);
         compareSetNZ(vm, vm->registers[rd]);
     }
 }
@@ -753,26 +747,26 @@ void tliHighRegOperations(VM_instance* vm, uint16_t instruction)
             // ADD Rd, Hs
             // Sum together the values in a low register Rd and a high register Rs (8+Rs),
             // and store the result in low register Rd
-            printf__("ADD r%u, H%u\n", rd, 8+rs);
             compareSetNZ(vm, vm->registers[rd] + vm->registers[8+rs]);
             compareSetCV(vm, vm->registers[rd], vm->registers[8+rs]);
             vm->registers[rd] = vm->registers[rd] + vm->registers[8+rs];
+			printf__("ADD r%u, h%u (r%u := %lu)\n", rd, 8+rs, rd, (unsigned long) vm->registers[rd]);
         } else if (h1_and_2 == 0b10) {
             // ADD Hd, Rs
             // Sum together the values in high register Hd (8+Rd) and low register Rs
             // then store the result in Hd
-            printf__("ADD H%u, R%u\n", 8+rd, rs);
             compareSetNZ(vm, vm->registers[8+rd] + vm->registers[rs]);
             compareSetCV(vm, vm->registers[8+rd], vm->registers[rs]);
             vm->registers[8+rd] = vm->registers[8+rd] + vm->registers[rs];
+			printf__("ADD h%u, R%u (h%u := %lu)\n", 8+rd, rs, 8+rd, (unsigned long) vm->registers[8+rd]);
         } else if (h1_and_2 == 0b11) {
             // ADD Hd, Hs
             // Sum together the values in the high registers Hd (8+Rd) and Hs (8+Rs)
             // then store the result in Hd
-            printf__("ADD H%u, H%u\n", 8+rd, 8+rs);
             compareSetNZ(vm, vm->registers[8+rd] + vm->registers[8+rs]);
             compareSetCV(vm, vm->registers[8+rd], vm->registers[8+rs]);
             vm->registers[8+rd] = vm->registers[8+rd] + vm->registers[8+rs];
+			printf__("ADD h%u, h%u (h%u := %lu)\n", 8+rd, 8+rs, 8+rd, (unsigned long) vm->registers[8+rd]);
         } else {
             printf__("Invalid instruction %x\n", instruction);
             vm->finished = true;
@@ -804,15 +798,15 @@ void tliHighRegOperations(VM_instance* vm, uint16_t instruction)
             // MOV Rd, Hs
             // Moves a value from high register Hs (8+Rs) into low register Rd
             // rd <= 7 and (8+rs) <= 15, so this is safe
-            printf__("MOV r%u, r%u\n", rd, 8+rs);
             vm->registers[rd] = vm->registers[8+rs];
+			printf__("MOV r%u, h%u (r%u := %lu)\n", rd, 8+rs, rd, (unsigned long) vm->registers[rd]);
         } else if (h1_and_2 == 0b10) {
             // MOV Hd, Rs
-            printf__("MOV h%u, r%u\n", 8+rd, rs);
             vm->registers[8+rd] = vm->registers[rs];
+			printf__("MOV h%u, r%u (h%u := %lu)\n", 8+rd, rs, 8+rd, (unsigned long) vm->registers[8+rd]);
         } else if (h1_and_2 == 0b11) {
             // MOV Hd, Hs
-            printf__("MOV h%u, h%u\n", 8+rd, 8+rs);
+            printf__("MOV h%u, h%u (h%u := %lu)\n", 8+rd, 8+rs, 8+rd, (unsigned long) vm->registers[8+rd]);
             vm->registers[8+rd] = vm->registers[8+rs];
         } else {
             printf__("Invalid command %x\n", instruction);
@@ -891,24 +885,28 @@ void tliLoadWithRegOffset(VM_instance* vm, uint16_t instruction)
         if (byte_or_word == 0) {
             // STR Rd, [Rb, Ro]
             // Store a word from Rd into the address
-            printf__("STR r%u, [r%u, r%u]\n", rd, rb, ro);
+            printf__("STR r%u, [r%u, r%u] ([0x%lx:0x%lx] := %lu)\n", rd, rb, ro, (unsigned long) addr,
+                     (unsigned long) ((unsigned long) addr+4), (unsigned long) vm->registers[rd]);
             store(vm, addr, vm->registers[rd], 4);
         } else {
             // STRB Rd, [Rb, Ro]
-            printf__("STRB r%u, [r%u, r%u]\n", rd, rb, ro);
+            printf__("STRB r%u, [r%u, r%u] ([0x%lx] := %lu)\n", rd, rb, ro, (unsigned long) addr,
+                     (unsigned long) (vm->registers[rd] & 0xFF));
             store(vm, addr, vm->registers[rd] & 0xFF, 1);
         }
     } else {
         if (byte_or_word == 0) {
             // LDR Rd, [Rb, Ro]
             // Load a word from Rb + Ro into Rd
-            printf__("LDR r%u, [r%u, r%u]\n", rd, rb, ro);
             vm->registers[rd] = load(vm, addr, 4);
+			printf__("LDR r%u, [r%u, r%u] (r%u := [0x%lx:0x%lx] = %lu)\n", rd, rb, ro, rd, (unsigned long) addr,
+                     (unsigned long) ((unsigned long) addr+3), (unsigned long) vm->registers[rd]);
         } else {
             // LDRB Rd, [Rb, Ro]
             // Load a byte from Rb + Ro into Rd
-            printf__("LDRB r%u, [r%u, r%u]\n", rd, rb, ro);
             vm->registers[rd] = load(vm, addr, 1);
+			printf__("LDRB r%u, [r%u, r%u] (r%u := [0x%lx] = %lu)\n", rd, rb, ro, rd, (unsigned long) addr,
+                     (unsigned long) vm->registers[rd]);
         }
     }
 }
@@ -988,12 +986,14 @@ void tliLoadStoreWithImmediateOffset(VM_instance* vm, uint16_t instruction)
         if (load_or_store == 0) {
             // STR Rd, [Rb, #lmm]
             // Store the contents of Rd into the word starting at memory address Rb+lmm
-            printf__("STR r%u, [r%u, #%u] ([Word@0x%lx] := r%u = %lu)\n", rd, rb, (offset5 << 2), addr, rd, vm->registers[rd]);
+            printf__("STR r%u, [r%u, #%u] ([Word@0x%lx] := r%u = %lu)\n", rd, rb, (offset5 << 2),
+                     (unsigned long) addr, rd, (unsigned long) vm->registers[rd]);
             store(vm, addr, vm->registers[rd], 4);
         } else {
             // LDR Rd, [Rb, #lmm]
             // Load the word at Rb+lmm into register Rd
-            printf__("LDR r%u, [r%u, #%u] (r%u := [Word@0x%lx] = %lu)\n", rd, rb, (offset5 << 2), rd, addr, load(vm, addr, 4));
+            printf__("LDR r%u, [r%u, #%u] (r%u := [Word@0x%lx] = %lu)\n", rd, rb, (offset5 << 2), rd,
+                     (unsigned long) addr, (unsigned long) load(vm, addr, 4));
             vm->registers[rd] = load(vm, addr, 4);
         }
     } else {
@@ -1154,7 +1154,8 @@ void tliPushPopRegisters(VM_instance* vm, uint16_t instruction)
 
     // Calculate which registers are included in the register list
     uint8_t numRegistersInvolved = 0;
-    bool use_registers[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    bool use_registers[16] = {0, 0, 0, 0, 0, 0, 0, 0,
+                              0, 0, 0, 0, 0, 0, 0, 0};
     for (uint8_t i = 0; i < 8; i++) {
         if (rlist & (1 << i)) {
             use_registers[i] = 1;
@@ -1181,7 +1182,8 @@ void tliPushPopRegisters(VM_instance* vm, uint16_t instruction)
             if (use_registers[i]) {
                 vm_stack_pointer(vm) -= 4;
                 store(vm, vm_stack_pointer(vm), vm->registers[i], 4);
-                printf__("<Pushing r%u (%lu) to 0x%lx>\n", i, (unsigned long) vm->registers[i], (unsigned long) vm_stack_pointer(vm));
+                printf__("<Pushing r%u (%lu) to 0x%lx>\n", i, (unsigned long) vm->registers[i],
+                         (unsigned long) vm_stack_pointer(vm));
             }
         }
     } else {
@@ -1190,7 +1192,8 @@ void tliPushPopRegisters(VM_instance* vm, uint16_t instruction)
         for (int8_t i = 0; i < 16; i++) {
             if (use_registers[i]) {
                 vm->registers[i] = load(vm, vm_stack_pointer(vm), 4);
-                printf__("<Popping 0x%lx (%lu) to r%u>\n", (unsigned long) vm_stack_pointer(vm), (unsigned long) vm->registers[i], i);
+                printf__("<Popping 0x%lx (%lu) to r%u>\n", (unsigned long) vm_stack_pointer(vm),
+                         (unsigned long) vm->registers[i], i);
                 vm_stack_pointer(vm) += 4;
             }
         }
