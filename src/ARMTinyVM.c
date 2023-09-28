@@ -603,56 +603,69 @@ void tliALUOperations(VM_instance* vm, uint16_t instruction)
         compareSetNZ(vm, vm->registers[rd]);
     } else if (op == 0b0101) {
         // ADC Rd, Rs
+        uint64_t realSum = ((uint64_t) vm->registers[rd]) + ((uint64_t) vm->registers[rs]) + vm_get_cpsr_c(vm);
+        uint32_t truncatedSum = (realSum & 0xFFFFFFFF);
 
-        uint8_t carryAtStart = vm_get_cpsr_c(vm);
-
-        // Calculating the carry and overflow in 2 stages
-        compareSetCV(vm, vm->registers[rd], vm->registers[rs]);
-        uint8_t carry1 = vm_get_cpsr_c(vm);
-        uint8_t overflow1 = vm_get_cpsr_v(vm);
-        compareSetCV(vm, vm->registers[rd] + vm->registers[rs], 1);
-        uint8_t carry2 = vm_get_cpsr_c(vm);
-        uint8_t overflow2 = vm_get_cpsr_v(vm);
-
-        if (carry1 || carry2) {
+        // Analyse this to see if C or V need to be set
+        // Carry occurs if the left 32 bits are non-zero, so it overflowed as an unsigned int
+        if (realSum & 0xFFFFFFFF00000000) {
             vm_set_cpsr_c(vm);
         } else {
             vm_clr_cpsr_c(vm);
         }
-        if (overflow1 || overflow2) {
-            vm_set_cpsr_v(vm);
+        // Overflow occurs if we corrupted the sign bit
+        if (i32_sign(vm->registers[rd]) == i32_sign(vm->registers[rs])) {
+            // a and b have the same sign
+            // if sum has a different sign than this, we've had an overflow
+            if (i32_sign(truncatedSum) == i32_sign(vm->registers[rd])) {
+                // Same sign, so no overflow
+                vm_clr_cpsr_v(vm);
+            } else {
+                // Different sign, so overflow
+                vm_set_cpsr_v(vm);
+            }
         } else {
+            // An overflow is impossible if the signs of the operands are different
             vm_clr_cpsr_v(vm);
         }
 
-        vm->registers[rd] = vm->registers[rd] + vm->registers[rs] + carryAtStart;
+        vm->registers[rd] = truncatedSum;
 		printf__("ADC r%u, r%u (r%u := %lu)\n", rd, rs, rd, (unsigned long) vm->registers[rd]);
         compareSetNZ(vm, vm->registers[rd]);
     } else if (op == 0b0110) {
         // SBC Rd, Rs
 
-        uint8_t carryAtStart = vm_get_cpsr_c(vm);
+        // Subtract with carry is basically:
+        // Rd := Rd - Rs - ~C
+        // which is equivalent to:
+        // Rd := Rd + ~Rs + C
+        uint64_t realSum = ((uint64_t) vm->registers[rd]) + ((uint64_t) (~vm->registers[rs])) + vm_get_cpsr_c(vm);
+        uint32_t truncatedSum = (realSum & 0xFFFFFFFF);
 
-        // Calculating the carry and overflow in 2 stages
-        compareSetCV(vm, vm->registers[rd], 0UL - vm->registers[rs]);
-        uint8_t carry1 = vm_get_cpsr_c(vm);
-        uint8_t overflow1 = vm_get_cpsr_v(vm);
-        compareSetCV(vm, vm->registers[rd] - vm->registers[rs], !carryAtStart);
-        uint8_t carry2 = vm_get_cpsr_c(vm);
-        uint8_t overflow2 = vm_get_cpsr_v(vm);
-
-        if (carry1 || carry2) {
+        // Analyse this to see if C or V need to be set
+        // Carry occurs if the left 32 bits are non-zero, so it overflowed as an unsigned int
+        if (realSum & 0xFFFFFFFF00000000) {
             vm_set_cpsr_c(vm);
         } else {
             vm_clr_cpsr_c(vm);
         }
-        if (overflow1 || overflow2) {
-            vm_set_cpsr_v(vm);
+        // Overflow occurs if we corrupted the sign bit
+        if (i32_sign(vm->registers[rd]) == i32_sign(vm->registers[rs])) {
+            // a and b have the same sign
+            // if sum has a different sign than this, we've had an overflow
+            if (i32_sign(truncatedSum) == i32_sign(vm->registers[rd])) {
+                // Same sign, so no overflow
+                vm_clr_cpsr_v(vm);
+            } else {
+                // Different sign, so overflow
+                vm_set_cpsr_v(vm);
+            }
         } else {
+            // An overflow is impossible if the signs of the operands are different
             vm_clr_cpsr_v(vm);
         }
 
-        vm->registers[rd] = vm->registers[rd] - vm->registers[rs] + !carryAtStart;
+        vm->registers[rd] = truncatedSum;
 		printf__("SBC r%u, r%u (r%u := %lu)\n", rd, rs, rd, (unsigned long) vm->registers[rd]);
         compareSetNZ(vm, vm->registers[rd]);
     } else if (op == 0b0111) {
@@ -1376,12 +1389,11 @@ void tliSoftwareInterrupt(VM_instance* vm, uint16_t instruction)
     uint8_t value = instruction & 0x00FF;
     printf__("SWI #%u\n", value);
 
-#if !__has_include(<avr/version.h>)
     // Move the address of the next instruction into the link register
-    // Only do this if not running on AVR - in that case, the code is being executed virtually, and so the link register
-    // doesn't need to be set to tell code at the other end of the interrupt how to return.
-    vm_link_register(vm) = vm_program_counter(vm);
-#endif
+    // In principle, we should do this, but because this is a virtual machine, we already know where to jump back to,
+    // and for some reason the ARM compiler seems not to realise that an swi instruction will overwrite the link
+    // register, and thus it doesn't save it beforehand.
+    // vm_link_register(vm) = vm_program_counter(vm);
 
     // Trigger the interrupt
     vm->softwareInterrupt(vm, value);
