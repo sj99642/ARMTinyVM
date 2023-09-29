@@ -1449,7 +1449,7 @@ void tliLongBranchWithLink(VM_instance* vm, uint16_t instruction)
         // The first instruction; shift left by 12 bits, add it to the current PC (+2 because of prefetch), and store
         // the result in LR
         vm_link_register(vm) = (((uint32_t) offset) << 12);
-        printf__("BL(0) %u (lr = %ul)\n", offset, vm_link_register(vm));
+        printf__("BL(0) %u (lr = %lu)\n", offset, vm_link_register(vm));
     } else {
         // At the start of the second instruction, we should already have the first bit in the link register
         // Add this offset, shifted by 1, to it
