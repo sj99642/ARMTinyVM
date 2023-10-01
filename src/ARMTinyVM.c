@@ -1,4 +1,4 @@
-#include "ARMTinyVM.h"
+﻿#include "ARMTinyVM.h"
 #include "instruction_set.h"
 #include <string.h>
 #include <stdio.h>
@@ -691,7 +691,12 @@ void tliALUOperations(VM_instance* vm, uint16_t instruction)
         // NEG Rd, Rs
 
         compareSetNZ(vm, 0 - vm->registers[rs]);
-        compareSetCV(vm, 0, -vm->registers[rs]);
+		// NEG sets the carry flag only if Rs is 0
+        if (vm->registers[rs] == 0) {
+			vm_set_cpsr_c(vm);
+		} else {
+			vm_clr_cpsr_c(vm);
+		}
         vm->registers[rd] = 0 - vm->registers[rs];
 		printf__("NEG r%u, r%u (r%u := %lu)\n", rd, rs, rd, (unsigned long) vm->registers[rd]);
     } else if (op == 0b1010) {
