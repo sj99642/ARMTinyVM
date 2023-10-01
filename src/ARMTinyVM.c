@@ -1,4 +1,4 @@
-﻿#include "ARMTinyVM.h"
+#include "ARMTinyVM.h"
 #include "instruction_set.h"
 #include <string.h>
 #include <stdio.h>
@@ -385,8 +385,6 @@ void tliMoveShiftedRegister(VM_instance* vm, uint16_t instruction)
         } else {
             vm_clr_cpsr_c(vm);
         }
-        printf__("vm->registers[r%u] == %lu\n", rs, (unsigned long) vm->registers[rs]);
-        printf__("Carry: %d\n", vm_get_cpsr_c(vm));
 
         vm->registers[rd] = (vm->registers[rs]) >> offset5;
 		printf__("LSR R%u, R%u, #%u (r%u := %lu)\n", rd, rs, offset5, rd, (unsigned long) vm->registers[rd]);
@@ -464,10 +462,10 @@ void tliAddSubtract(VM_instance* vm, uint16_t instruction)
     } else {
         if (i == 0) {
             // SUB Rd, Rs, Rn
-            // Rd := Rn - Rs
+            // Rd := Rs - Rn
             // Safe because rd, rn and rs are no higher than 7
-            compareSetCV(vm, vm->registers[rn], 0 - vm->registers[rs]);
-            vm->registers[rd] = vm->registers[rn] - vm->registers[rs];
+            compareSetCV(vm, vm->registers[rs], 0 - vm->registers[rn]);
+            vm->registers[rd] = vm->registers[rs] - vm->registers[rn];
 			printf__("SUB r%u, r%u, r%u (r%u := %lu)\n", rd, rs, rn, rd, (unsigned long) vm->registers[rd]);
             compareSetNZ(vm, vm->registers[rd]);
         } else {
