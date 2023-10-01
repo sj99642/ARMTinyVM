@@ -690,14 +690,14 @@ void tliALUOperations(VM_instance* vm, uint16_t instruction)
     } else if (op == 0b1001) {
         // NEG Rd, Rs
 
-        compareSetNZ(vm, 0 - vm->registers[rs]);
+        compareSetNZ(vm, 0UL - vm->registers[rs]);
 		// NEG sets the carry flag only if Rs is 0
         if (vm->registers[rs] == 0) {
 			vm_set_cpsr_c(vm);
 		} else {
 			vm_clr_cpsr_c(vm);
 		}
-        vm->registers[rd] = 0 - vm->registers[rs];
+        vm->registers[rd] = 0UL - vm->registers[rs];
 		printf__("NEG r%u, r%u (r%u := %lu)\n", rd, rs, rd, (unsigned long) vm->registers[rd]);
     } else if (op == 0b1010) {
         // CMP Rd, Rs
@@ -964,16 +964,17 @@ void tliLoadStoreSignExtendedByte(VM_instance* vm, uint16_t instruction)
         if (h == 0) {
             // LDSB Rd, [Rb, Ro]
             // Load byte from Rb+Ro, sign-extend it to word size, and put it in Rd
-            printf__("LDSB r%u, [r%u, r%u]\n", rd, rb, ro);
             uint32_t value = load(vm, addr, 1);
             value = (value & 0x000000FFUL) | ((value & 0x80UL) ? 0xFFFFFF00UL : 0UL);
+			printf__("LDSB r%u, [r%u, r%u] (r%u := [0x%lx] = %ul)\n", rd, rb, ro, rd, (unsigned long) addr, value);
             vm->registers[rd] = value;
         } else {
             // LDSH Rd, [Rb, Ro]
             // Load half-word from Rb+Ro, sign-extend it to word size, and put it in Rd
-            printf__("LDSH r%u, [r%u, r%u]\n", rd, rb, ro);
             uint32_t value = load(vm, addr, 2);
             value = (value & 0x0000FFFFUL) | ((value & 0x8000UL) ? 0xFFFF0000UL : 0UL);
+			printf__("LDSH r%u, [r%u, r%u] (r%u := [HalfWord@0x%lx] = %ul)\n", rd, rb, ro,
+                     rd, (unsigned long) addr, value);
             vm->registers[rd] = value;
         }
     }
@@ -1017,13 +1018,15 @@ void tliLoadStoreWithImmediateOffset(VM_instance* vm, uint16_t instruction)
         if (load_or_store == 0) {
             // STRB Rd, [Rb, #lmm]
             // Store the least significant byte of Rd in memory address Rb+lmm
-            printf__("STRB r%u, [r%u, #%u]\n", rd, rb, offset5);
+			printf__("STRB r%u, [r%u, #%u] ([0x%lx] := r%u = %lu)\n", rd, rb, offset5, (unsigned long) addr, rd,
+                     (unsigned long) vm->registers[rd]);
             store(vm, addr, vm->registers[rd], 1);
         } else {
             // LDRB Rd, [Rb, #lmm]
             // Load the byte at Rb+lmm into register Rd
-            printf__("LDRB r%u, [r%u, #%u]\n", rd, rb, offset5);
             vm->registers[rd] = load(vm, addr, 1);
+			printf__("LDRB r%u, [r%u, #%u] (r%u := [0x%lx] = %lu)\n", rd, rb, offset5, rd, (unsigned long) addr,
+                     (unsigned long) vm->registers[rd]);
         }
     }
 }
